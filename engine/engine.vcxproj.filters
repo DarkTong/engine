@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\third\include\glad\glad.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\GLFW\glfw3.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\GLFW\glfw3native.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\KHR\khrplatform.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJRequire.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJWindow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTime.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJRenderUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJRenderStatic.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJRender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJHeadFile.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJResource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJResourceManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJResourceGroupManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJShader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJShaderManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTools.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJWindow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJRequire.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\third\src\glad.c">
+      <Filter>资源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTime.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJRenderStatic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJResource.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJResourceManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJResourceGroupManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJShader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJShaderManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTools.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\third\dll\assimp-vc140-mt.dll">
+      <Filter>资源文件</Filter>
+    </None>
+  </ItemGroup>
+</Project>
