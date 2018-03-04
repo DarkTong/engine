@@ -1,8 +1,12 @@
 #include "GZJShaderManager.h"
 
 namespace GZJ_ENGINE {
-	const String GZJShaderManager::rootPath = ENGINE_ROOT_PATH + "\\shader";
+	GZJShaderManagerPtr GZJShaderManager::_instance = nullptr;
+	
+	const String GZJShaderManager::rootPath = ENGINE_ROOT_PATH + "\\src\\shader";
+	
 	bool GZJShaderManager::LOAD_ALL_SHADER_WHEN_CREATE = true;
+	
 	void GZJShaderManager::CheckCompliceErrors(ShaderID id, ShaderType type)
 	{
 		int success = 0;
@@ -27,6 +31,7 @@ namespace GZJ_ENGINE {
 			}
 		}
 	}
+	
 	GZJShaderPtr GZJShaderManager::LoadShaderObj(const String & name)
 	{
 		auto it = _objMap.find(name);
@@ -40,12 +45,16 @@ namespace GZJ_ENGINE {
 		glAttachShader(id, it_2);
 		glLinkProgram(id);
 
-		CheckCompliceErrors(id, PROGRAM_SHADER);
-		GZJShaderPtr _ptr = GZJShaderPtr(new GZJShader((GZJShaderManagerPtr)this, id));
+ 		CheckCompliceErrors(id, PROGRAM_SHADER);
+		GZJShaderPtr _ptr(new GZJShader(id, name));
 		_objMap.insert(Pair<String, GZJShaderPtr>(name, _ptr));
+
+		glDeleteShader(it_1);
+		glDeleteShader(it_2);
 
 		return _ptr;
 	}
+	
 	ShaderID GZJShaderManager::LoadShader(const String & name, ShaderType type)
 	{
 		ShaderID id;
@@ -55,7 +64,7 @@ namespace GZJ_ENGINE {
 			id = glCreateShader(GL_VERTEX_SHADER);
 			it = _vertexSrcMap.find(name);
 		}
-		else if (type == VERTEX_SHADER) {
+		else if (type == FRAGMENT_SHADER) {
 			id = glCreateShader(GL_FRAGMENT_SHADER);
 			it = _fragmentSrcMap.find(name);
 		}
@@ -66,9 +75,12 @@ namespace GZJ_ENGINE {
 		CheckCompliceErrors(id, type);
 		return id;
 	}
+	
 	bool GZJShaderManager::ReadSrc(const String & name, ShaderType type)
 	{
 		// 1. 从文件路径中获取顶点/片段着色器
+		std::ifstream file;
+		std::stringstream stream;
 		// 保证ifstream对象可以抛出异常：
 		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try
@@ -76,22 +88,25 @@ namespace GZJ_ENGINE {
 			// 打开文件
 			String path="";
 			if (type == VERTEX_SHADER)
-				path = rootPath + name + ".vs";
+				path = rootPath + "\\" + name + ".vs";
 			else if (type == FRAGMENT_SHADER)
-				path = rootPath + name + ".fs";
+				path = rootPath + "\\" + name + ".fs";
 			file.open(path);
 			// 读取文件的缓冲内容到数据流中
+			stream.clear();
+			stream.str("");
 			stream << file.rdbuf();
 			// 关闭文件处理器
 			file.close();
 			// 转换数据流到string
-			String code;
-			stream >> code;
+			String code = stream.str();
 			if (type == VERTEX_SHADER)
 				_vertexSrcMap.insert(Pair<String, String>(name, code));
 			else if (type == FRAGMENT_SHADER)
 				_fragmentSrcMap.insert(Pair<String, String>(name, code));
-			stream.clear();
+
+			// debug
+			// std::cout << code << std::endl;
 
 			return true;
 		}
@@ -101,8 +116,12 @@ namespace GZJ_ENGINE {
 			return false;
 		}
 	}
+	
 	GZJShaderManager::GZJShaderManager(bool flag)
 	{
+		assert(_instance == nullptr);
+		_instance = GZJShaderManagerPtr(this);
+
 		LOAD_ALL_SHADER_WHEN_CREATE = flag;
 
 		// 获取所有文件名字
@@ -111,6 +130,10 @@ namespace GZJ_ENGINE {
 		if (LOAD_ALL_SHADER_WHEN_CREATE)
 			LoadAll();
 	}
+	
+	//GZJShaderManager::~GZJShaderManager()
+	//{
+	//}
 	GZJShaderPtr GZJShaderManager::GetShaderObjByName(const String & name)
 	{
 		return LoadShaderObj(name);
@@ -122,15 +145,17 @@ namespace GZJ_ENGINE {
 	}
 	void GZJShaderManager::ReadShaderName()
 	{
+		std::cout << "path:" << rootPath << std::endl;
 		std::vector<String> fileNames;
+		std::cout << "fileNameSize:" << fileNames.size() << std::endl;
 		GZJTools::GetAllFileName(fileNames, rootPath, JUST_FILE);
 		size_t len;
 		String str;
 		for (auto it = fileNames.begin(); it != fileNames.end(); ++it) {
 			len = it->length();
-			str.assign(it->substr(len - 3));
+			str = it->substr(len - 3);
 			if (str == ".vs" || str == ".fs") {
-				str.assign(it->substr(0, len - 3));
+				str = it->substr(0, len - 3);
 				_nameSet.insert(str);
 			}
 		}

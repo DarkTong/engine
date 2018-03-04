@@ -1,38 +1,17 @@
 #include "GZJShader.h"
 
 namespace GZJ_ENGINE {
-	void GZJShader::CheckCompliceErrors(ShaderID id, ShaderType type)
-	{
-		int success = 0;
-		char infoLog[1024];
-		if (type != PROGRAM_SHADER){
-			glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-			if(!success){
-				glGetShaderInfoLog(id, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" 
-					<< infoLog << "\n " 
-					<< "-- --------------------------------------------------- -- " 
-					<< std::endl;
-			}
-		}
-		else {
-			glGetProgramiv(id, GL_LINK_STATUS, &success);
-			if(!success){ 
-				glGetShaderInfoLog(id, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_LINKING_ERROR of type: " << type << "\n"
-					<< infoLog << "\n "
-					<< "-- --------------------------------------------------- -- "
-					<< std::endl;
-			}
-		}
-	}
 	void GZJShader::Init()
 	{
 	}
-	GZJShader::GZJShader(GZJShaderManagerPtr mgrPtr, ShaderID id)
-		:_mgr(mgrPtr), _id(id)
+	GZJShader::GZJShader(ShaderID id, const String& name)
+		: _id(id), _name(name)
 	{
 		Init();
+	}
+	String GZJShader::GetName()
+	{
+		return _name;
 	}
 	void GZJShader::Use() const
 	{

@@ -43,14 +43,14 @@ namespace GZJ_ENGINE {
 
 		/** 用于处理文件数据的数据流
 		*/
-		std::stringstream stream;
+		//std::stringstream stream;
 		/** 用于打开文件的文件
 		*/
-		std::ifstream file;
+		//std::ifstream file;
 
 	public:
 		GZJShaderManager(bool flag = true);
-		~GZJShaderManager() {};
+		//~GZJShaderManager();
 		/** 通过名字查找着色器对象
 		@param 着色器名字
 		*/
@@ -75,5 +75,18 @@ namespace GZJ_ENGINE {
 		/** 获取所有shader的名字
 		*/
 		void ReadShaderName();
+
+	public:
+		void DeleteMe() {
+			// 清空shader对象
+			for (auto it = _objMap.begin(); it != _objMap.end(); ++it) {
+				//it->second->DeleteProgram();
+				it->second.reset();
+			}
+			_objMap.clear();
+			_fragmentSrcMap.clear();
+			_vertexSrcMap.clear();
+			_nameSet.clear();
+		}
 	};
 }

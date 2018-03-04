@@ -27,25 +27,15 @@ float vertices[] = {
 	0.0f,  0.5f, 0.0f  // top   
 };
 
-// ------------- shader code --------------------------
-const char *vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
 
 
 
 int main() {
 	win.InitWindow();
 	win.BuildWindow();
+
+	GZJShaderManagerPtr shaderMgrPtr = GZJShaderManagerPtr(new GZJShaderManager(true));
+	//GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
 
 	//// ÁÙÊ± ---------------- create shader program ----------
 	//// build and compile our shader program
@@ -110,6 +100,8 @@ int main() {
 		win.Process();
 	}
 	//renderStaitc->ClearRenderDatas();
+	shaderMgrPtr->DeleteMe();
+	shaderMgrPtr.reset();
 	win.Close();
 
 	return 0;
@@ -120,8 +112,8 @@ void update_game() {
 }
 
 void display_game() {
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	//glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	//renderStaitc->Render();
 }

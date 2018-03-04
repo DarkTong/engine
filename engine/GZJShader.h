@@ -14,26 +14,17 @@ namespace GZJ_ENGINE {
 		/** 程序ID
 		*/
 		ShaderID _id;
-		/** 定点着色器程序路径
+		/** 着色器名字
 		*/
-		String _vertexPath;
-		/** 片段着色器程序路径
-		*/
-		String _fragmentPath;
+		String _name;
 		/** 着色器管理器
 		*/
-		GZJShaderManagerPtr _mgr;
+		//GZJShaderManagerPtr _mgr;
 	private:
 		/** 构造shader程序
 		*/
 		void Init();
 	public:
-		/** 检查编译及链接的错误
-		@param 程序id
-		@param 程序类型
-		*/
-		void CheckCompliceErrors(ShaderID id, ShaderType type);
-
 		// GZJShader(GZJShaderManagerPtr mgrPtr);
 
 		/** 构造函数2
@@ -41,7 +32,10 @@ namespace GZJ_ENGINE {
 		@param 定点着色器路径
 		@param 片段着色器路径
 		*/
-		GZJShader(GZJShaderManagerPtr mgrPtr, ShaderID id);
+		GZJShader(ShaderID id, const String& name);
+		/** 获取着色器名字
+		*/
+		String GetName();
 		/** 着色器使用
 		*/
 		void Use() const;
@@ -60,6 +54,10 @@ namespace GZJ_ENGINE {
 		@param 修改值
 		*/
 		void SetFloat(const String& name, float value) const;
+
+		void DeleteProgram() {
+			glDeleteProgram(_id);
+		}
 	};
 
 }

@@ -11,9 +11,9 @@ namespace GZJ_ENGINE {
 		{
 			do
 			{
-				if ((fileinfo.attrib &  _A_SUBDIR) and type == JUST_FILE_RECUTSION)
+				if ((fileinfo.attrib &  _A_SUBDIR))
 				{
-					if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0)
+					if (strcmp(fileinfo.name, ".") != 0 && strcmp(fileinfo.name, "..") != 0 && type == JUST_FILE_RECUTSION)
 					{
 						GetAllFileName(files, p.assign(path).append("\\").append(fileinfo.name), type);
 					}
