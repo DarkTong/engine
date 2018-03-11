@@ -1,3 +1,6 @@
+#ifndef _GZJ_TOOLS_
+#define _GZJ_TOOLS_
+
 #include "GZJRequire.h"
 
 namespace GZJ_ENGINE {
@@ -22,4 +25,4 @@ namespace GZJ_ENGINE {
 		static void GetAllFileName(FileNames& files, const String& path, ReadDirType type);
 	};
 }
-
+#endif // !_GZJ_TOOLS

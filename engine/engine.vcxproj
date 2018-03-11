@@ -129,6 +129,8 @@
     <ClInclude Include="..\third\include\KHR\khrplatform.h" />
     <ClInclude Include="GZJCommon.h" />
     <ClInclude Include="GZJHeadFile.h" />
+    <ClInclude Include="GZJMesh.h" />
+    <ClInclude Include="GZJMeshManager.h" />
     <ClInclude Include="GZJRender.h" />
     <ClInclude Include="GZJRenderStatic.h" />
     <ClInclude Include="GZJRenderUtil.h" />
@@ -144,6 +146,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third\src\glad.c" />
+    <ClCompile Include="GZJMesh.cpp" />
+    <ClCompile Include="GZJMeshManager.cpp" />
     <ClCompile Include="GZJRenderStatic.cpp" />
     <ClCompile Include="GZJRequire.cpp" />
     <ClCompile Include="GZJResource.cpp" />

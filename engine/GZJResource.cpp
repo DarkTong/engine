@@ -1,11 +1,11 @@
 #include "GZJResource.h"
 
 namespace GZJ_ENGINE {
-	GZJResource::GZJResource(GZJResourceManagerPtr manager, const String& path
-		, const String& name, ResourceHandle handle)
-		:_mgr(manager), _path(path), _name(name), _handle(handle)
+	GZJResource::GZJResource(GZJResourceManagerPtr manager, const String& name, ResourceHandle handle)
+		:_mgr(manager), _name(name), _handle(handle)
 	{
-		_state = ResState::UNPREPARE;
+		_state	= ResState::UNPREPARE;
+		_path = manager->GetResRoot() + "\\" + name;
 	}
 
 }

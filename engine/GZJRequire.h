@@ -24,6 +24,22 @@
 #include <io.h> 
 
 namespace GZJ_ENGINE {
+	//-------- 枚举 --------
+	/** 资源状态
+	*/
+	enum ResState {
+		UNPREPARE,
+		PREPAREING,
+		UNLOAD,
+		LOADING,
+		LOADED,
+		OLDED,
+	};
+	//-------- 重命名 --------
+	/** 资源句柄
+	*/
+	typedef unsigned long long ResourceHandle;
+	
 	typedef std::string String;
 	template<typename T1, typename T2> using HashMap = std::unordered_map<T1, T2>;
 	template<typename T1, typename T2> using Map = std::map<T1, T2>;
@@ -50,8 +66,11 @@ namespace GZJ_ENGINE {
 	class GZJTextureManager;
 	class GZJMesh;
 	class GZJMeshManager;
+	class GZJTools;
 
 	template<typename T> using SharedPtr = std::shared_ptr<T>;
+	//template<typename T> using MakeShared = std::make_shared<T>;
+	template<typename T> using WeakShared = std::weak_ptr<T>;
 // #define SharedPtr std::shared_ptr
 
 	typedef SharedPtr<GZJTime>						GZJTimePtr;
@@ -64,12 +83,17 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJResource>					GZJResourcePtr;
 	typedef SharedPtr<GZJResourceManager>			GZJResourceManagerPtr;
 	typedef SharedPtr<GZJResourceGroupManager>		GZJResourceGroupManagerPtr;
+	typedef SharedPtr<GZJMesh>						GZJMeshPtr;
+	typedef SharedPtr<GZJMeshManager>				GZJMeshManagerPtr;
 
 
 	// -------- common function --------
 
 	// -------- common value --------
-	const String ENGINE_ROOT_PATH = "F:\\毕业设计2\\engine";
+	const String ENGINE_ROOT_PATH		= "F:\\毕业设计2\\engine";
+	const String MESH_ROOT_PATH			= "\\mesh";
+	const String SHADER_ROOT_PATH		= "\\shader";
+
 }
 
 #endif // _GZJ_REQUIRE
