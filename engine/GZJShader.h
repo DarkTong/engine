@@ -89,9 +89,6 @@ namespace GZJ_ENGINE {
 		*/
 		void SetFloat(const String& name, float value) const;
 
-		void DeleteProgram() {
-			glDeleteProgram(_id);
-		}
 	};
 
 }

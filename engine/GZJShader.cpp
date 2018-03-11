@@ -88,6 +88,9 @@ namespace GZJ_ENGINE {
 
 	void GZJShader::Load()
 	{
+		if (_state != ResState::UNLOAD)
+			return;
+
 		_state = ResState::LOADING;
 
 		ShaderID it_1 = LoadShader(_name, VERTEX_SHADER);
@@ -108,7 +111,10 @@ namespace GZJ_ENGINE {
 	}
 	void GZJShader::Unload()
 	{
-		glDeleteProgram(_id);
+		if (_state != ResState::LOADED)
+			return;
+
+		//glDeleteProgram(_id);
 
 		_state = ResState::UNLOAD;
 	}

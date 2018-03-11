@@ -33,6 +33,10 @@ namespace GZJ_ENGINE {
 		/** 卸载资源
 		*/
 		virtual void Unload() = 0;
+
+		/** 设置资源状态
+		*/
+		void SetState(ResState state);
 		
 	};
 }

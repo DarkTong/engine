@@ -33,6 +33,7 @@ namespace GZJ_ENGINE {
 	public:
 		GZJShaderManager() { 
 			assert(_instance == nullptr);
+			_resRoot = ENGINE_ROOT_PATH + "\\src\\shader";
 		};
 		~GZJShaderManager() {};
 

@@ -81,7 +81,7 @@ int main() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	win.Close();
-
+	std::cout << shader.use_count() << std::endl;
 	shaderMgrPtr->ShutDown();
 
 	return 0;

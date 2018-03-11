@@ -39,7 +39,14 @@ namespace GZJ_ENGINE {
 	void GZJResourceManager::UnLoadAll()
 	{
 		for (auto it = resMap.begin(); it != resMap.end(); ++it)
-			it->second->Unload();
+		{
+			std::cout << it->first << std::endl;
+			if(resMap[it->first] != nullptr)
+				it->second->Unload();
+			else
+				std::cout << "error shader unloadAll nullptr" << std::endl;
+		}
+		resMap.clear();
 	}
 	void GZJResourceManager::UnLoadByName(const String & name)
 	{

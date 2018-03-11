@@ -5,7 +5,7 @@ namespace GZJ_ENGINE {
 
 	GZJMeshManager::GZJMeshManager()
 	{
-		GZJResourceManager::_resRoot = MESH_ROOT_PATH;
+		GZJResourceManager::_resRoot = ENGINE_ROOT_PATH + "\\mesh";
 	}
 
 	GZJMeshManager::~GZJMeshManager(){}

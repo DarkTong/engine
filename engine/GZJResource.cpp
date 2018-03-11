@@ -8,5 +8,10 @@ namespace GZJ_ENGINE {
 		_path = manager->GetResRoot() + "\\" + name;
 	}
 
+	void GZJResource::SetState(ResState state)
+	{
+		_state = state;
+	}
+
 }
 
