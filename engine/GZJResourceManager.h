@@ -15,6 +15,9 @@ namespace GZJ_ENGINE {
 		GZJResourceManager();
 		~GZJResourceManager();
 	protected:
+		/** 管理自身的智能指针
+		*/
+		GZJResourceManagerPtr self;
 		/** 根据资源名存储资源
 		*/
 		ResourceMap resMap;
@@ -72,6 +75,14 @@ namespace GZJ_ENGINE {
 		@param 资源路径
 		*/
 		String GetResRoot();
+
+		/** 获取下一个资源句柄
+		*/
+		ResourceHandle GetNextHandle();
+
+		/** 获取自身的智能指针
+		*/
+		GZJResourceManagerPtr GetSelf() const;
 
 	protected:
 		// 对内接口

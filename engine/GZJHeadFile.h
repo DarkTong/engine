@@ -2,3 +2,5 @@
 #include "GZJTime.h"
 #include "GZJRenderStatic.h"
 #include "GZJShaderManager.h"
+#include "GZJModelManager.h"
+#include "GZJMeshManager.h"

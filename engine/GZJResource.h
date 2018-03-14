@@ -22,9 +22,9 @@ namespace GZJ_ENGINE {
 		ResState _state;
 
 	public:
-		///** 准备资源来准备加载
-		//*/
-		//virtual void Prepare( ... ) = 0;
+		/** 准备资源来准备加载
+		*/
+		void Prepare();
 
 		/** 加载资源
 		*/
@@ -38,6 +38,9 @@ namespace GZJ_ENGINE {
 		*/
 		void SetState(ResState state);
 		
+		/** 获取资源状态
+		*/
+		ResState GetState() const;
 	};
 }
 #endif // !_GZJ_RESOURCE_

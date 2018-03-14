@@ -1,7 +1,11 @@
 #include "GZJResourceManager.h"
 
 namespace GZJ_ENGINE {
-	GZJResourceManager::GZJResourceManager(){}
+	GZJResourceManager::GZJResourceManager(){
+		self = GZJResourceManagerPtr(this);
+
+		resHandle = 1;
+	}
 	GZJResourceManager::~GZJResourceManager()
 	{
 	}
@@ -47,6 +51,7 @@ namespace GZJ_ENGINE {
 				std::cout << "error shader unloadAll nullptr" << std::endl;
 		}
 		resMap.clear();
+		resHandleMap.clear();
 	}
 	void GZJResourceManager::UnLoadByName(const String & name)
 	{
@@ -60,6 +65,14 @@ namespace GZJ_ENGINE {
 	String GZJResourceManager::GetResRoot()
 	{
 		return _resRoot;
+	}
+	ResourceHandle GZJResourceManager::GetNextHandle()
+	{
+		return resHandle;
+	}
+	GZJResourceManagerPtr GZJResourceManager::GetSelf() const
+	{
+		return self;
 	}
 }
 

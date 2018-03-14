@@ -131,6 +131,8 @@
     <ClInclude Include="GZJHeadFile.h" />
     <ClInclude Include="GZJMesh.h" />
     <ClInclude Include="GZJMeshManager.h" />
+    <ClInclude Include="GZJModel.h" />
+    <ClInclude Include="GZJModelManager.h" />
     <ClInclude Include="GZJRender.h" />
     <ClInclude Include="GZJRenderStatic.h" />
     <ClInclude Include="GZJRenderUtil.h" />
@@ -148,6 +150,8 @@
     <ClCompile Include="..\third\src\glad.c" />
     <ClCompile Include="GZJMesh.cpp" />
     <ClCompile Include="GZJMeshManager.cpp" />
+    <ClCompile Include="GZJModel.cpp" />
+    <ClCompile Include="GZJModelManager.cpp" />
     <ClCompile Include="GZJRenderStatic.cpp" />
     <ClCompile Include="GZJRequire.cpp" />
     <ClCompile Include="GZJResource.cpp" />

@@ -75,6 +75,12 @@
     <ClInclude Include="GZJMeshManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJModel.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJModelManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -117,6 +123,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJMesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJModel.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJModelManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

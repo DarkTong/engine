@@ -11,6 +11,8 @@ using namespace GZJ_ENGINE;
 GZJWindow win;
 GZJTimePtr time = GZJTime::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
+GZJMeshManagerPtr meshMgrPtr;
+//GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
 //GZJRenderStaticPtr renderStaitc = GZJRenderStatic::GetInstance();
 
 DWORD next_game_tick = GetTickCount();// 返回当前的系统已经运行的毫秒数
@@ -22,43 +24,54 @@ void display_game();
 
 // ------------- vertices ------------------------
 
-float vertices[] = {
-	-0.5f, -0.5f, 0.0f, // left  
-	0.5f, -0.5f, 0.0f, // right 
-	0.0f,  0.5f, 0.0f  // top   
+float verticess[] = {
+	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// left  
+	0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// right 
+	0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// top   
 };
+Vertex vertice;
+//unsigned int indice[] = {
+//	0, 1, 2,
+//};
 unsigned int VAO, VBO;
 GZJShaderPtr shader;
+GZJMeshPtr mesh;
 
 
 int main() {
 	win.InitWindow();
 	win.BuildWindow();
 	shaderMgrPtr->StartUp();
+	meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
+	meshMgrPtr->StartUp();
 
 	// 临时 ---------------- create shader program ----------
 	// build and compile our shader program
 	// ------------------------------------
 
 	shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("easy_1"));
+	mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
+	Vertices vertices;
+	Vertex vertex1, vertex2, vertex3;
+	vertex1.position = Vector3(-0.5f, -0.5f, 0.0f);
+	vertex1.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
+	vertex2.position = Vector3(0.5f, -0.5f, 0.0f);
+	vertex2.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	glBindVertexArray(VAO);
+	vertex3.position = Vector3(0.0f, 0.5f, 0.0f);
+	vertex3.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	vertices.push_back(vertex1);
+	vertices.push_back(vertex2);
+	vertices.push_back(vertex3);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	Indices indice({0,1,2,});
+	Textures tex;
+	mesh->Prepare(vertices, indice, tex);
 
-	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-	glBindVertexArray(0);
+	mesh->Load();
+	
 
 
 	while (!glfwWindowShouldClose(win.GetWindow()) && game_is_running)
@@ -83,6 +96,8 @@ int main() {
 	win.Close();
 	std::cout << shader.use_count() << std::endl;
 	shaderMgrPtr->ShutDown();
+	std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
+	meshMgrPtr->ShutDown();
 
 	return 0;
 }
@@ -95,9 +110,10 @@ void display_game() {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	shader->Use();
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3); 
+	//shader->Use();
+	//glBindVertexArray(VAO);
+	//glDrawArrays(GL_TRIANGLES, 0, 3); 
+	mesh->Draw(shader);
 
 	//renderStaitc->Render();
 }

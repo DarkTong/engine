@@ -40,12 +40,18 @@ namespace GZJ_ENGINE {
 		// 1. 从文件路径中获取顶点/片段着色器
 		std::ifstream file;
 		std::stringstream stream;
+		String path;
 		// 保证ifstream对象可以抛出异常：
 		file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 		try
 		{
+			if (type == ShaderType::VERTEX_SHADER)
+				path = _path + ".vs";
+			else if (type == ShaderType::FRAGMENT_SHADER)
+				path = _path + ".fs";
+			/*std::cout << "path:" << path << std::endl;*/
 			// 打开文件
-			file.open(_path);
+			file.open(path);
 			// 读取文件的缓冲内容到数据流中
 			stream.clear();
 			stream.str("");

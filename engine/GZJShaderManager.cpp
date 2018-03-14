@@ -20,6 +20,7 @@ namespace GZJ_ENGINE {
 	{
 		UnLoadAll();
 		_nameSet.clear();
+		self = nullptr;
 	}
 
 	void GZJShaderManager::PrepareAll()
@@ -28,12 +29,13 @@ namespace GZJ_ENGINE {
 		GZJResourcePtr _ptr;
 		for (auto it = _nameSet.begin(); it != _nameSet.end(); ++it) {
 			CreateRes(*it);
+			resMap[*it]->Prepare();
 		}
 	}
 	
 	GZJResource * GZJShaderManager::createImp(const String & name)
 	{
-		GZJResourceManagerPtr tmp = std::dynamic_pointer_cast<GZJResourceManager>(_instance);
+		GZJResourceManagerPtr tmp = std::dynamic_pointer_cast<GZJResourceManager>(self);
 		return (new GZJShader(tmp, name, resHandle++));
 	}
 

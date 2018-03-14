@@ -8,9 +8,19 @@ namespace GZJ_ENGINE {
 		_path = manager->GetResRoot() + "\\" + name;
 	}
 
+	void GZJResource::Prepare()
+	{
+		_state = ResState::UNLOAD;
+	}
+
 	void GZJResource::SetState(ResState state)
 	{
 		_state = state;
+	}
+
+	ResState GZJResource::GetState() const
+	{
+		return _state;
 	}
 
 }

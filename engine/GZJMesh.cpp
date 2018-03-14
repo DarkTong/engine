@@ -8,17 +8,23 @@ namespace GZJ_ENGINE {
 		
 		// 临时处理
 		_path = manager->GetResRoot() + "\\" + name;
+		_state = ResState::UNPREPARE;
 	}
 	void GZJMesh::Prepare(Vertices ver, Indices ind, Textures tex)
 	{
 		vertices = ver;
 		indices = ind;
 		textures = tex;
+		std::cout << vertices.size() << " "
+			<< indices.size() << " " 
+			<< textures.size() << std::endl;
 		_state = ResState::UNLOAD;
 	}
 	void GZJMesh::Load()
 	{
 		if (_state == ResState::UNLOAD) {
+			std::cout << "OK!!!" << std::endl;
+			std::cout << vertices.size() << std::endl;
 			glGenVertexArrays(1, &VAO);
 			glGenBuffers(1, &VBO);
 			glGenBuffers(1, &EBO);
@@ -40,8 +46,8 @@ namespace GZJ_ENGINE {
 			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
 			// 贴图位置
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+			 glEnableVertexAttribArray(2);
+			 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 
 			glBindVertexArray(0);
 
@@ -66,6 +72,8 @@ namespace GZJ_ENGINE {
 
 
 			// 渲染
+			//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;
+			shader->Use();
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);

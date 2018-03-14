@@ -66,10 +66,14 @@ namespace GZJ_ENGINE {
 	class GZJTextureManager;
 	class GZJMesh;
 	class GZJMeshManager;
+	class GZJModel;
+	class GZJModelManager;
+
 	class GZJTools;
 
 	template<typename T> using SharedPtr = std::shared_ptr<T>;
 	//template<typename T> using MakeShared = std::make_shared<T>;
+	#define MakeShared std::make_shared
 	template<typename T> using WeakShared = std::weak_ptr<T>;
 // #define SharedPtr std::shared_ptr
 
@@ -85,6 +89,8 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJResourceGroupManager>		GZJResourceGroupManagerPtr;
 	typedef SharedPtr<GZJMesh>						GZJMeshPtr;
 	typedef SharedPtr<GZJMeshManager>				GZJMeshManagerPtr;
+	typedef SharedPtr<GZJModel>						GZJModelPtr;
+	typedef SharedPtr<GZJModelManager>				GZJModelManagerPtr;
 
 
 	// -------- common function --------

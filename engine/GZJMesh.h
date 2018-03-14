@@ -4,6 +4,7 @@
 #include "GZJRequire.h"
 #include "GZJResource.h"
 #include "GZJResourceManager.h"
+#include "GZJShader.h"
 
 namespace GZJ_ENGINE {
 	/** 渲染的单元组件，具备一次渲染基本的东西
