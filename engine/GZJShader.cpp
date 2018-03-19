@@ -1,8 +1,11 @@
 #include "GZJShader.h"
 
 namespace GZJ_ENGINE {
+	
+
 	void GZJShader::Init()
 	{
+		dataMap.clear();
 	}
 
 	void GZJShader::CheckCompliceErrors(ShaderID id, ShaderType type)
@@ -33,6 +36,7 @@ namespace GZJ_ENGINE {
 	GZJShader::GZJShader(GZJResourceManagerPtr manager, const String & name, ResourceHandle handle)
 		:GZJResource(manager, name, handle)
 	{
+		Init();
 	}
 
 	String GZJShader::ReadSrc(const String & name, ShaderType type)
@@ -115,33 +119,46 @@ namespace GZJ_ENGINE {
 
 		_state = ResState::LOADED;
 	}
+
 	void GZJShader::Unload()
 	{
 		if (_state != ResState::LOADED)
 			return;
 
 		//glDeleteProgram(_id);
+		dataMap.clear();
 
 		_state = ResState::UNLOAD;
 	}
+
 	String GZJShader::GetName()
 	{
 		return _name;
 	}
+
+	ShaderID GZJShader::GetShaderID()
+	{
+		return _id;
+	}
+
 	void GZJShader::Use() const
 	{
 		glUseProgram(_id);
 	}
+
 	void GZJShader::SetBool(const String & name, bool value) const
 	{
 		glUniform1i(glGetUniformLocation(_id, name.c_str()), (int)value);
 	}
+
 	void GZJShader::SetInt(const String & name, int value) const
 	{
 		glUniform1i(glGetUniformLocation(_id, name.c_str()), value);
 	}
+
 	void GZJShader::SetFloat(const String & name, float value) const
 	{
 		glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 	}
+
 }

@@ -27,6 +27,60 @@ namespace GZJ_ENGINE {
 		meshMgr.UnLoadAll();
 	}
 
+	void GZJModel::Draw()
+	{
+		if (shader == nullptr)
+		{
+			std::cout << "没有设置shader程序，请使用SetShader!!" << std::endl;
+			ERROR;
+		}
+		SetShaderData();
+		shader->Use();
+		meshMgr.DrawAll();
+	}
+
+	void GZJModel::SetShader(GZJShaderPtr shader)
+	{
+		dataVec1.clear();
+		dataVec2.clear();
+		dataVec3.clear();
+		dataMat4.clear();
+		this->shader = shader;
+	}
+
+	void GZJModel::SetShaderData()
+	{
+		unsigned int tloc = 0;
+		// vec1参数
+		for (auto it = dataVec1.begin(); it != dataVec1.end(); ++it)
+		{
+			tloc = glGetUniformLocation(shader->GetShaderID(),
+				ShaderDataStr[it->first].c_str());
+			glUniform1f(tloc, it->second);
+		}
+		// vec2参数
+		for (auto it = dataVec2.begin(); it != dataVec2.end(); ++it)
+		{
+			tloc = glGetUniformLocation(shader->GetShaderID(),
+				ShaderDataStr[it->first].c_str());
+			glUniform2fv(tloc, 1, glm::value_ptr(it->second));
+		}
+		// vec3参数
+		for (auto it = dataVec3.begin(); it != dataVec3.end(); ++it)
+		{
+			tloc = glGetUniformLocation(shader->GetShaderID(),
+				ShaderDataStr[it->first].c_str());
+			glUniform3fv(tloc, 1, glm::value_ptr(it->second));
+		}
+		// mat4参数
+		for (auto it = dataMat4.begin(); it != dataMat4.end(); ++it)
+		{
+			tloc = glGetUniformLocation(shader->GetShaderID(),
+				ShaderDataStr[it->first].c_str());
+			glUniformMatrix4fv(tloc, 1, GL_FALSE, glm::value_ptr(it->second));
+		}
+	}
+
 	void GZJModel::ProcessNode(aiNode * node, const aiScene * scene)
 	{
 		// 处理节点所有的网格（如果有的话）
@@ -82,6 +136,50 @@ namespace GZJ_ENGINE {
 		//	}
 
 		meshPtr->Prepare(vertices, indices, textures);
+	}
+	void GZJModel::SetVec1(ShaderData shaderData, Vector3 vec1)
+	{
+		switch (shaderData) {
+		default:
+			std::cout << "SetVec1 不能设置参数：" << shaderData << std::endl;
+			ERROR;
+		}
+	}
+	void GZJModel::SetVec2(ShaderData shaderData, Vector3 vec2)
+	{
+		switch (shaderData) {
+		default:
+			std::cout << "SetVec2 不能设置参数：" << shaderData << std::endl;
+			ERROR;
+		}
+	}
+	void GZJModel::SetVec3(ShaderData shaderData, Vector3 vec3)
+	{
+		switch (shaderData) {
+		default:
+			std::cout << "SetVec3 不能设置参数：" << shaderData << std::endl;
+			ERROR;
+		}
+	}
+	void GZJModel::SetMat4(ShaderData shaderData, Vector4x4 mat4)
+	{
+		switch (shaderData) {
+		case ShaderData::Transform:
+			DoTransform(mat4);
+			break;
+		default:
+			std::cout << "SetMat4 不能设置参数：" << shaderData << std::endl;
+			ERROR;
+		}
+	}
+	void GZJModel::DoTransform(Vector4x4 mat4)
+	{
+		// 写数据到对应的参数内
+		auto it = dataMat4.find(ShaderData::Transform);
+		if (it == dataMat4.end())
+			dataMat4.insert(Pair<unsigned int, Vector4x4>(Transform, mat4));
+		else
+			dataMat4[ShaderData::Transform] = mat4;
 	}
 }
 

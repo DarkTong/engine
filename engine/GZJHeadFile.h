@@ -1,5 +1,6 @@
 #include "GZJWindow.h"
 #include "GZJTime.h"
+#include "GZJTransform.h"
 #include "GZJRenderStatic.h"
 #include "GZJShaderManager.h"
 #include "GZJModelManager.h"

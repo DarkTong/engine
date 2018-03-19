@@ -81,6 +81,15 @@
     <ClInclude Include="GZJModelManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJCamera.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTransformData.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTransform.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -129,6 +138,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJModelManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJCamera.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTransform.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

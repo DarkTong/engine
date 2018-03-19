@@ -72,7 +72,7 @@ int main() {
 
 	mesh->Load();
 	
-
+	GZJTransform trans;
 
 	while (!glfwWindowShouldClose(win.GetWindow()) && game_is_running)
 	{

@@ -65,10 +65,12 @@ namespace GZJ_ENGINE {
 		/** 卸载定点数据
 		*/
 		void Unload();
+		
 		/** 渲染
 		@param 渲染程序
 		*/
 		void Draw(GZJShaderPtr shader);
+
 	};
 }
 #endif // __GZJ_MESH__

@@ -4,6 +4,7 @@
 #include "GZJRequire.h"
 #include "GZJResourceManager.h"
 #include "GZJMesh.h"
+#include "GZJShader.h"
 
 namespace GZJ_ENGINE {
 	class GZJMeshManager :public GZJResourceManager 
@@ -27,6 +28,13 @@ namespace GZJ_ENGINE {
 		/** 准备所有资源
 		*/
 		void PrepareAll();
+	public:
+		/* 功能性接口，特有的
+		*/
+
+		/** 渲染全部mesh
+		*/
+		void DrawAll(GZJShaderPtr shader = nullptr);
 	};
 }
 

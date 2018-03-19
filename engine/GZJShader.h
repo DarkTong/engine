@@ -12,6 +12,40 @@ namespace GZJ_ENGINE {
 		FRAGMENT_SHADER,
 	};
 
+	enum ShaderData {
+		Transform,
+		TexCoord,
+		DiffuseTexCoord1,
+		SpecularTexCoord1,
+		AmbientLight,
+		AmbientStrong,
+		DiffuseLight,
+		DiffuseStrong,
+		SpecularLight,
+		SpecularStrong,
+	};
+
+	/** ShaderData的字符串表示
+	*/
+	const std::vector<String> ShaderDataStr = {
+		"transform",
+
+		"texcoord",
+		"diffuseTexCoord1",
+		"specularTexCoord1",
+
+		"ambientLight",
+		"ambientStrong",
+
+		"diffuseLight",
+		"diffuseStrong",
+
+		"specularLight",
+		"specularStrong",
+	};
+
+	typedef std::map<String, unsigned int> ShaderDataMap;
+
 	class GZJShader :public GZJResource{
 
 	public:
@@ -28,6 +62,9 @@ namespace GZJ_ENGINE {
 		*/
 		String _name;
 
+		/** 着色器数据
+		*/
+		ShaderDataMap dataMap;
 	private:
 		/** 构造shader程序
 		*/
@@ -67,6 +104,10 @@ namespace GZJ_ENGINE {
 		*/
 		String GetName();
 
+		/** 获取着色器ID
+		*/
+		ShaderID GetShaderID();
+
 		/** 着色器使用
 		*/
 		void Use() const;
@@ -88,7 +129,6 @@ namespace GZJ_ENGINE {
 		@param 修改值
 		*/
 		void SetFloat(const String& name, float value) const;
-
 	};
 
 }

@@ -127,6 +127,7 @@
     <ClInclude Include="..\third\include\GLFW\glfw3.h" />
     <ClInclude Include="..\third\include\GLFW\glfw3native.h" />
     <ClInclude Include="..\third\include\KHR\khrplatform.h" />
+    <ClInclude Include="GZJCamera.h" />
     <ClInclude Include="GZJCommon.h" />
     <ClInclude Include="GZJHeadFile.h" />
     <ClInclude Include="GZJMesh.h" />
@@ -144,10 +145,13 @@
     <ClInclude Include="GZJShaderManager.h" />
     <ClInclude Include="GZJTime.h" />
     <ClInclude Include="GZJTools.h" />
+    <ClInclude Include="GZJTransform.h" />
+    <ClInclude Include="GZJTransformData.h" />
     <ClInclude Include="GZJWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third\src\glad.c" />
+    <ClCompile Include="GZJCamera.cpp" />
     <ClCompile Include="GZJMesh.cpp" />
     <ClCompile Include="GZJMeshManager.cpp" />
     <ClCompile Include="GZJModel.cpp" />
@@ -161,6 +165,7 @@
     <ClCompile Include="GZJShaderManager.cpp" />
     <ClCompile Include="GZJTime.cpp" />
     <ClCompile Include="GZJTools.cpp" />
+    <ClCompile Include="GZJTransform.cpp" />
     <ClCompile Include="GZJWindow.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

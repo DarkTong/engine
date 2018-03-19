@@ -32,6 +32,15 @@ namespace GZJ_ENGINE {
 	{
 	}
 
+	void GZJMeshManager::DrawAll(GZJShaderPtr shader)
+	{
+		for (auto it = resMap.begin(); it != resMap.end(); ++it)
+		{
+			auto itt = std::dynamic_pointer_cast<GZJMesh>(it->second);
+			itt->Draw(shader);
+		}
+	}
+
 
 }
 
