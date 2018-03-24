@@ -98,6 +98,7 @@ namespace GZJ_ENGINE {
 	// -------- common value --------
 	const String ENGINE_ROOT_PATH		= "F:\\±œ“µ…Ëº∆2\\engine";
 	const String SHADER_ROOT_PATH		= "\\shader";
+	const String ENGINE_SRC_ROOT_PATH	= ENGINE_ROOT_PATH + "\\src";
 
 }
 

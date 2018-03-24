@@ -4,7 +4,7 @@ namespace GZJ_ENGINE {
 
 	GZJModelManager::GZJModelManager()
 	{
-		_resRoot = ENGINE_ROOT_PATH + "\\model";
+		_resRoot = ENGINE_SRC_ROOT_PATH + "\\model";
 	}
 
 	GZJModelManager::~GZJModelManager()

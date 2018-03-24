@@ -4,7 +4,7 @@ namespace GZJ_ENGINE {
 	GZJModel::GZJModel(GZJResourceManagerPtr manager, const String & name, ResourceHandle handle)
 		:GZJResource(manager, name, handle)
 	{
-		_path = manager->GetResRoot() + "\\" + name;
+		_path = manager->GetResRoot() + "\\" + name + "\\" + name + ".obj";
 		_state = ResState::UNPREPARE;
 	}
 
@@ -36,7 +36,7 @@ namespace GZJ_ENGINE {
 		}
 		SetShaderData();
 		shader->Use();
-		meshMgr.DrawAll();
+		meshMgr.DrawAll(shader);
 	}
 
 	void GZJModel::SetShader(GZJShaderPtr shader)
@@ -137,6 +137,7 @@ namespace GZJ_ENGINE {
 
 		meshPtr->Prepare(vertices, indices, textures);
 	}
+	
 	void GZJModel::SetVec1(ShaderData shaderData, Vector3 vec1)
 	{
 		switch (shaderData) {

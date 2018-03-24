@@ -12,6 +12,8 @@ GZJWindow win;
 GZJTimePtr time = GZJTime::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
 GZJMeshManagerPtr meshMgrPtr;
+GZJModelManagerPtr modelMgrPtr;
+GZJModelPtr modelPtr;
 //GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
 //GZJRenderStaticPtr renderStaitc = GZJRenderStatic::GetInstance();
 
@@ -42,37 +44,41 @@ int main() {
 	win.InitWindow();
 	win.BuildWindow();
 	shaderMgrPtr->StartUp();
-	meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
-	meshMgrPtr->StartUp();
+	//meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
+	modelMgrPtr = std::dynamic_pointer_cast<GZJModelManager>((new GZJModelManager())->GetSelf());
+	//meshMgrPtr->StartUp();
+	modelMgrPtr->StartUp();
 
 	// ¡Ÿ ± ---------------- create shader program ----------
 	// build and compile our shader program
 	// ------------------------------------
 
 	shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("easy_1"));
-	mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
-	Vertices vertices;
-	Vertex vertex1, vertex2, vertex3;
-	vertex1.position = Vector3(-0.5f, -0.5f, 0.0f);
-	vertex1.normal = Vector3(0.0f, 0.0f, 0.0f);
+	//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
+	//Vertices vertices;
+	//Vertex vertex1, vertex2, vertex3;
+	//vertex1.position = Vector3(-0.5f, -0.5f, 0.0f);
+	//vertex1.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	vertex2.position = Vector3(0.5f, -0.5f, 0.0f);
-	vertex2.normal = Vector3(0.0f, 0.0f, 0.0f);
+	//vertex2.position = Vector3(0.5f, -0.5f, 0.0f);
+	//vertex2.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	vertex3.position = Vector3(0.0f, 0.5f, 0.0f);
-	vertex3.normal = Vector3(0.0f, 0.0f, 0.0f);
+	//vertex3.position = Vector3(0.0f, 0.5f, 0.0f);
+	//vertex3.normal = Vector3(0.0f, 0.0f, 0.0f);
 
-	vertices.push_back(vertex1);
-	vertices.push_back(vertex2);
-	vertices.push_back(vertex3);
+	//vertices.push_back(vertex1);
+	//vertices.push_back(vertex2);
+	//vertices.push_back(vertex3);
 
-	Indices indice({0,1,2,});
-	Textures tex;
-	mesh->Prepare(vertices, indice, tex);
+	//Indices indice({0,1,2,});
+	//Textures tex;
+	//mesh->Prepare(vertices, indice, tex);
 
-	mesh->Load();
-	
-	GZJTransform trans;
+	//mesh->Load();
+
+	modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("nanosuit"));
+
+	modelPtr->Load();
 
 	while (!glfwWindowShouldClose(win.GetWindow()) && game_is_running)
 	{
@@ -97,7 +103,8 @@ int main() {
 	std::cout << shader.use_count() << std::endl;
 	shaderMgrPtr->ShutDown();
 	std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
-	meshMgrPtr->ShutDown();
+	//meshMgrPtr->ShutDown();
+	modelMgrPtr->ShutDown();
 
 	return 0;
 }
@@ -113,7 +120,9 @@ void display_game() {
 	//shader->Use();
 	//glBindVertexArray(VAO);
 	//glDrawArrays(GL_TRIANGLES, 0, 3); 
-	mesh->Draw(shader);
+	//mesh->Draw(shader);
+	modelPtr->SetShader(shader);
+	modelPtr->Draw();
 
 	//renderStaitc->Render();
 }
