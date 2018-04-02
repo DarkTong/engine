@@ -15,7 +15,13 @@ namespace GZJ_ENGINE {
 		//LocalEulerAngles,
 		Up,
 		Front,
-		Left,
+		Right,
+
+		WorldUp,
+		WorldFront,
+
+		LocalToWorld,
+		WorldToLocal,
 	};
 
     class GZJTransform{
@@ -31,7 +37,7 @@ namespace GZJ_ENGINE {
 		static const Vector3 FRONT;
 		/** (1,0,0)
 		*/
-		static const Vector3 LEFT;
+		static const Vector3 RIGHT;
 		/** (0,1,0)
 		*/
 		static const Vector3 UP;
@@ -55,7 +61,12 @@ namespace GZJ_ENGINE {
         */
         Vector3 _up;         // y
         Vector3 _front;      // z
-        Vector3 _left;       // x
+        Vector3 _right;       // x
+
+		/** 世界方向
+		*/
+		Vector3 _worldUp;
+		Vector3 _worldFront;
 
         Vector4x4 LocalToWorldMatrix; //(0,0,0)->(x,y,z)
         Vector4x4 WordlToLocalMatrix;
@@ -81,6 +92,10 @@ namespace GZJ_ENGINE {
          * param : 属性名
         */
 		Vector3 GetVector3(TransformData param);
+
+		/** 获取矩阵
+		*/
+		Vector4x4 GetMatrix(TransformData param);
 
     private:
 		/** 缩放操作

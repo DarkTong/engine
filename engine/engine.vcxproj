@@ -134,6 +134,7 @@
     <ClInclude Include="GZJMeshManager.h" />
     <ClInclude Include="GZJModel.h" />
     <ClInclude Include="GZJModelManager.h" />
+    <ClInclude Include="GZJMove.h" />
     <ClInclude Include="GZJRender.h" />
     <ClInclude Include="GZJRenderStatic.h" />
     <ClInclude Include="GZJRenderUtil.h" />
@@ -156,6 +157,7 @@
     <ClCompile Include="GZJMeshManager.cpp" />
     <ClCompile Include="GZJModel.cpp" />
     <ClCompile Include="GZJModelManager.cpp" />
+    <ClCompile Include="GZJMove.cpp" />
     <ClCompile Include="GZJRenderStatic.cpp" />
     <ClCompile Include="GZJRequire.cpp" />
     <ClCompile Include="GZJResource.cpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="GZJResourceManager.cpp" />
     <ClCompile Include="GZJShader.cpp" />
     <ClCompile Include="GZJShaderManager.cpp" />
+    <ClCompile Include="GZJTest.cpp" />
     <ClCompile Include="GZJTime.cpp" />
     <ClCompile Include="GZJTools.cpp" />
     <ClCompile Include="GZJTransform.cpp" />

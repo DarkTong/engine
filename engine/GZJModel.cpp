@@ -6,6 +6,9 @@ namespace GZJ_ENGINE {
 	{
 		_path = manager->GetResRoot() + "\\" + name + "\\" + name + ".obj";
 		_state = ResState::UNPREPARE;
+
+		// 临时 获取local2world矩阵
+		SetMat4(Shader_LocalToWorld, transform.GetMatrix(LocalToWorld));
 	}
 
 	void GZJModel::Load()
@@ -136,9 +139,10 @@ namespace GZJ_ENGINE {
 		//	}
 
 		meshPtr->Prepare(vertices, indices, textures);
+		meshPtr->Load();
 	}
 	
-	void GZJModel::SetVec1(ShaderData shaderData, Vector3 vec1)
+	void GZJModel::SetVec1(ShaderData shaderData, const float& vec1)
 	{
 		switch (shaderData) {
 		default:
@@ -146,7 +150,7 @@ namespace GZJ_ENGINE {
 			ERROR;
 		}
 	}
-	void GZJModel::SetVec2(ShaderData shaderData, Vector3 vec2)
+	void GZJModel::SetVec2(ShaderData shaderData, const Vector2& vec2)
 	{
 		switch (shaderData) {
 		default:
@@ -154,7 +158,7 @@ namespace GZJ_ENGINE {
 			ERROR;
 		}
 	}
-	void GZJModel::SetVec3(ShaderData shaderData, Vector3 vec3)
+	void GZJModel::SetVec3(ShaderData shaderData, const Vector3& vec3)
 	{
 		switch (shaderData) {
 		default:
@@ -162,25 +166,33 @@ namespace GZJ_ENGINE {
 			ERROR;
 		}
 	}
-	void GZJModel::SetMat4(ShaderData shaderData, Vector4x4 mat4)
+	void GZJModel::SetMat4(ShaderData shaderData, const Vector4x4& mat4)
 	{
 		switch (shaderData) {
 		case ShaderData::Transform:
-			DoTransform(mat4);
+			//DoTransform(mat4);
+			break;
+		case Shader_LocalToWorld:
 			break;
 		default:
 			std::cout << "SetMat4 不能设置参数：" << shaderData << std::endl;
 			ERROR;
 		}
-	}
-	void GZJModel::DoTransform(Vector4x4 mat4)
-	{
-		// 写数据到对应的参数内
-		auto it = dataMat4.find(ShaderData::Transform);
-		if (it == dataMat4.end())
-			dataMat4.insert(Pair<unsigned int, Vector4x4>(Transform, mat4));
+
+		auto it = dataMat4.find(shaderData);
+		if(it == dataMat4.end())
+			dataMat4.insert(Pair<unsigned int, Vector4x4>(shaderData, mat4));
 		else
-			dataMat4[ShaderData::Transform] = mat4;
+			dataMat4[shaderData] = mat4;
 	}
+	//void GZJModel::DoTransform(Vector4x4 mat4)
+	//{
+	//	// 写数据到对应的参数内
+	//	auto it = dataMat4.find(ShaderData::Transform);
+	//	if (it == dataMat4.end())
+	//		dataMat4.insert(Pair<unsigned int, Vector4x4>(Transform, mat4));
+	//	else
+	//		dataMat4[ShaderData::Transform] = mat4;
+	//}
 }
 

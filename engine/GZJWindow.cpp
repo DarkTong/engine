@@ -64,4 +64,18 @@ namespace GZJ_ENGINE {
 		glfwTerminate();
 	}
 
+	int GZJWindow::GetInt(WindowData param)
+	{
+		switch (param)
+		{
+		case GZJ_ENGINE::Win_Width:
+			return SCR_WIDTH;
+		case GZJ_ENGINE::Win_Height:
+			return SCR_HEIGHT;
+		default:
+			std::cout << "GZJWindow GetInt ²ÎÊý´íÎó!!!" << std::endl;
+			assert(false);
+		}
+	}
+
 }

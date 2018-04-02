@@ -23,6 +23,11 @@ namespace GZJ_ENGINE {
 		DiffuseStrong,
 		SpecularLight,
 		SpecularStrong,
+
+		// 坐标相关
+		Shader_LocalToWorld,
+		Shader_WorldToView,
+		Shader_ViewToProjection,
 	};
 
 	/** ShaderData的字符串表示
@@ -129,6 +134,10 @@ namespace GZJ_ENGINE {
 		@param 修改值
 		*/
 		void SetFloat(const String& name, float value) const;
+
+		/** 设置相关的矩阵数据
+		*/
+		void SetMatrix(ShaderData param, Vector4x4 data);
 	};
 
 }

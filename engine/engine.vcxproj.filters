@@ -90,6 +90,9 @@
     <ClInclude Include="GZJTransform.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJMove.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -144,6 +147,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJTransform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJMove.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

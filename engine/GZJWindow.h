@@ -3,6 +3,10 @@
 #include "string"
 
 namespace GZJ_ENGINE {
+	enum WindowData {
+		Win_Width,
+		Win_Height,
+	};
 
 	class GZJWindow {
 
@@ -35,5 +39,10 @@ namespace GZJ_ENGINE {
 		void Process();
 
 		void Close();
+
+	public:
+		/** 获取相应数据
+		*/
+		int GetInt(WindowData param);
 	};
 }

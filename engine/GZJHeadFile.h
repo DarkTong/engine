@@ -5,3 +5,4 @@
 #include "GZJShaderManager.h"
 #include "GZJModelManager.h"
 #include "GZJMeshManager.h"
+#include "GZJCamera.h"

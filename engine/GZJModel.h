@@ -6,6 +6,7 @@
 #include <assimp/postprocess.h>
 
 #include "GZJRequire.h"
+#include "GZJTransform.h"
 #include "GZJResource.h"
 #include "GZJResourceManager.h"
 #include "GZJMeshManager.h"
@@ -40,6 +41,10 @@ namespace GZJ_ENGINE{
 		std::map<unsigned int, Vector2> dataVec2;
 		std::map<unsigned int, Vector3> dataVec3;
 		std::map<unsigned int, Vector4x4> dataMat4;
+
+		/** 位置信息
+		*/
+		GZJTransform transform;
 
 
 	public:
@@ -88,15 +93,15 @@ namespace GZJ_ENGINE{
 	public:
 		/* 对外的设置Shader数据接口
 		*/
-		void SetVec1(ShaderData shaderData, Vector3 vec1);
-		void SetVec2(ShaderData shaderData, Vector3 vec2);
-		void SetVec3(ShaderData shaderData, Vector3 vec3);
-		void SetMat4(ShaderData shaderData, Vector4x4 mat4);
+		void SetVec1(ShaderData shaderData, const float& vec1);
+		void SetVec2(ShaderData shaderData, const Vector2& vec2);
+		void SetVec3(ShaderData shaderData, const Vector3& vec3);
+		void SetMat4(ShaderData shaderData, const Vector4x4& mat4);
 
 	private:
-		/** 处理各种shaderData函数
-		*/
-		void DoTransform(Vector4x4 mat4);
+		///** 处理各种shaderData函数
+		//*/
+		//void DoTransform(Vector4x4 mat4);
     };
 }
 

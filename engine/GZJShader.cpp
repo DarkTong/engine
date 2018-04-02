@@ -161,4 +161,27 @@ namespace GZJ_ENGINE {
 		glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 	}
 
+	void GZJShader::SetMatrix(ShaderData param, Vector4x4 data)
+	{
+		const unsigned none = -1;
+		unsigned int loc = -1;
+		switch (param)
+		{
+		case GZJ_ENGINE::Shader_LocalToWorld:
+			loc = glGetUniformLocation(_id, "local2world");
+			break;
+		case GZJ_ENGINE::Shader_WorldToView:
+			loc = glGetUniformLocation(_id, "world2view");
+			break;
+		case GZJ_ENGINE::Shader_ViewToProjection:
+			loc = glGetUniformLocation(_id, "view2projection");
+			break;
+		default:
+			std::cout << "GZJShader SetMatrix ²ÎÊý´íÎó!!!" << std::endl;
+			assert(false);
+		}
+		if (loc == none) return;
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
+	}
+
 }

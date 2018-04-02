@@ -4,7 +4,7 @@ namespace GZJ_ENGINE{
 	const Vector3 GZJTransform::ZERO		= Vector3(0.0f, 0.0f, 0.0f);
 	const Vector3 GZJTransform::ONE			= Vector3(1.0f, 1.0f, 1.0f);
 	const Vector3 GZJTransform::FRONT		= Vector3(0.0f, 0.0f, 1.0f);
-	const Vector3 GZJTransform::LEFT		= Vector3(1.0f, 0.0f, 0.0f);
+	const Vector3 GZJTransform::RIGHT		= Vector3(1.0f, 0.0f, 0.0f);
 	const Vector3 GZJTransform::UP			= Vector3(0.0f, 1.0f, 0.0f);
 	GZJTransform::GZJTransform()
 	{
@@ -17,7 +17,9 @@ namespace GZJ_ENGINE{
 		_localEulerAngles	= ZERO;
 		_up					= UP;
 		_front				= FRONT;
-		_left				= LEFT;
+		_right				= RIGHT;
+
+		Update();
 	}
 
 	GZJTransform::GZJTransform(Vector3 position, Vector3 rotation, Vector3 scale)
@@ -60,12 +62,16 @@ namespace GZJ_ENGINE{
 		case Front:
 			_front = data;
 			break;
-		case Left:
-			_left = data;
+		case Right:
+			_right = data;
 			break;
+		default:
+			std::cout << "GZJTransform SetVector3 参数错误!!!" << std::endl;
+			assert(false);
 		}
 		//Update();
 	}
+	
 	Vector3 GZJTransform::GetVector3(TransformData param)
 	{
 		switch (param) {
@@ -89,10 +95,30 @@ namespace GZJ_ENGINE{
 			return _up;
 		case Front:
 			return _front;
-		case Left:
-			return _left;
+		case Right:
+			return _right;
+		case WorldUp:
+			return _worldUp;
+		case WorldFront:
+			return _worldFront;
+		default:
+			std::cout << "GZJTransform GetVector3 参数错误!!!" << std::endl;
+			assert(false);
 		}
 	}
+	
+	Vector4x4 GZJTransform::GetMatrix(TransformData param) 
+	{
+		switch (param)
+		{
+		case GZJ_ENGINE::LocalToWorld:
+			return LocalToWorldMatrix;
+		default:
+			std::cout << "GZJTransform GetMatrix 参数错误!!!" << std::endl;
+			assert(false);
+		}
+	}
+
 	void GZJTransform::DoScale(Vector3 scale)
 	{
 		_scale = scale;
@@ -111,11 +137,14 @@ namespace GZJ_ENGINE{
 		LocalToWorldMatrix = Vector4x4();
 		LocalToWorldMatrix = glm::translate(LocalToWorldMatrix, _position);
 		LocalToWorldMatrix = 
-			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.x), LEFT);
+			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.x), RIGHT);
 		LocalToWorldMatrix =
 			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.z), FRONT);
 		LocalToWorldMatrix =
 			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.y), UP);
 		LocalToWorldMatrix = glm::scale(LocalToWorldMatrix, _scale);
+
+		_worldUp = Vector3(LocalToWorldMatrix * Vector4(_up, 0.0));
+		_worldFront = Vector3(LocalToWorldMatrix * Vector4(_front, 0.0));
 	}
 }
