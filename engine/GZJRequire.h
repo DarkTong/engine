@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "FastDelegate.h"
+
 #include <memory>
 #include <iostream>
 #include <fstream>
@@ -24,6 +26,16 @@
 #include <io.h> 
 
 namespace GZJ_ENGINE {
+	
+	/** 使用某些命名空间内的函数
+	*/
+	using std::cout;
+	using std::endl;
+	using fastdelegate::FastDelegate0;
+	using fastdelegate::FastDelegate1;
+	using fastdelegate::FastDelegate2;
+
+
 	//-------- 枚举 --------
 	/** 资源状态
 	*/
@@ -51,7 +63,6 @@ namespace GZJ_ENGINE {
 	typedef glm::mat3 Vector3x3;
 	typedef glm::mat4 Vector4x4;
 
-
 	class GZJTime;
 	class GZJWindow;
 	class GZJShader;
@@ -68,6 +79,12 @@ namespace GZJ_ENGINE {
 	class GZJMeshManager;
 	class GZJModel;
 	class GZJModelManager;
+	class GZJCamera;
+	class GZJMove;
+	class GZJEventSystem;
+	class GZJEvent;
+	class GZJEventParamObj;
+
 
 	class GZJTools;
 
@@ -77,6 +94,7 @@ namespace GZJ_ENGINE {
 	template<typename T> using WeakShared = std::weak_ptr<T>;
 // #define SharedPtr std::shared_ptr
 
+	// 智能指针
 	typedef SharedPtr<GZJTime>						GZJTimePtr;
 	typedef SharedPtr<GZJWindow>					GZJWindowPtr;
 	typedef SharedPtr<GZJShader>					GZJShaderPtr;
@@ -91,7 +109,11 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJMeshManager>				GZJMeshManagerPtr;
 	typedef SharedPtr<GZJModel>						GZJModelPtr;
 	typedef SharedPtr<GZJModelManager>				GZJModelManagerPtr;
+	typedef SharedPtr<GZJEventSystem>				GZJEventSystemPtr;
+	typedef SharedPtr<GZJEventParamObj>				EventParamObjPtr;
 
+	// typedef
+	typedef FastDelegate1<GZJEventParamObj> NormalDelegate;
 
 	// -------- common function --------
 

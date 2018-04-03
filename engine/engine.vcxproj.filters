@@ -93,6 +93,24 @@
     <ClInclude Include="GZJMove.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJEvent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJEventConstant.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJEventSystem.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\FastDelegate.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\FastDelegateBind.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJEventParamObj.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -153,6 +171,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJMove.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJEvent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJEventSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

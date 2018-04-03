@@ -1,3 +1,5 @@
+#include "GZJEventSystem.h"
+
 #include "GZJWindow.h"
 #include "GZJTime.h"
 #include "GZJTransform.h"

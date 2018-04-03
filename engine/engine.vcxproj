@@ -123,10 +123,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\third\include\FastDelegate.h" />
+    <ClInclude Include="..\third\include\FastDelegateBind.h" />
     <ClInclude Include="..\third\include\glad\glad.h" />
     <ClInclude Include="..\third\include\GLFW\glfw3.h" />
     <ClInclude Include="..\third\include\GLFW\glfw3native.h" />
     <ClInclude Include="..\third\include\KHR\khrplatform.h" />
+    <ClInclude Include="GZJEvent.h" />
+    <ClInclude Include="GZJEventConstant.h" />
+    <ClInclude Include="GZJEventParamObj.h" />
+    <ClInclude Include="GZJEventSystem.h" />
     <ClInclude Include="GZJCamera.h" />
     <ClInclude Include="GZJCommon.h" />
     <ClInclude Include="GZJHeadFile.h" />
@@ -152,6 +158,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third\src\glad.c" />
+    <ClCompile Include="GZJEvent.cpp" />
+    <ClCompile Include="GZJEventSystem.cpp" />
     <ClCompile Include="GZJCamera.cpp" />
     <ClCompile Include="GZJMesh.cpp" />
     <ClCompile Include="GZJMeshManager.cpp" />

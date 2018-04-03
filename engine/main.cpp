@@ -17,6 +17,7 @@ GZJMeshManagerPtr meshMgrPtr;
 GZJModelManagerPtr modelMgrPtr;
 GZJModelPtr modelPtr;
 GZJCamera mainCamera;
+GZJEventSystemPtr eventSystemPtr = GZJEventSystem::GetInstance();
 //GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
 //GZJRenderStaticPtr renderStaitc = GZJRenderStatic::GetInstance();
 
@@ -156,6 +157,6 @@ void display_game() {
 void Before_Draw()
 {
 	mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, 10));
-	mainCamera.SetVector3(CameraParam::Rotation, Vector3(0, 180, 0));
+	mainCamera.SetVector3(CameraParam::Rotation, Vector3(0, 180, 0)); 
 }
 
