@@ -10,7 +10,7 @@
 
 using namespace GZJ_ENGINE;
 
-GZJWindow win;
+GZJWindowPtr win = GZJWindow::GetInstance();
 GZJTimePtr time = GZJTime::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
 GZJMeshManagerPtr meshMgrPtr;
@@ -31,6 +31,8 @@ void Before_Draw();
 
 void update_game();
 void display_game();
+// 按键回调
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 // ------------- vertices ------------------------
 
@@ -58,8 +60,11 @@ int main() {
 	// 若不是测试基本函数，则执行渲染
 	if (!is_test_normal_func)
 	{
-		win.InitWindow();
-		win.BuildWindow();
+		win->InitWindow();
+		win->BuildWindow();
+		glfwSetKeyCallback(win->GetWindow(), key_callback);
+
+		//eventSystemPtr->StartUp();
 		shaderMgrPtr->StartUp();
 		//meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
 		modelMgrPtr = std::dynamic_pointer_cast<GZJModelManager>((new GZJModelManager())->GetSelf());
@@ -69,7 +74,9 @@ int main() {
 		// 临时 ---------------- create shader program ----------
 		// build and compile our shader program
 		// ------------------------------------
-
+		mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, -10));
+		mainCamera.moveCmp->speed = 1.0f;
+		mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
 		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("translate_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
 		//Vertices vertices;
@@ -97,7 +104,7 @@ int main() {
 
 		modelPtr->Load();
 
-		while (!glfwWindowShouldClose(win.GetWindow()) && game_is_running)
+		while (!glfwWindowShouldClose(win->GetWindow()) && game_is_running)
 		{
 
 			loops = 0;
@@ -111,14 +118,15 @@ int main() {
 
 
 
-			win.Process();
+			win->Process();
 		}
 		//renderStaitc->ClearRenderDatas();
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		win.Close();
+		//glDeleteVertexArrays(1, &VAO);
+		//glDeleteBuffers(1, &VBO);
+		win->Close();
 		std::cout << shader.use_count() << std::endl;
 		shaderMgrPtr->ShutDown();
+		//eventSystemPtr->ShutDown();
 		std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
 		//meshMgrPtr->ShutDown();
 		modelMgrPtr->ShutDown();
@@ -142,11 +150,14 @@ void display_game() {
 	Before_Draw();
 
 	Vector4x4 projection;
-	float tmp = 1.0 * win.GetInt(Win_Width) / win.GetInt(Win_Height);
+	float tmp = 1.0f * win->GetInt(Win_Width) / win->GetInt(Win_Height);
 	projection = glm::perspective(glm::radians(45.0f), tmp, 0.1f, 100.0f);
 
 	shader->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
 	shader->SetMatrix(Shader_ViewToProjection, projection);
+
+	//  临时
+	glm::mat4 trans;
 
 	modelPtr->SetShader(shader);
 	modelPtr->Draw();
@@ -156,7 +167,16 @@ void display_game() {
 
 void Before_Draw()
 {
-	mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, 10));
-	mainCamera.SetVector3(CameraParam::Rotation, Vector3(0, 180, 0)); 
+	/*mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, 10));
+	mainCamera.SetVector3(CameraParam::Rotation, Vector3(0, 180, 0)); */
 }
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	Param_Press_KeyBoard param = Param_Press_KeyBoard(
+		GZJWindow::GetInstance(), key, action);
+
+	GZJEventSystem::GetInstance()->Fire(EV_Press_KeyBoard, static_cast<const GZJEventParamObj&>(param));
+}
+
 

@@ -3,6 +3,7 @@
 
 #include "GZJRequire.h"
 #include "GZJTransform.h"
+#include "GZJMove.h"
 
 namespace GZJ_ENGINE {
 	struct CameraParam {
@@ -15,10 +16,18 @@ namespace GZJ_ENGINE {
 		/** 观察空间矩阵
 		*/
 		Vector4x4 viewMatrix;
+
 	public:
+		// 组件
+
 		/** 位置参数（不能直接设置）
 		*/
 		GZJTransform transform;
+
+		/** 移动组件
+		*/
+		GZJMovePtr moveCmp;
+
 	public:
 		/** 默认构造函数
 		*/
@@ -35,6 +44,10 @@ namespace GZJ_ENGINE {
 		/** 更新摄像机相关参数
 		*/
 		void Update();
+
+		///** 绑定摄像机相关事件
+		//*/
+		//virtual void InitEvents();
 	};
 }
 

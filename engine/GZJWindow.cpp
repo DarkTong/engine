@@ -3,6 +3,7 @@
 #include "iostream"
 
 namespace GZJ_ENGINE {
+	GZJWindowPtr GZJWindow::_instance = nullptr;
 
 	void GZJ_ENGINE::framebuffer_size_callback(GLFWwindow * window, int width, int height)
 	{

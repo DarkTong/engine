@@ -6,11 +6,14 @@ namespace GZJ_ENGINE {
 
 	GZJCamera::GZJCamera()
 	{
+		moveCmp = MakeShared<GZJMove>(&transform);
+		moveCmp->BindEvent();
 		Update();
 	}
 
 	Vector4x4 GZJCamera::LookAt()
 	{
+		Update();
 		return viewMatrix;
 	}
 
@@ -38,7 +41,7 @@ namespace GZJ_ENGINE {
 		// ¹Û²ì¿Õ¼ä¾ØÕó
 		viewMatrix = glm::lookAt(transform.GetVector3(Position),
 			transform.GetVector3(Position) + transform.GetVector3(WorldFront),
-			transform.GetVector3(WorldUp));
+			transform.GetVector3(Up));
 
 	}
 	

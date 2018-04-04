@@ -9,6 +9,16 @@ namespace GZJ_ENGINE {
 	};
 
 	class GZJWindow {
+	private:
+		static GZJWindowPtr _instance;
+	public:
+		// µ¥Àý
+		static GZJWindowPtr GetInstance() {
+			if (_instance == nullptr) {
+				_instance = std::make_shared<GZJWindow>();
+			}
+			return _instance;
+		}
 
 	private:
 		std::string WIN_NAME;

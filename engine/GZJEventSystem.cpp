@@ -26,7 +26,7 @@ namespace GZJ_ENGINE {
 		}
 	}
 
-	void GZJEventSystem::Fire(EventConstant eventId, GZJEventParamObj param)
+	void GZJEventSystem::Fire(EventConstant eventId, const GZJEventParamObj& param)
 	{
 		auto it = events.find(eventId);
 		

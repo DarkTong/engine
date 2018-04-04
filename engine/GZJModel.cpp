@@ -6,9 +6,6 @@ namespace GZJ_ENGINE {
 	{
 		_path = manager->GetResRoot() + "\\" + name + "\\" + name + ".obj";
 		_state = ResState::UNPREPARE;
-
-		// 临时 获取local2world矩阵
-		SetMat4(Shader_LocalToWorld, transform.GetMatrix(LocalToWorld));
 	}
 
 	void GZJModel::Load()
@@ -49,6 +46,9 @@ namespace GZJ_ENGINE {
 		dataVec3.clear();
 		dataMat4.clear();
 		this->shader = shader;
+
+		// 设置内部默认设置的数据
+		SetMat4(Shader_LocalToWorld, transform.GetMatrix(LocalToWorld));
 	}
 
 	void GZJModel::SetShaderData()
@@ -78,9 +78,10 @@ namespace GZJ_ENGINE {
 		// mat4参数
 		for (auto it = dataMat4.begin(); it != dataMat4.end(); ++it)
 		{
-			tloc = glGetUniformLocation(shader->GetShaderID(),
-				ShaderDataStr[it->first].c_str());
-			glUniformMatrix4fv(tloc, 1, GL_FALSE, glm::value_ptr(it->second));
+			//tloc = glGetUniformLocation(shader->GetShaderID(),
+			//	ShaderDataStr[it->first].c_str());
+			//glUniformMatrix4fv(tloc, 1, GL_FALSE, glm::value_ptr(it->second));
+			shader->SetMatrix(static_cast<ShaderData>(it->first), it->second);
 		}
 	}
 

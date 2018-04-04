@@ -8,7 +8,7 @@
 namespace GZJ_ENGINE {
 
 
-	typedef unsigned long long TargetID;
+	typedef unsigned int TargetID;
 
 	class GZJEvent {
 	private:
@@ -32,7 +32,7 @@ namespace GZJ_ENGINE {
 
 		/** 执行事件
 		*/
-		void Fire(GZJEventParamObj param);
+		void Fire(const GZJEventParamObj& param);
 
 		/** 绑定委托,有对象
 		*/

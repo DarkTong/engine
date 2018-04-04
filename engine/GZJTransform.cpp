@@ -101,6 +101,8 @@ namespace GZJ_ENGINE{
 			return _worldUp;
 		case WorldFront:
 			return _worldFront;
+		case WorldRight:
+			return _worldRight;
 		default:
 			std::cout << "GZJTransform GetVector3 ²ÎÊý´íÎó!!!" << std::endl;
 			assert(false);
@@ -146,5 +148,11 @@ namespace GZJ_ENGINE{
 
 		_worldUp = Vector3(LocalToWorldMatrix * Vector4(_up, 0.0));
 		_worldFront = Vector3(LocalToWorldMatrix * Vector4(_front, 0.0));
+		_worldRight = glm::cross(_worldUp, _worldFront);
+
+		//cout << "_L0" << showV4(LocalToWorldMatrix[0]) << endl;
+		//cout << "_L1" << showV4(LocalToWorldMatrix[1]) << endl;
+		//cout << "_L2" << showV4(LocalToWorldMatrix[2]) << endl;
+		//cout << "_L3" << showV4(LocalToWorldMatrix[3]) << endl;
 	}
 }

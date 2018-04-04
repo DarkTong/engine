@@ -11,16 +11,24 @@ namespace GZJ_ENGINE {
 	*/
 	class GZJEventParamObj {};
 
-	class EV_Press_KeyBoard :public GZJEventParamObj
+	class Param_Press_KeyBoard :public GZJEventParamObj
 	{
-		GZJWindowPtr win;
+	public:
+		GZJWindowPtr window;
 		int key;
+		int action;
+		Param_Press_KeyBoard(GZJWindowPtr win, int key, int action)
+			:window(win), key(key), action(action) {}
 	};
 
-	class EV_Press_Mouse :public GZJEventParamObj
+	class Param_Press_Mouse :public GZJEventParamObj
 	{
-		GZJWindowPtr win;
+	public:
+		GZJWindowPtr window;
 		int key;
+		int action;
+		Param_Press_Mouse(GZJWindowPtr win, int key, int action)
+			:window(win), key(key), action(action) {}
 	};
 }
 

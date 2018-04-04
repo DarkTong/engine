@@ -109,13 +109,17 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJMeshManager>				GZJMeshManagerPtr;
 	typedef SharedPtr<GZJModel>						GZJModelPtr;
 	typedef SharedPtr<GZJModelManager>				GZJModelManagerPtr;
+	typedef SharedPtr<GZJMove>						GZJMovePtr;
 	typedef SharedPtr<GZJEventSystem>				GZJEventSystemPtr;
 	typedef SharedPtr<GZJEventParamObj>				EventParamObjPtr;
 
 	// typedef
-	typedef FastDelegate1<GZJEventParamObj> NormalDelegate;
+	typedef FastDelegate1<const GZJEventParamObj&> NormalDelegate;
 
 	// -------- common function --------
+	String showV3(Vector3 tmp);
+	String showV4(Vector4 tmp);
+
 
 	// -------- common value --------
 	const String ENGINE_ROOT_PATH		= "F:\\±œ“µ…Ëº∆2\\engine";

@@ -19,10 +19,6 @@ namespace GZJ_ENGINE {
 		{
 			if (_instance == nullptr)
 				_instance = std::make_shared<GZJEventSystem>();
-			else {
-				cout << "GZJEventSystem can't Create twice!!" << endl;
-				assert(false);
-			}
 
 			return _instance;
 		}
@@ -59,7 +55,7 @@ namespace GZJ_ENGINE {
 
 		/** 派发事件
 		*/
-		void Fire(EventConstant eventId, GZJEventParamObj param);
+		void Fire(EventConstant eventId, const GZJEventParamObj& param);
 
 		/** 绑定事件
 		*/

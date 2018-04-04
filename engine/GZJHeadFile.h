@@ -1,4 +1,5 @@
 #include "GZJEventSystem.h"
+#include "GZJEventParamObj.h"
 
 #include "GZJWindow.h"
 #include "GZJTime.h"

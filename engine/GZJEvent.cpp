@@ -7,7 +7,7 @@ namespace GZJ_ENGINE {
 		noObjFuncs.clear();
 	}
 
-	void GZJEvent::Fire(GZJEventParamObj param)
+	void GZJEvent::Fire(const GZJEventParamObj& param)
 	{
 		for (auto it = objFuncs.begin(); it != objFuncs.end(); ++it)
 			it->second(param);
