@@ -31,8 +31,10 @@ void Before_Draw();
 
 void update_game();
 void display_game();
-// 按键回调
+// 键盘按键回调
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+// 鼠标按键
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 // ------------- vertices ------------------------
 
@@ -63,6 +65,7 @@ int main() {
 		win->InitWindow();
 		win->BuildWindow();
 		glfwSetKeyCallback(win->GetWindow(), key_callback);
+		glfwSetMouseButtonCallback(win->GetWindow(), mouse_button_callback);
 
 		//eventSystemPtr->StartUp();
 		shaderMgrPtr->StartUp();
@@ -75,8 +78,8 @@ int main() {
 		// build and compile our shader program
 		// ------------------------------------
 		mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, -10));
-		mainCamera.moveCmp->speed = 1.0f;
-		mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
+		//mainCamera.moveCmp->moveSpeed = 0.1f;
+		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
 		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("translate_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
 		//Vertices vertices;
@@ -137,6 +140,7 @@ int main() {
 
 void update_game() {
 	time->Update();
+	mainCamera.moveCmp->LogicUpdate();
 }
 
 void display_game() {
@@ -177,6 +181,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		GZJWindow::GetInstance(), key, action);
 
 	GZJEventSystem::GetInstance()->Fire(EV_Press_KeyBoard, static_cast<const GZJEventParamObj&>(param));
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	Param_Press_Mouse param = Param_Press_Mouse(
+		GZJWindow::GetInstance(), button, action);
+
+	GZJEventSystem::GetInstance()->Fire(EV_Press_Mouse, static_cast<const GZJEventParamObj&>(param));
 }
 
 

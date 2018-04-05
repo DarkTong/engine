@@ -33,18 +33,47 @@ namespace GZJ_ENGINE {
 		*/
 		GZJTransform *transform;
 
+		/** 按键记录
+		*/
+		Map<int, bool> keyIsPress;
+
+		/** 鼠标按键记录
+		*/
+		Map<int, bool> cursorIsPress;
+
 	public:
-		GZJMove(GZJTransform* transform, float speed=0.1f) 
-			:transform(transform), speed(speed) {}
+		GZJMove(GZJTransform* transform, float moveSpeed = 0.1f
+			, float yawSpeed = 0.1f
+			, float pitchSpeed = 0.1f)
+			:transform(transform), moveSpeed(moveSpeed) 
+			, yawSpeed(yawSpeed), pitchSpeed(pitchSpeed) {}
 
 		~GZJMove() {
 			UnBindEvent();
 		};
-		
+
+	private:
+
+		/** 记录鼠标位置
+		*/
+		float xPos, yPos;
+
+		/** 光标相对上次位置的偏移
+		*/
+		float xOffset, yOffset;
+
 	public:
 		/** 移动速度 m/s
 		*/
-		float speed;
+		float moveSpeed;
+
+		/** yaw速度
+		*/
+		float yawSpeed;
+
+		/** pitch速度
+		*/
+		float pitchSpeed;
 
 	public:
 		/** 绑定事件
@@ -59,6 +88,20 @@ namespace GZJ_ENGINE {
 		*/
 		void SetVector3(const MoveData& param);
 
+		/** 每逻辑帧更新
+		*/
+		void LogicUpdate();
+
+	private:
+		// 功能
+
+		/** 更新transform
+		*/
+		void UpdateTransform();
+
+		/** 更新Cursor
+		*/
+		void UpdateCursor();
 	private:
 		// 事件函数
 		void Handle_Press_KeyBoard(const GZJEventParamObj& param);

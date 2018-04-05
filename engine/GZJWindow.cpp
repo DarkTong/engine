@@ -79,4 +79,11 @@ namespace GZJ_ENGINE {
 		}
 	}
 
+	Vector2 GZJWindow::GetCursorPos()
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		return Vector2(xpos, ypos);
+	}
+
 }

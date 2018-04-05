@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "GZJRequire.h"
+#include "GZJWindow.h"
 
 namespace GZJ_ENGINE {
 	/** 事件参数基类

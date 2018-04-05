@@ -1,3 +1,6 @@
+#ifndef __GZJ_WINDOW_
+#define __GZJ_WINDOW_
+
 #include "GZJRequire.h"
 
 #include "string"
@@ -54,5 +57,11 @@ namespace GZJ_ENGINE {
 		/** 获取相应数据
 		*/
 		int GetInt(WindowData param);
+
+		/** 获取当前窗口的鼠标位置
+		*/
+		Vector2 GetCursorPos();
 	};
 }
+
+#endif // !__GZJ_WINDOW_
