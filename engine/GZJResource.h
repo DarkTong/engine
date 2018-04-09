@@ -12,10 +12,10 @@ namespace GZJ_ENGINE {
 		@param 管理当前资源的管理者
 		@param 资源的相对路径
 		*/
-		GZJResource(GZJResourceManagerPtr manager, const String& name, ResourceHandle handle);
+		GZJResource(GZJResourceManager* manager, const String& name, ResourceHandle handle);
 	protected:
 
-		GZJResourceManagerPtr _mgr;
+		GZJResourceManager* _mgr;
 		String _path;
 		ResourceHandle _handle;
 		String _name;

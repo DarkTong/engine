@@ -2,6 +2,12 @@
 ## Alias OBJ Material File
 # Exported from SketchUp, (c) 2000-2012 Trimble Navigation Limited
 
+newmtl Water_Pool
+Ka 0.000000 0.000000 0.000000
+Kd 0.250980 0.584314 0.654902
+Ks 0.330000 0.330000 0.330000
+map_Kd cube2/Water_Pool.jpg
+
 newmtl FrontColor
 Ka 0.000000 0.000000 0.000000
 Kd 1.000000 1.000000 1.000000

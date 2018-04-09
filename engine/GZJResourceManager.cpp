@@ -2,8 +2,6 @@
 
 namespace GZJ_ENGINE {
 	GZJResourceManager::GZJResourceManager(){
-		self = GZJResourceManagerPtr(this);
-
 		resHandle = 1;
 	}
 	GZJResourceManager::~GZJResourceManager()
@@ -62,6 +60,11 @@ namespace GZJ_ENGINE {
 			std::cout << ("WRONG:not include resource :") << name << std::endl;
 
 	}
+	bool GZJResourceManager::IsLoad(const String& name)
+	{
+		auto it = resMap.find(name);
+		return it != resMap.end();
+	}
 	String GZJResourceManager::GetResRoot()
 	{
 		return _resRoot;
@@ -70,9 +73,9 @@ namespace GZJ_ENGINE {
 	{
 		return resHandle;
 	}
-	GZJResourceManagerPtr GZJResourceManager::GetSelf() const
-	{
-		return self;
-	}
+	//GZJResourceManagerPtr GZJResourceManager::GetSelf() const
+	//{
+	//	return self;
+	//}
 }
 

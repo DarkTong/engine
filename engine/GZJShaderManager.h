@@ -16,7 +16,7 @@ namespace GZJ_ENGINE {
 		static GZJShaderManagerPtr _instance;
 		static GZJShaderManagerPtr GetInstance() {
 			if (_instance == nullptr)
-				new GZJShaderManager();
+				_instance = MakeShared<GZJShaderManager>();
 			return _instance;
 		}
 		/** 存放shader源码的路径
@@ -31,13 +31,7 @@ namespace GZJ_ENGINE {
 		ShaderNameSet _nameSet;
 
 	public:
-		GZJShaderManager() { 
-			assert(_instance == nullptr);
-
-			_instance = std::dynamic_pointer_cast<GZJShaderManager>(self);
-
-			_resRoot = ENGINE_ROOT_PATH + "\\src\\shader";
-		};
+		GZJShaderManager();
 		~GZJShaderManager() {};
 
 	public:

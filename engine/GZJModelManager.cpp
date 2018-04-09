@@ -22,7 +22,6 @@ namespace GZJ_ENGINE {
 	void GZJModelManager::ShutDown()
 	{
 		UnLoadAll();
-		self = nullptr;
 	}
 
 	void GZJModelManager::PrepareAll()
@@ -31,7 +30,7 @@ namespace GZJ_ENGINE {
 
 	GZJResource * GZJModelManager::createImp(const String & name)
 	{
-		GZJResourceManagerPtr tmp = std::static_pointer_cast<GZJResourceManager>(self);
+		GZJResourceManager* tmp = static_cast<GZJResourceManager*>(this);
 		return (new GZJModel(tmp, name, resHandle++));
 	}
 

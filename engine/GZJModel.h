@@ -7,10 +7,9 @@
 
 #include "GZJRequire.h"
 #include "GZJTransform.h"
-#include "GZJResource.h"
 #include "GZJResourceManager.h"
 #include "GZJMeshManager.h"
-#include "GZJMesh.h"
+#include "GZJTextureManager.h"
 #include "GZJShader.h"
 
 namespace GZJ_ENGINE{
@@ -20,9 +19,13 @@ namespace GZJ_ENGINE{
 		@param 管理当前资源的管理者
 		@param 资源的相对路径
 		*/
-		GZJModel(GZJResourceManagerPtr manager, const String& name, ResourceHandle handle);
+		GZJModel(GZJResourceManager* manager, const String& name, ResourceHandle handle);
 
 	private:
+		/** 资源路径
+		*/
+		String _direction;
+
 		/** mesh资源管理
 		*/
 		GZJMeshManager meshMgr;
@@ -102,6 +105,12 @@ namespace GZJ_ENGINE{
 		///** 处理各种shaderData函数
 		//*/
 		//void DoTransform(Vector4x4 mat4);
+
+
+	private:
+		// 工具函数
+		Textures LoadMaterialTextures(aiMaterial* material, aiTextureType ai_type, TextureType type);
+
     };
 }
 

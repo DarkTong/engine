@@ -111,6 +111,15 @@
     <ClInclude Include="GZJEventParamObj.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJTextureManager.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTexture.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\stb_image.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -177,6 +186,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJEventSystem.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTextureManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJTexture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

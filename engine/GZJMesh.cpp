@@ -1,7 +1,7 @@
 #include "GZJMesh.h"
 
 namespace GZJ_ENGINE {
-	GZJMesh::GZJMesh(GZJResourceManagerPtr manager, const String & name
+	GZJMesh::GZJMesh(GZJResourceManager* manager, const String & name
 		, ResourceHandle handle)
 		:GZJResource(manager, name, handle)
 	{
@@ -10,14 +10,30 @@ namespace GZJ_ENGINE {
 		_path = manager->GetResRoot() + "\\" + name;
 		_state = ResState::UNPREPARE;
 	}
+
+	GZJMesh::~GZJMesh()
+	{
+		Unload();
+		// 释放贴图资源
+		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
+		for (int idx = 0; idx < textures.size(); ++idx)
+			textureMgr->UnLoadByName(textures[idx]);
+	}
+
 	void GZJMesh::Prepare(Vertices ver, Indices ind, Textures tex)
 	{
 		vertices = ver;
 		indices = ind;
 		textures = tex;
-		std::cout << vertices.size() << " "
-			<< indices.size() << " " 
-			<< textures.size() << std::endl;
+		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
+		// 加载贴图
+		for (int idx = 0; idx < textures.size(); ++idx)
+			textureMgr->LoadByName(textures[idx]);
+
+		cout << "各资源的大小:" << endl;
+		cout << "vector:" << vertices.size() << endl;
+		cout << "indices:" << indices.size() << endl;
+		cout << "textures:" << textures.size() << endl;
 		_state = ResState::UNLOAD;
 	}
 	void GZJMesh::Load()
@@ -54,6 +70,7 @@ namespace GZJ_ENGINE {
 			_state = ResState::LOADED;
 		}
 	}
+	
 	void GZJMesh::Unload()
 	{
 		if (_state = ResState::LOADED) {
@@ -64,12 +81,38 @@ namespace GZJ_ENGINE {
 			_state = ResState::UNLOAD;
 		}
 	}
+	
 	void GZJMesh::Draw(GZJShaderPtr shader)
 	{
 		if (_state = ResState::LOADED) {
 
 			// todo 加载贴图
+			GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
+			GZJTexturePtr texture = nullptr;
+			int diffuseNum = 1;
+			int specularNum = 1;
+			for (int idx = 0; idx < textures.size(); ++idx)
+			{
+				glActiveTexture(GL_TEXTURE0 + idx);
+				texture = std::static_pointer_cast<GZJTexture>(
+					textureMgr->FindResByName(textures[idx]));
+				if (texture->GetState() == LOADED and texture->GetID())
+					// 保证已经Load 同时 texturen不为0
+				{
+					String name = "";
+					if (texture->GetType() == Texture_Diffuse)
+						name = "texture_diffuse" + std::to_string(diffuseNum++);
+					else if (texture->GetType() == Texture_Specular)
+						name = "texture_specular" + std::to_string(specularNum++);
 
+					if (name != "")
+					{
+						shader->SetInt(name, idx);
+						glBindTexture(GL_TEXTURE_2D, texture->GetID());
+					}
+				}
+
+			}
 
 			// 渲染
 			//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;
@@ -77,6 +120,9 @@ namespace GZJ_ENGINE {
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);
+
+			// 渲染完把ActiveTexture重置
+			glActiveTexture(GL_TEXTURE0);
 		}
 		else{
 			std::cout << "Mesh Resource is not Loaded!!!" << std::endl;

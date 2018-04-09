@@ -5,6 +5,13 @@ namespace GZJ_ENGINE {
 	
 	bool GZJShaderManager::LOAD_ALL_SHADER_WHEN_CREATE = true;
 
+	GZJShaderManager::GZJShaderManager()
+	{
+		assert(_instance == nullptr);
+
+		_resRoot = ENGINE_SRC_ROOT_PATH + "\\shader";
+	}
+
 	void GZJShaderManager::StartUp()
 	{
 		resMap.clear();
@@ -20,7 +27,6 @@ namespace GZJ_ENGINE {
 	{
 		UnLoadAll();
 		_nameSet.clear();
-		self = nullptr;
 	}
 
 	void GZJShaderManager::PrepareAll()
@@ -35,7 +41,7 @@ namespace GZJ_ENGINE {
 	
 	GZJResource * GZJShaderManager::createImp(const String & name)
 	{
-		GZJResourceManagerPtr tmp = std::dynamic_pointer_cast<GZJResourceManager>(self);
+		GZJResourceManager* tmp = static_cast<GZJResourceManager*>(this);
 		return (new GZJShader(tmp, name, resHandle++));
 	}
 

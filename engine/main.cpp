@@ -70,7 +70,7 @@ int main() {
 		//eventSystemPtr->StartUp();
 		shaderMgrPtr->StartUp();
 		//meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
-		modelMgrPtr = std::dynamic_pointer_cast<GZJModelManager>((new GZJModelManager())->GetSelf());
+		modelMgrPtr = MakeShared<GZJModelManager>();
 		//meshMgrPtr->StartUp();
 		modelMgrPtr->StartUp();
 
@@ -78,9 +78,9 @@ int main() {
 		// build and compile our shader program
 		// ------------------------------------
 		mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, -10));
-		//mainCamera.moveCmp->moveSpeed = 0.1f;
+		mainCamera.moveCmp->moveSpeed = 0.1f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
-		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("translate_1"));
+		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("model_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
 		//Vertices vertices;
 		//Vertex vertex1, vertex2, vertex3;
@@ -103,10 +103,11 @@ int main() {
 
 		//mesh->Load();
 
-		modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("cube2"));
+		modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("nanosuit"));
 
 		modelPtr->Load();
 
+		glEnable(GL_DEPTH_TEST);
 		while (!glfwWindowShouldClose(win->GetWindow()) && game_is_running)
 		{
 
@@ -145,7 +146,7 @@ void update_game() {
 
 void display_game() {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//shader->Use();
 	//glBindVertexArray(VAO);

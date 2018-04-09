@@ -33,7 +33,7 @@ namespace GZJ_ENGINE {
 		}
 	}
 
-	GZJShader::GZJShader(GZJResourceManagerPtr manager, const String & name, ResourceHandle handle)
+	GZJShader::GZJShader(GZJResourceManager* manager, const String & name, ResourceHandle handle)
 		:GZJResource(manager, name, handle)
 	{
 		Init();

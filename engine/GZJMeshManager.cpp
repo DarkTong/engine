@@ -14,7 +14,7 @@ namespace GZJ_ENGINE {
 		// todo
 		// 用于实现具体的资源创建
 		// 调用Mesh的构造
-		GZJResourceManagerPtr tmp = std::static_pointer_cast<GZJResourceManager>(self);
+		GZJResourceManager* tmp = static_cast<GZJResourceManager*>(this);
 		return (new GZJMesh(tmp, name, resHandle++));
 	}
 
@@ -25,7 +25,6 @@ namespace GZJ_ENGINE {
 	void GZJMeshManager::ShutDown()
 	{
 		UnLoadAll();
-		self = nullptr;
 	}
 
 	void GZJMeshManager::PrepareAll()

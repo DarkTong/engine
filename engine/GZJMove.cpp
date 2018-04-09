@@ -68,8 +68,8 @@ namespace GZJ_ENGINE {
 			rotDegree.x += yOffset * pitchSpeed;
 		}
 		pos = pos + dir * moveSpeed;
-		cout << "rotDegree:" << showV3(rotDegree) << endl;
-		cout << "rot:" << showV3(rot) << endl;
+		//cout << "rotDegree:" << showV3(rotDegree) << endl;
+		//cout << "rot:" << showV3(rot) << endl;
 		rot = rot + rotDegree;
 		transform->SetVector3(Position, pos);
 		transform->SetVector3(Rotation, rot);
@@ -116,7 +116,7 @@ namespace GZJ_ENGINE {
 
 			Vector3 tmp;
 			tmp = transform->GetVector3(Position);
-			cout << "pos:" << showV3(tmp) << endl;
+			//cout << "pos:" << showV3(tmp) << endl;
 			//tmp = transform->GetVector3(WorldFront);
 			//cout << "worldFront:" << showV3(tmp) << endl;
 			//tmp = transform->GetVector3(WorldUp);
@@ -143,8 +143,8 @@ namespace GZJ_ENGINE {
 				SetVector3(MOVE_YAW);
 				SetVector3(MOVE_PITCH);
 
-				cout << "offset:" << xOffset << " " << yOffset << endl;
-				cout << "rot:" << showV3(transform->GetVector3(Rotation)) << endl;
+				//cout << "offset:" << xOffset << " " << yOffset << endl;
+				//cout << "rot:" << showV3(transform->GetVector3(Rotation)) << endl;
 			}
 		}
 

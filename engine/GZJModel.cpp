@@ -1,9 +1,10 @@
 #include "GZJModel.h"
 
 namespace GZJ_ENGINE {
-	GZJModel::GZJModel(GZJResourceManagerPtr manager, const String & name, ResourceHandle handle)
+	GZJModel::GZJModel(GZJResourceManager* manager, const String & name, ResourceHandle handle)
 		:GZJResource(manager, name, handle)
 	{
+		_direction = manager->GetResRoot() + "\\" + name;
 		_path = manager->GetResRoot() + "\\" + name + "\\" + name + ".obj";
 		_state = ResState::UNPREPARE;
 	}
@@ -103,12 +104,13 @@ namespace GZJ_ENGINE {
 	void GZJModel::ProcessMesh(aiMesh * mesh, const aiScene * scene)
 	{
 		ResourceHandle handle = meshMgr.GetNextHandle();
-		GZJMeshPtr meshPtr = std::dynamic_pointer_cast<GZJMesh>(meshMgr.CreateRes(_name + std::to_string(handle)));
+		GZJMeshPtr meshPtr = std::static_pointer_cast<GZJMesh>(meshMgr.CreateRes(_name + std::to_string(handle)));
 
 		Vertices vertices;
 		Indices indices;
 		Textures textures;
 
+		// 处理定点数据
 		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 		{
 			Vertex vertex;
@@ -125,6 +127,7 @@ namespace GZJ_ENGINE {
 			vertices.push_back(vertex);
 		}
 
+		// 处理定点索引数据
 		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 		{
 			aiFace face = mesh->mFaces[i];
@@ -132,12 +135,19 @@ namespace GZJ_ENGINE {
 				indices.push_back(face.mIndices[j]);
 		}
 
-		//	// 处理材质
-		//  // todo
-		//	if (mesh->mMaterialIndex >= 0)
-		//	{
-		//		...
-		//	}
+		// 处理材质
+		if (mesh->mMaterialIndex >= 0)
+		{
+			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+			Textures texture_diffuse = LoadMaterialTextures(material,
+					aiTextureType_DIFFUSE, Texture_Diffuse);
+			textures.insert(textures.end(), texture_diffuse.begin(), texture_diffuse.end());
+
+			Textures texture_specular = LoadMaterialTextures(material,
+					aiTextureType_SPECULAR, Texture_Specular);
+			textures.insert(textures.end(), texture_specular.begin(), texture_specular.end());
+		}
 
 		meshPtr->Prepare(vertices, indices, textures);
 		meshPtr->Load();
@@ -186,6 +196,23 @@ namespace GZJ_ENGINE {
 		else
 			dataMat4[shaderData] = mat4;
 	}
+
+	Textures GZJModel::LoadMaterialTextures(aiMaterial * material, aiTextureType ai_type, TextureType type)
+	{
+		Textures textures;
+		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
+		for (unsigned int idx = 0; idx < material->GetTextureCount(ai_type); ++idx)
+		{
+			aiString str;
+			String name;
+			material->GetTexture(ai_type, idx, &str);
+			name = _direction + "//" + String(str.C_Str());
+			textureMgr->CreateRes(name);
+			textures.push_back(name);
+		}
+		return textures;
+	}
+
 	//void GZJModel::DoTransform(Vector4x4 mat4)
 	//{
 	//	// 写数据到对应的参数内

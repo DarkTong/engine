@@ -15,9 +15,9 @@ namespace GZJ_ENGINE {
 		GZJResourceManager();
 		~GZJResourceManager();
 	protected:
-		/** 管理自身的智能指针
-		*/
-		GZJResourceManagerPtr self;
+		// /** 管理自身的智能指针
+		// */
+		// GZJResourceManagerPtr self;
 		/** 根据资源名存储资源
 		*/
 		ResourceMap resMap;
@@ -57,19 +57,23 @@ namespace GZJ_ENGINE {
 
 		/** 加载所有资源
 		*/
-		void LoadAll();
+		virtual void LoadAll();
 
 		/** 加载对应名字的资源
 		*/
-		void LoadByName(const String& name);
+		virtual void LoadByName(const String& name);
 
 		/** 卸载所有资源
 		*/
-		void UnLoadAll();
+		virtual void UnLoadAll();
 
 		/** 卸载对应名字的资源
 		*/
-		void UnLoadByName(const String& name);
+		virtual void UnLoadByName(const String& name);
+
+		/** 判断资源是否已经被加载
+		*/
+		bool IsLoad(const String& name);
 
 		/** 获取资源路径
 		@param 资源路径
@@ -80,9 +84,9 @@ namespace GZJ_ENGINE {
 		*/
 		ResourceHandle GetNextHandle();
 
-		/** 获取自身的智能指针
-		*/
-		GZJResourceManagerPtr GetSelf() const;
+		// /** 获取自身的智能指针
+		// */
+		// GZJResourceManagerPtr GetSelf() const;
 
 	protected:
 		// 对内接口

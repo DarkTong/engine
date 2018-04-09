@@ -55,7 +55,7 @@ namespace GZJ_ENGINE {
 
 	public:
 		// GZJShader(GZJShaderManagerPtr mgrPtr);
-		GZJShader(GZJResourceManagerPtr manager, const String & name
+		GZJShader(GZJResourceManager* manager, const String & name
 			, ResourceHandle handle);
 
 	private:

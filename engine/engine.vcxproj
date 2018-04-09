@@ -129,6 +129,7 @@
     <ClInclude Include="..\third\include\GLFW\glfw3.h" />
     <ClInclude Include="..\third\include\GLFW\glfw3native.h" />
     <ClInclude Include="..\third\include\KHR\khrplatform.h" />
+    <ClInclude Include="..\third\include\stb_image.h" />
     <ClInclude Include="GZJEvent.h" />
     <ClInclude Include="GZJEventConstant.h" />
     <ClInclude Include="GZJEventParamObj.h" />
@@ -150,6 +151,8 @@
     <ClInclude Include="GZJResourceManager.h" />
     <ClInclude Include="GZJShader.h" />
     <ClInclude Include="GZJShaderManager.h" />
+    <ClInclude Include="GZJTexture.h" />
+    <ClInclude Include="GZJTextureManager.h" />
     <ClInclude Include="GZJTime.h" />
     <ClInclude Include="GZJTools.h" />
     <ClInclude Include="GZJTransform.h" />
@@ -174,6 +177,8 @@
     <ClCompile Include="GZJShader.cpp" />
     <ClCompile Include="GZJShaderManager.cpp" />
     <ClCompile Include="GZJTest.cpp" />
+    <ClCompile Include="GZJTexture.cpp" />
+    <ClCompile Include="GZJTextureManager.cpp" />
     <ClCompile Include="GZJTime.cpp" />
     <ClCompile Include="GZJTools.cpp" />
     <ClCompile Include="GZJTransform.cpp" />

@@ -31,6 +31,7 @@ namespace GZJ_ENGINE {
 	*/
 	using std::cout;
 	using std::endl;
+	using std::vector;
 	using fastdelegate::FastDelegate0;
 	using fastdelegate::FastDelegate1;
 	using fastdelegate::FastDelegate2;
@@ -105,6 +106,8 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJResource>					GZJResourcePtr;
 	typedef SharedPtr<GZJResourceManager>			GZJResourceManagerPtr;
 	typedef SharedPtr<GZJResourceGroupManager>		GZJResourceGroupManagerPtr;
+	typedef SharedPtr<GZJTexture>					GZJTexturePtr;
+	typedef SharedPtr<GZJTextureManager>			GZJTextureManagerPtr;
 	typedef SharedPtr<GZJMesh>						GZJMeshPtr;
 	typedef SharedPtr<GZJMeshManager>				GZJMeshManagerPtr;
 	typedef SharedPtr<GZJModel>						GZJModelPtr;
