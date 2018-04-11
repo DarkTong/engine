@@ -17,9 +17,9 @@ namespace GZJ_ENGINE {
 		Front,
 		Right,
 
-		WorldUp,
-		WorldFront,
-		WorldRight,
+		LocalUp,
+		LocalFront,
+		LocalRight,
 
 		LocalToWorld,
 		WorldToLocal,
@@ -66,9 +66,9 @@ namespace GZJ_ENGINE {
 
 		/** 世界方向
 		*/
-		Vector3 _worldUp;
-		Vector3 _worldFront;
-		Vector3 _worldRight;
+		Vector3 _localUp;
+		Vector3 _localFront;
+		Vector3 _localRight;
 
         Vector4x4 LocalToWorldMatrix; //(0,0,0)->(x,y,z)
         Vector4x4 WordlToLocalMatrix;

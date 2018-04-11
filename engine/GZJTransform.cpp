@@ -18,6 +18,9 @@ namespace GZJ_ENGINE{
 		_up					= UP;
 		_front				= FRONT;
 		_right				= RIGHT;
+		_localUp			= UP;
+		_localFront			= FRONT;
+		_localRight			= RIGHT;
 
 		Update();
 	}
@@ -56,15 +59,15 @@ namespace GZJ_ENGINE{
 		//case LocalEulerAngles:
 		//	_localEulerAngles = data;
 		//	break;
-		case Up:
-			_up = data;
-			break;
-		case Front:
-			_front = data;
-			break;
-		case Right:
-			_right = data;
-			break;
+		//case Up:
+		//	_up = data;
+		//	break;
+		//case Front:
+		//	_front = data;
+		//	break;
+		//case Right:
+		//	_right = data;
+		//	break;
 		default:
 			std::cout << "GZJTransform SetVector3 参数错误!!!" << std::endl;
 			assert(false);
@@ -76,7 +79,7 @@ namespace GZJ_ENGINE{
 	{
 		switch (param) {
 		case Position:
-			return  _position;
+			return _position;
 		case Rotation:
 			return _rotation;
 		case Scale:
@@ -97,12 +100,12 @@ namespace GZJ_ENGINE{
 			return _front;
 		case Right:
 			return _right;
-		case WorldUp:
-			return _worldUp;
-		case WorldFront:
-			return _worldFront;
-		case WorldRight:
-			return _worldRight;
+		case LocalUp:
+			return _localUp;
+		case LocalFront:
+			return _localFront;
+		case LocalRight:
+			return _localRight;
 		default:
 			std::cout << "GZJTransform GetVector3 参数错误!!!" << std::endl;
 			assert(false);
@@ -138,17 +141,23 @@ namespace GZJ_ENGINE{
 	{
 		LocalToWorldMatrix = Vector4x4();
 		LocalToWorldMatrix = glm::translate(LocalToWorldMatrix, _position);
-		LocalToWorldMatrix = 
-			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.x), RIGHT);
+		LocalToWorldMatrix =
+			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.y), UP);
 		LocalToWorldMatrix =
 			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.z), FRONT);
 		LocalToWorldMatrix =
-			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.y), UP);
+			glm::rotate(LocalToWorldMatrix, glm::radians(_rotation.x), RIGHT);
+
 		LocalToWorldMatrix = glm::scale(LocalToWorldMatrix, _scale);
 
-		_worldUp = Vector3(LocalToWorldMatrix * Vector4(_up, 0.0));
-		_worldFront = Vector3(LocalToWorldMatrix * Vector4(_front, 0.0));
-		_worldRight = glm::cross(_worldUp, _worldFront);
+		_up = glm::normalize(Vector3(LocalToWorldMatrix * Vector4(_localUp, 0.0f)));
+		_front = glm::normalize(Vector3(LocalToWorldMatrix * Vector4(_localFront, 0.0f)));
+		_right = glm::normalize(glm::cross(_up, _front));
+		//_right = Vector3(LocalToWorldMatrix * Vector4(_localRight, 0.0f));
+
+		//cout << "_up:" << showV3(_up) << endl;
+		//cout << "_front:" << showV3(_front) << endl;
+		//cout << "_right:" << showV3(_right) << endl;
 
 		//cout << "_L0" << showV4(LocalToWorldMatrix[0]) << endl;
 		//cout << "_L1" << showV4(LocalToWorldMatrix[1]) << endl;

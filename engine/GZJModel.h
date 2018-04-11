@@ -5,6 +5,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+//#include <thread>
+
 #include "GZJRequire.h"
 #include "GZJTransform.h"
 #include "GZJResourceManager.h"
@@ -45,10 +47,11 @@ namespace GZJ_ENGINE{
 		std::map<unsigned int, Vector3> dataVec3;
 		std::map<unsigned int, Vector4x4> dataMat4;
 
+	public:
+
 		/** 位置信息
 		*/
 		GZJTransform transform;
-
 
 	public:
 		///** 准备资源来准备加载

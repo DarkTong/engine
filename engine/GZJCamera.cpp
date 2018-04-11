@@ -40,7 +40,7 @@ namespace GZJ_ENGINE {
 	{
 		// ¹Û²ì¿Õ¼ä¾ØÕó
 		viewMatrix = glm::lookAt(transform.GetVector3(Position),
-			transform.GetVector3(Position) + transform.GetVector3(WorldFront),
+			transform.GetVector3(Position) + transform.GetVector3(Front),
 			transform.GetVector3(Up));
 
 	}

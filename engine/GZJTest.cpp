@@ -48,7 +48,7 @@ namespace GZJ_ENGINE {
 			cout << "--_up: " << ShowV3(trans.GetVector3(Up)) << endl;
 			cout << "--_front: " << ShowV3(trans.GetVector3(Front)) << endl;
 			cout << "--_right: " << ShowV3(trans.GetVector3(Right)) << endl;
-			cout << "--_worldUP: " << ShowV3(trans.GetVector3(WorldUp)) << endl;
+			cout << "--_localUP: " << ShowV3(trans.GetVector3(LocalUp)) << endl;
 		}
 		
 	public:

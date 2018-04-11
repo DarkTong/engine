@@ -78,7 +78,9 @@ int main() {
 		// build and compile our shader program
 		// ------------------------------------
 		mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, -10));
-		mainCamera.moveCmp->moveSpeed = 0.1f;
+		mainCamera.moveCmp->moveSpeed = .1f;
+		mainCamera.moveCmp->pitchSpeed = 0.7f;
+		mainCamera.moveCmp->yawSpeed = 0.7f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
 		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("model_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
@@ -103,7 +105,9 @@ int main() {
 
 		//mesh->Load();
 
-		modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("nanosuit"));
+		modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("cube2"));
+		//modelPtr->transform.SetVector3(Scale, Vector3(0.01f, 0.01f, 0.01f));
+		modelPtr->transform.SetVector3(Scale, GZJTransform::ONE);
 
 		modelPtr->Load();
 
