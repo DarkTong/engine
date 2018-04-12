@@ -30,6 +30,8 @@ bool is_test_normal_func = false;
 
 // 用于临时操作
 void Before_Draw();
+// 设置shader的一些属性
+void InitShader();
 
 void update_game();
 void display_game();
@@ -50,7 +52,7 @@ Vertex vertice;
 //	0, 1, 2,
 //};
 unsigned int VAO, VBO;
-GZJShaderPtr shader;
+GZJShaderPtr shader1, shader2;
 GZJMeshPtr mesh;
 
 
@@ -85,8 +87,10 @@ int main() {
 		mainCamera.moveCmp->pitchSpeed = 0.7f;
 		mainCamera.moveCmp->yawSpeed = 0.7f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
-		shader = std::static_pointer_cast<GZJShader>
+		shader1 = std::static_pointer_cast<GZJShader>
 			(shaderMgrPtr->FindResByName("model_1"));
+		shader2 = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->FindResByName("whiteLight_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
 		//Vertices vertices;
 		//Vertex vertex1, vertex2, vertex3;
@@ -110,13 +114,13 @@ int main() {
 		//mesh->Load();
 
 		modelPtr = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->FindResByName("nanosuit"));
+			(modelMgrPtr->FindResByName("cube1"));
 		//modelPtr->transform.SetVector3(Scale, Vector3(0.01f, 0.01f, 0.01f));
-		modelPtr->transform.SetVector3(Scale, GZJTransform::ONE);
+		//modelPtr->transform.SetVector3(Scale, GZJTransform::ONE);
 
 		modelPtr1 = std::static_pointer_cast<GZJModel>
 			(modelMgrPtr->FindResByName("cube2"));
-		modelPtr1->transform.SetVector3(Position, Vector3(0.0f, 0.0f, 30.0f));
+		modelPtr1->transform.SetVector3(Position, Vector3(10.0f, 0.0f, 0.0f));
 
 		modelPtr->SyncLoad();
 		modelPtr1->SyncLoad();
@@ -142,7 +146,6 @@ int main() {
 		//glDeleteVertexArrays(1, &VAO);
 		//glDeleteBuffers(1, &VBO);
 		win->Close();
-		std::cout << shader.use_count() << std::endl;
 		shaderMgrPtr->ShutDown();
 		//eventSystemPtr->ShutDown();
 		std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
@@ -173,16 +176,14 @@ void display_game() {
 	float tmp = 1.0f * win->GetInt(Win_Width) / win->GetInt(Win_Height);
 	projection = glm::perspective(glm::radians(45.0f), tmp, 0.1f, 100.0f);
 
-	shader->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
-	shader->SetMatrix(Shader_ViewToProjection, projection);
-
-	//  临时
-	glm::mat4 trans;
-
-	modelPtr->SetShader(shader);
+	modelPtr->SetShader(shader2);
+	modelPtr->SetMat4(Shader_WorldToView, mainCamera.LookAt());
+	modelPtr->SetMat4(Shader_ViewToProjection, projection);
 	modelPtr->Draw();
 
-	modelPtr1->SetShader(shader);
+	modelPtr1->SetShader(shader1);
+	modelPtr1->SetMat4(Shader_WorldToView, mainCamera.LookAt());
+	modelPtr1->SetMat4(Shader_ViewToProjection, projection);
 	modelPtr1->Draw();
 
 	//renderStaitc->Render();
@@ -192,6 +193,19 @@ void Before_Draw()
 {
 	/*mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, 10));
 	mainCamera.SetVector3(CameraParam::Rotation, Vector3(0, 180, 0)); */
+}
+
+void InitShader()
+{
+	Vector4x4 projection;
+	float tmp = 1.0f * win->GetInt(Win_Width) / win->GetInt(Win_Height);
+	projection = glm::perspective(glm::radians(45.0f), tmp, 0.1f, 100.0f);
+
+	shader1->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	shader1->SetMatrix(Shader_ViewToProjection, projection);
+
+	shader2->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	shader2->SetMatrix(Shader_ViewToProjection, projection);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

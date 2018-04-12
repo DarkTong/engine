@@ -37,8 +37,8 @@ namespace GZJ_ENGINE {
 				std::cout << "没有设置shader程序，请使用SetShader!!" << std::endl;
 				ERROR;
 			}
-			SetShaderData();
 			shader->Use();
+			SetShaderData();
 			meshMgr.DrawAll(shader);
 		}
 	}
@@ -82,9 +82,6 @@ namespace GZJ_ENGINE {
 		// mat4参数
 		for (auto it = dataMat4.begin(); it != dataMat4.end(); ++it)
 		{
-			//tloc = glGetUniformLocation(shader->GetShaderID(),
-			//	ShaderDataStr[it->first].c_str());
-			//glUniformMatrix4fv(tloc, 1, GL_FALSE, glm::value_ptr(it->second));
 			shader->SetMatrix(static_cast<ShaderData>(it->first), it->second);
 		}
 	}
@@ -184,20 +181,19 @@ namespace GZJ_ENGINE {
 	{
 		switch (shaderData) {
 		case ShaderData::Transform:
-			//DoTransform(mat4);
 			break;
-		case Shader_LocalToWorld:
+		case ShaderData::Shader_LocalToWorld:
+			break;
+		case ShaderData::Shader_WorldToView:
+			break;
+		case ShaderData::Shader_ViewToProjection:
 			break;
 		default:
 			std::cout << "SetMat4 不能设置参数：" << shaderData << std::endl;
 			ERROR;
 		}
-
-		auto it = dataMat4.find(shaderData);
-		if(it == dataMat4.end())
-			dataMat4[shaderData] = Vector4x4(mat4);
-		else
-			dataMat4[shaderData] = mat4;
+		
+		dataMat4[shaderData] = Vector4x4(mat4);
 	}
 
 	ResourceType GZJModel::GetResType()

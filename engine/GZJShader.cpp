@@ -154,13 +154,13 @@ namespace GZJ_ENGINE {
 		unsigned int loc = -1;
 		switch (param)
 		{
-		case GZJ_ENGINE::Shader_LocalToWorld:
+		case Shader_LocalToWorld:
 			loc = glGetUniformLocation(_id, "local2world");
 			break;
-		case GZJ_ENGINE::Shader_WorldToView:
+		case Shader_WorldToView:
 			loc = glGetUniformLocation(_id, "world2view");
 			break;
-		case GZJ_ENGINE::Shader_ViewToProjection:
+		case Shader_ViewToProjection:
 			loc = glGetUniformLocation(_id, "view2projection");
 			break;
 		default:

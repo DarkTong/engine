@@ -55,7 +55,8 @@ namespace GZJ_ENGINE {
 			if (_threadGroup[i].joinable())
 			{
 				_threadState[i] = ResLoadState_Close;
-				_threadGroup->join();
+				_threadGroup[i].detach();
+				_threadFlag[i].notify_one();
 			}
 	}
 
@@ -67,6 +68,9 @@ namespace GZJ_ENGINE {
 			std::unique_lock<std::mutex> lk(_threadMutex[type]);
 			_threadFlag[type].wait(lk,
 				[this] {return !_resQueue[Texture].empty(); });
+
+			if (_threadState[type] == ResLoadState_Close)
+				break;
 
 			GZJResourcePtr texturePtr = _resQueue[type].front();
 			_resQueue[type].pop();
@@ -84,6 +88,9 @@ namespace GZJ_ENGINE {
 			_threadFlag[type].wait(lk,
 				[this] {return !_resQueue[Mesh].empty(); });
 
+			if (_threadState[type] == ResLoadState_Close)
+				break;
+
 			GZJResourcePtr meshPtr = _resQueue[type].front();
 			_resQueue[type].pop();
 
@@ -99,6 +106,9 @@ namespace GZJ_ENGINE {
 			std::unique_lock<std::mutex> lk(_threadMutex[type]);
 			_threadFlag[type].wait(lk,
 				[this] {return !_resQueue[Model].empty(); });
+
+			if (_threadState[type] == ResLoadState_Close)
+				break;
 
 			GZJResourcePtr modelPtr = _resQueue[type].front();
 			_resQueue[type].pop();

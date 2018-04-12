@@ -104,12 +104,10 @@ namespace GZJ_ENGINE {
 						glBindTexture(GL_TEXTURE_2D, texture->GetID());
 					}
 				}
-
 			}
 
 			// ‰÷»æ
 			//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;
-			shader->Use();
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 			glBindVertexArray(0);

@@ -63,13 +63,13 @@ namespace GZJ_ENGINE {
 
 	void GZJResource::SetState(ResState state)
 	{
-		std::lock_guard<std::mutex> lk(mutexToState);
+		//std::lock_guard<std::mutex> lk(mutexToState);
 		_state = state;
 	}
 
 	ResState GZJResource::GetState() const
 	{
-		std::lock_guard<std::mutex> lk(mutexToState);
+		//std::lock_guard<std::mutex> lk(mutexToState);
 		return _state;
 	}
 
