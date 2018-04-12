@@ -96,14 +96,15 @@ namespace GZJ_ENGINE {
 		*/
 		ShaderID LoadShader(const String& name, ShaderType type);
 
-	public:
 		/** 加载资源
 		*/
-		void Load();
+		void DoLoad();
 
 		/** 卸载资源
 		*/
-		void Unload();
+		void DoUnLoad();
+
+	public:
 
 		/** 获取着色器名字
 		*/
@@ -138,6 +139,8 @@ namespace GZJ_ENGINE {
 		/** 设置相关的矩阵数据
 		*/
 		void SetMatrix(ShaderData param, Vector4x4 data);
+
+		ResourceType GetResType();
 	};
 
 }

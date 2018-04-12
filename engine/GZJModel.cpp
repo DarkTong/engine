@@ -6,10 +6,10 @@ namespace GZJ_ENGINE {
 	{
 		_direction = manager->GetResRoot() + "\\" + name;
 		_path = manager->GetResRoot() + "\\" + name + "\\" + name + ".obj";
-		_state = ResState::UNPREPARE;
+		SetState(ResState::UNLOAD);
 	}
 
-	void GZJModel::Load()
+	void GZJModel::DoLoad()
 	{
 		Assimp::Importer import;
 		const aiScene *scene = import.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -23,21 +23,24 @@ namespace GZJ_ENGINE {
 		ProcessNode(scene->mRootNode, scene);
 	}
 
-	void GZJModel::Unload()
+	void GZJModel::DoUnLoad()
 	{
 		meshMgr.UnLoadAll();
 	}
 
 	void GZJModel::Draw()
 	{
-		if (shader == nullptr)
+		if (GetState() == LOADED)
 		{
-			std::cout << "没有设置shader程序，请使用SetShader!!" << std::endl;
-			ERROR;
+			if (shader == nullptr)
+			{
+				std::cout << "没有设置shader程序，请使用SetShader!!" << std::endl;
+				ERROR;
+			}
+			SetShaderData();
+			shader->Use();
+			meshMgr.DrawAll(shader);
 		}
-		SetShaderData();
-		shader->Use();
-		meshMgr.DrawAll(shader);
 	}
 
 	void GZJModel::SetShader(GZJShaderPtr shader)
@@ -150,7 +153,7 @@ namespace GZJ_ENGINE {
 		}
 
 		meshPtr->Prepare(vertices, indices, textures);
-		meshPtr->Load();
+		meshPtr->SyncLoad();
 	}
 	
 	void GZJModel::SetVec1(ShaderData shaderData, const float& vec1)
@@ -192,9 +195,14 @@ namespace GZJ_ENGINE {
 
 		auto it = dataMat4.find(shaderData);
 		if(it == dataMat4.end())
-			dataMat4.insert(Pair<unsigned int, Vector4x4>(shaderData, mat4));
+			dataMat4[shaderData] = Vector4x4(mat4);
 		else
 			dataMat4[shaderData] = mat4;
+	}
+
+	ResourceType GZJModel::GetResType()
+	{
+		return Model;
 	}
 
 	Textures GZJModel::LoadMaterialTextures(aiMaterial * material, aiTextureType ai_type, TextureType type)

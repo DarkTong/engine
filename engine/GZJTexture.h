@@ -53,11 +53,12 @@ namespace GZJ_ENGINE {
 		*/
 		bool isMinMap;
 
-	public:
+	private:
 		// 继承
-		void Load();
+		// 对内接口
+		void DoLoad();
 
-		void Unload();
+		void DoUnLoad();
 
 	public:
 		// 对外接口
@@ -65,6 +66,8 @@ namespace GZJ_ENGINE {
 		unsigned int GetID();
 
 		unsigned int GetType();
+
+		ResourceType GetResType();
 	};
 }
 

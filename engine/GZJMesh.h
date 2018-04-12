@@ -43,25 +43,33 @@ namespace GZJ_ENGINE {
 	public:
 		
 		GZJMesh(GZJResourceManager* manager, const String& name, ResourceHandle handle);
+		
 		~GZJMesh();
+		
 		/** 初始化Mesh，并获得数据
 		@param 定点数据
 		@param 索引数据
 		@param 贴图数据
 		*/
 		void Prepare(Vertices ver, Indices ind, Textures tex);
-		/** 加载定点数据到内存
-		*/
-		void Load();
-		/** 卸载定点数据
-		*/
-		void Unload();
 		
 		/** 渲染
 		@param 渲染程序
 		*/
 		void Draw(GZJShaderPtr shader);
 
+		ResourceType GetResType();
+
+	private:
+		// 对内接口
+
+		/** 加载定点数据到内存
+		*/
+		void DoLoad();
+
+		/** 卸载定点数据
+		*/
+		void DoUnLoad();
 	};
 }
 #endif // __GZJ_MESH__

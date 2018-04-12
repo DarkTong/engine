@@ -2,10 +2,6 @@
 #include "GZJResourceManager.h"
 
 namespace GZJ_ENGINE {
-	enum ResourceType {
-		TEXTURE,
-		MESH,
-	};
 
 	typedef Map<ResourceType, GZJResourceManagerPtr> ResGroupMgr;
 	typedef Map<ResourceType, String> ResLoacationMap;

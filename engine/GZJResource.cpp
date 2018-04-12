@@ -13,13 +13,63 @@ namespace GZJ_ENGINE {
 		_state = ResState::UNLOAD;
 	}
 
+	void GZJResource::SyncLoad()
+	{
+		ResState state = GetState();
+		if (state == UNLOAD)
+		{
+			SetState(LOADING);
+			Load();
+		}
+		else
+		{
+			cout << "This Resource is not UnLoad!!, path:" << _path << endl;
+		}
+	}
+
+	void GZJResource::AsyncLoad()
+	{
+		ResState state = GetState();
+		if (state == UNLOAD)
+		{
+			GZJResourceLoad::GetInstance()
+				->AddRes(_mgr->FindResByName(_name), GetResType());
+		}
+		else
+		{
+			cout << "This Resource is not UnLoad!!, path:" << _path << endl;
+		}
+	}
+
+	void GZJResource::Load()
+	{
+		try {
+			DoLoad();
+			SetState(LOADED);
+		}
+		catch(const char *error){
+			cout << error << endl;
+		}
+	}
+
+	void GZJResource::UnLoad()
+	{
+		if (GetState() == ResState::LOADED)
+		{
+			DoUnLoad();
+			SetState(UNLOAD);
+		}
+	}
+
 	void GZJResource::SetState(ResState state)
 	{
+		std::lock_guard<std::mutex> lk(mutexToState);
 		_state = state;
 	}
 
 	ResState GZJResource::GetState() const
 	{
+		std::lock_guard<std::mutex> lk(mutexToState);
 		return _state;
 	}
 

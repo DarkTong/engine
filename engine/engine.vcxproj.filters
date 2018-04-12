@@ -120,6 +120,9 @@
     <ClInclude Include="..\third\include\stb_image.h">
       <Filter>资源文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJResourceLoad.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -192,6 +195,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJTexture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJResourceLoad.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

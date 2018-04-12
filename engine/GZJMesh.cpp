@@ -8,12 +8,12 @@ namespace GZJ_ENGINE {
 		
 		// 临时处理
 		_path = manager->GetResRoot() + "\\" + name;
-		_state = ResState::UNPREPARE;
+		SetState(ResState::UNPREPARE);
 	}
 
 	GZJMesh::~GZJMesh()
 	{
-		Unload();
+		UnLoad();
 		// 释放贴图资源
 		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
 		for (int idx = 0; idx < textures.size(); ++idx)
@@ -28,63 +28,56 @@ namespace GZJ_ENGINE {
 		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
 		// 加载贴图
 		for (int idx = 0; idx < textures.size(); ++idx)
-			textureMgr->LoadByName(textures[idx]);
+			textureMgr->FindResByName(textures[idx])->SyncLoad();
 
 		cout << "各资源的大小:" << endl;
 		cout << "vector:" << vertices.size() << endl;
 		cout << "indices:" << indices.size() << endl;
 		cout << "textures:" << textures.size() << endl;
-		_state = ResState::UNLOAD;
+		SetState(UNLOAD);
 	}
-	void GZJMesh::Load()
+
+	void GZJMesh::DoLoad()
 	{
-		if (_state == ResState::UNLOAD) {
-			std::cout << "OK!!!" << std::endl;
-			std::cout << vertices.size() << std::endl;
-			glGenVertexArrays(1, &VAO);
-			glGenBuffers(1, &VBO);
-			glGenBuffers(1, &EBO);
+		std::cout << "OK!!!" << std::endl;
+		std::cout << vertices.size() << std::endl;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
 
-			glBindVertexArray(VAO);
+		glBindVertexArray(VAO);
 
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
-			// 定点位置
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+		// 定点位置
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
 
-			// 法线
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+		// 法线
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
-			// 贴图位置
-			 glEnableVertexAttribArray(2);
-			 glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+		// 贴图位置
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 
-			glBindVertexArray(0);
-
-			_state = ResState::LOADED;
-		}
+		glBindVertexArray(0);
 	}
 	
-	void GZJMesh::Unload()
+	void GZJMesh::DoUnLoad()
 	{
-		if (_state = ResState::LOADED) {
-			glDeleteVertexArrays(1, &VAO);
-			glDeleteBuffers(1, &EBO);
-			glDeleteBuffers(1, &VBO);
-
-			_state = ResState::UNLOAD;
-		}
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &EBO);
+		glDeleteBuffers(1, &VBO);
 	}
 	
 	void GZJMesh::Draw(GZJShaderPtr shader)
 	{
-		if (_state = ResState::LOADED) {
+		if (GetState() == ResState::LOADED) {
 
 			// todo 加载贴图
 			GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
@@ -128,5 +121,9 @@ namespace GZJ_ENGINE {
 			std::cout << "Mesh Resource is not Loaded!!!" << std::endl;
 			assert(false);
 		}
+	}
+	ResourceType GZJMesh::GetResType()
+	{
+		return Mesh;
 	}
 }

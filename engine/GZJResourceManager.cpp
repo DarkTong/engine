@@ -10,8 +10,8 @@ namespace GZJ_ENGINE {
 	GZJResourcePtr GZJResourceManager::CreateRes(const String & name)
 	{
 		GZJResourcePtr l_resPtr = GZJResourcePtr(createImp(name));
-		resMap.insert(Pair<String, GZJResourcePtr>(name, l_resPtr));
-		resHandleMap.insert(Pair<ResourceHandle, GZJResourcePtr>(resHandle, l_resPtr));
+		resMap[name] = l_resPtr;
+		resHandleMap[resHandle] = l_resPtr;
 		resHandle++;
 
 		return l_resPtr;
@@ -21,20 +21,23 @@ namespace GZJ_ENGINE {
 		GZJResourcePtr resPtr = resMap[name];
 		if (resPtr == nullptr) {
 			resPtr = CreateRes(name);
-			resMap.insert(Pair<String, GZJResourcePtr>(name, resPtr));
 		}
 		return resPtr;
 	}
-	void GZJResourceManager::LoadAll()
+	void GZJResourceManager::LoadAll(bool isAsyncLoad)
 	{
-		for (auto it = resMap.begin(); it != resMap.end(); ++it)
-			it->second->Load();
+		if(isAsyncLoad)
+			for (auto it = resMap.begin(); it != resMap.end(); ++it)
+				it->second->AsyncLoad();
+		else
+			for (auto it = resMap.begin(); it != resMap.end(); ++it)
+				it->second->SyncLoad();
 	}
 	void GZJResourceManager::LoadByName(const String & name)
 	{
 		auto it = resMap.find(name);
 		if(it != resMap.end())
-			it->second->Load();
+			it->second->SyncLoad();
 		else
 			std::cout << ("WRONG:not include resource :") << name << std::endl;
 	}
@@ -44,9 +47,9 @@ namespace GZJ_ENGINE {
 		{
 			std::cout << it->first << std::endl;
 			if(resMap[it->first] != nullptr)
-				it->second->Unload();
+				it->second->UnLoad();
 			else
-				std::cout << "error shader unloadAll nullptr" << std::endl;
+				std::cout << "error resource unloadAll nullptr" << std::endl;
 		}
 		resMap.clear();
 		resHandleMap.clear();
@@ -55,7 +58,7 @@ namespace GZJ_ENGINE {
 	{
 		auto it = resMap.find(name);
 		if (it != resMap.end())
-			it->second->Unload();
+			it->second->UnLoad();
 		else
 			std::cout << ("WRONG:not include resource :") << name << std::endl;
 

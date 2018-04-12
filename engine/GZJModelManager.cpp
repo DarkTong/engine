@@ -31,7 +31,7 @@ namespace GZJ_ENGINE {
 	GZJResource * GZJModelManager::createImp(const String & name)
 	{
 		GZJResourceManager* tmp = static_cast<GZJResourceManager*>(this);
-		return (new GZJModel(tmp, name, resHandle++));
+		return (new GZJModel(tmp, name, resHandle));
 	}
 
 }

@@ -42,7 +42,7 @@ namespace GZJ_ENGINE {
 	GZJResource * GZJShaderManager::createImp(const String & name)
 	{
 		GZJResourceManager* tmp = static_cast<GZJResourceManager*>(this);
-		return (new GZJShader(tmp, name, resHandle++));
+		return (new GZJShader(tmp, name, resHandle));
 	}
 
 	void GZJShaderManager::GetAllShaderName()

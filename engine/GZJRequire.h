@@ -23,6 +23,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <queue>
 #include <io.h> 
 
 namespace GZJ_ENGINE {
@@ -47,6 +48,15 @@ namespace GZJ_ENGINE {
 		LOADING,
 		LOADED,
 		OLDED,
+	};
+	/** 资源类型
+	*/
+	enum ResourceType
+	{
+		Texture,
+		Mesh,
+		Model,
+		Shader
 	};
 	//-------- 重命名 --------
 	/** 资源句柄
@@ -85,6 +95,7 @@ namespace GZJ_ENGINE {
 	class GZJEventSystem;
 	class GZJEvent;
 	class GZJEventParamObj;
+	class GZJResourceLoad;
 
 
 	class GZJTools;
@@ -115,6 +126,7 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJMove>						GZJMovePtr;
 	typedef SharedPtr<GZJEventSystem>				GZJEventSystemPtr;
 	typedef SharedPtr<GZJEventParamObj>				EventParamObjPtr;
+	typedef SharedPtr<GZJResourceLoad>				GZJResourceLoadPtr;
 
 	// typedef
 	typedef FastDelegate1<const GZJEventParamObj&> NormalDelegate;

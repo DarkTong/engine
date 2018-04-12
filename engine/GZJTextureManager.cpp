@@ -51,7 +51,7 @@ namespace GZJ_ENGINE {
 	GZJResource* GZJTextureManager::createImp(const String & name)
 	{
 		GZJResourceManager* mgr = static_cast<GZJResourceManager*>(this);
-		return (new GZJTexture(mgr, name, resHandle++));
+		return (new GZJTexture(mgr, name, resHandle));
 	}
 
 }

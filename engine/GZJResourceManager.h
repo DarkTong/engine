@@ -57,7 +57,7 @@ namespace GZJ_ENGINE {
 
 		/** 加载所有资源
 		*/
-		virtual void LoadAll();
+		virtual void LoadAll(bool isAsyncLoad=false);
 
 		/** 加载对应名字的资源
 		*/

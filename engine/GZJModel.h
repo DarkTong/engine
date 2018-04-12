@@ -5,8 +5,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-//#include <thread>
-
 #include "GZJRequire.h"
 #include "GZJTransform.h"
 #include "GZJResourceManager.h"
@@ -24,6 +22,7 @@ namespace GZJ_ENGINE{
 		GZJModel(GZJResourceManager* manager, const String& name, ResourceHandle handle);
 
 	private:
+
 		/** 资源路径
 		*/
 		String _direction;
@@ -58,14 +57,6 @@ namespace GZJ_ENGINE{
 		//*/
 		//virtual void Prepare( ... ) = 0;
 
-		/** 加载资源
-		*/
-		void Load();
-
-		/** 卸载资源
-		*/
-		void Unload();
-
 		/** 渲染
 		 * param : 着色器
 		*/
@@ -81,6 +72,14 @@ namespace GZJ_ENGINE{
 		void SetShaderData();
 
 	private:
+		/** 加载资源
+		*/
+		void DoLoad();
+
+		/** 卸载资源
+		*/
+		void DoUnLoad();
+
 		/** 处理assimp的节点信息
 		@param assimp节点
 		@param assimp场景
@@ -93,9 +92,6 @@ namespace GZJ_ENGINE{
 		*/
 		void ProcessMesh(aiMesh *mesh, const aiScene *scene);
 
-		/** prepare
-		*/
-
 	public:
 		/* 对外的设置Shader数据接口
 		*/
@@ -103,6 +99,10 @@ namespace GZJ_ENGINE{
 		void SetVec2(ShaderData shaderData, const Vector2& vec2);
 		void SetVec3(ShaderData shaderData, const Vector3& vec3);
 		void SetMat4(ShaderData shaderData, const Vector4x4& mat4);
+
+		/** 获取资源类型
+		*/
+		ResourceType GetResType();
 
 	private:
 		///** 处理各种shaderData函数

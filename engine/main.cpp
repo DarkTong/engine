@@ -11,11 +11,13 @@
 using namespace GZJ_ENGINE;
 
 GZJWindowPtr win = GZJWindow::GetInstance();
-GZJTimePtr time = GZJTime::GetInstance();
+GZJTimePtr gzjTime = GZJTime::GetInstance();
+GZJResourceLoadPtr resLoadPtr = GZJResourceLoad::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
 GZJMeshManagerPtr meshMgrPtr;
 GZJModelManagerPtr modelMgrPtr;
 GZJModelPtr modelPtr;
+GZJModelPtr modelPtr1;
 GZJCamera mainCamera;
 GZJEventSystemPtr eventSystemPtr = GZJEventSystem::GetInstance();
 //GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
@@ -67,6 +69,7 @@ int main() {
 		glfwSetKeyCallback(win->GetWindow(), key_callback);
 		glfwSetMouseButtonCallback(win->GetWindow(), mouse_button_callback);
 
+		resLoadPtr->StartUp();
 		//eventSystemPtr->StartUp();
 		shaderMgrPtr->StartUp();
 		//meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
@@ -82,7 +85,8 @@ int main() {
 		mainCamera.moveCmp->pitchSpeed = 0.7f;
 		mainCamera.moveCmp->yawSpeed = 0.7f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
-		shader = std::dynamic_pointer_cast<GZJShader>(shaderMgrPtr->FindResByName("model_1"));
+		shader = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->FindResByName("model_1"));
 		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
 		//Vertices vertices;
 		//Vertex vertex1, vertex2, vertex3;
@@ -105,18 +109,24 @@ int main() {
 
 		//mesh->Load();
 
-		modelPtr = std::dynamic_pointer_cast<GZJModel>(modelMgrPtr->FindResByName("cube2"));
+		modelPtr = std::static_pointer_cast<GZJModel>
+			(modelMgrPtr->FindResByName("nanosuit"));
 		//modelPtr->transform.SetVector3(Scale, Vector3(0.01f, 0.01f, 0.01f));
 		modelPtr->transform.SetVector3(Scale, GZJTransform::ONE);
 
-		modelPtr->Load();
+		modelPtr1 = std::static_pointer_cast<GZJModel>
+			(modelMgrPtr->FindResByName("cube2"));
+		modelPtr1->transform.SetVector3(Position, Vector3(0.0f, 0.0f, 30.0f));
+
+		modelPtr->SyncLoad();
+		modelPtr1->SyncLoad();
 
 		glEnable(GL_DEPTH_TEST);
 		while (!glfwWindowShouldClose(win->GetWindow()) && game_is_running)
 		{
 
 			loops = 0;
-			while (time->GetTickCount() > next_game_tick && loops < MAX_FRAMESKIP)
+			while (gzjTime->GetTickCount() > next_game_tick && loops < MAX_FRAMESKIP)
 			{
 				update_game();
 				next_game_tick += SKIP_TICKS;
@@ -138,13 +148,14 @@ int main() {
 		std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
 		//meshMgrPtr->ShutDown();
 		modelMgrPtr->ShutDown();
+		resLoadPtr->ShutDown();
 	}
 
 	return 0;
 }
 
 void update_game() {
-	time->Update();
+	gzjTime->Update();
 	mainCamera.moveCmp->LogicUpdate();
 }
 
@@ -170,6 +181,9 @@ void display_game() {
 
 	modelPtr->SetShader(shader);
 	modelPtr->Draw();
+
+	modelPtr1->SetShader(shader);
+	modelPtr1->Draw();
 
 	//renderStaitc->Render();
 }

@@ -96,13 +96,8 @@ namespace GZJ_ENGINE {
 		return id;
 	}
 
-	void GZJShader::Load()
+	void GZJShader::DoLoad()
 	{
-		if (_state != ResState::UNLOAD)
-			return;
-
-		_state = ResState::LOADING;
-
 		ShaderID it_1 = LoadShader(_name, VERTEX_SHADER);
 		ShaderID it_2 = LoadShader(_name, FRAGMENT_SHADER);
 		ShaderID id = glCreateProgram();
@@ -116,19 +111,11 @@ namespace GZJ_ENGINE {
 		glDeleteShader(it_2);
 
 		_id = id;
-
-		_state = ResState::LOADED;
 	}
 
-	void GZJShader::Unload()
+	void GZJShader::DoUnLoad()
 	{
-		if (_state != ResState::LOADED)
-			return;
-
-		//glDeleteProgram(_id);
 		dataMap.clear();
-
-		_state = ResState::UNLOAD;
 	}
 
 	String GZJShader::GetName()
@@ -182,6 +169,11 @@ namespace GZJ_ENGINE {
 		}
 		if (loc == none) return;
 		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
+	}
+
+	ResourceType GZJShader::GetResType()
+	{
+		return Shader;
 	}
 
 }

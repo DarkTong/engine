@@ -66,7 +66,6 @@ namespace GZJ_ENGINE {
 		else if (param == MOVE_PITCH)
 		{
 			rotDegree.x += yOffset * pitchSpeed;
-			cout << rotDegree.x + rot.x << " " << rotDegree.x << endl;
 			if (rot.x + rotDegree.x > 80.0f || rot.x + rotDegree.x < -80.0f)
 				rotDegree.x = 0.000f;
 		}
@@ -76,8 +75,8 @@ namespace GZJ_ENGINE {
 		rot = rot + rotDegree;
 		transform->SetVector3(Position, pos);
 		transform->SetVector3(Rotation, rot);
-		cout << "rotation:" << showV3(transform->GetVector3(Rotation)) << endl;
-		cout << "front:" << showV3(transform->GetVector3(Front)) << endl;
+		//cout << "rotation:" << showV3(transform->GetVector3(Rotation)) << endl;
+		//cout << "front:" << showV3(transform->GetVector3(Front)) << endl;
 	}
 
 	void GZJMove::LogicUpdate()
