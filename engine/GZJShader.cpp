@@ -133,25 +133,115 @@ namespace GZJ_ENGINE {
 		glUseProgram(_id);
 	}
 
-	void GZJShader::SetBool(const String & name, bool value) const
+	void GZJShader::SetBool(const ShaderData& type, bool value) const
 	{
-		glUniform1i(glGetUniformLocation(_id, name.c_str()), (int)value);
+		//glUniform1i(glGetUniformLocation(_id, name.c_str()), (int)value);
 	}
 
-	void GZJShader::SetInt(const String & name, int value) const
+	void GZJShader::SetInt(const ShaderData& type, int value) const
 	{
-		glUniform1i(glGetUniformLocation(_id, name.c_str()), value);
+		int loc = GL_INVALID_INDEX;
+		//glUniform1i(glGetUniformLocation(_id, name.c_str()), value);
+		switch (type)
+		{
+		case Mate_DiffuseTexture:
+			loc = glGetUniformLocation(_id, "mesh_mate.diffuse_texture");
+			break;
+		case Mate_SpecularTexture:
+			loc = glGetUniformLocation(_id, "mesh_mate.specular_texture");
+			break;
+		case Mate_Shininess:
+			loc = glGetUniformLocation(_id, "mesh_mate.shininess");
+			break;
+		}
+
+		if (GL_INVALID_INDEX != loc)
+		{
+			glUniform1i(loc, value);
+		}
+
+		
 	}
 
-	void GZJShader::SetFloat(const String & name, float value) const
+	void GZJShader::SetFloat(const ShaderData& type, float value) const
 	{
-		glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
+		//glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
+		int loc = GL_INVALID_INDEX;
+		switch (type)
+		{
+		case Light_Intensity:
+			loc = glGetUniformLocation(_id, "light.intensity");
+			break;
+		case Light_Param_K1:
+			loc = glGetUniformLocation(_id, "light.param_k1");
+			break;
+		case Light_Param_K2:
+			loc = glGetUniformLocation(_id, "light.param_k2");
+			break;
+		case Light_Inner_Angle:
+			loc = glGetUniformLocation(_id, "light.inner_angle");
+			break;
+		case Light_Outter_Angle:
+			loc = glGetUniformLocation(_id, "light.outter_angle");
+			break;
+		}
+
+		if (GL_INVALID_INDEX != loc)
+		{
+			glUniform1f(loc, value);
+		}
+
+	}
+
+	void GZJShader::SetVector2(const ShaderData & type, Vector2 value) const
+	{
+		int loc = GL_INVALID_INDEX;
+		
+		if (GL_INVALID_INDEX != loc)
+		{
+			glUniform2f(loc, value.x, value.y);
+		}
+	}
+
+	void GZJShader::SetVector3(const ShaderData& type, Vector3 value) const
+	{
+		/*glUniform3f(glGetUniformLocation(_id, name.c_str()), 
+			value.x, value.y, value.z);*/
+		int loc = GL_INVALID_INDEX;
+
+		switch (type)
+		{
+		case Light_Ambient:
+			loc = glGetUniformLocation(_id, "light.ambient");
+			break;
+		case Light_Diffuse:
+			loc = glGetUniformLocation(_id, "light.diffuse");
+			break;
+		case Light_Specular:
+			loc = glGetUniformLocation(_id, "light.specular");
+			break;
+		case Light_Position:
+			loc = glGetUniformLocation(_id, "light.position");
+			break;
+		case Light_Direction:
+			loc = glGetUniformLocation(_id, "light.direction");
+			break;
+		case View_ViewPosition:
+			loc = glGetUniformLocation(_id, "view_position");
+			break;
+		}
+
+		if (GL_INVALID_INDEX != loc)
+		{
+			glUniform3f(loc, value.x, value.y, value.z);
+		}
+
+		
 	}
 
 	void GZJShader::SetMatrix(ShaderData param, Vector4x4 data)
 	{
-		const unsigned none = -1;
-		unsigned int loc = -1;
+		unsigned int loc = GL_INVALID_INDEX;
 		switch (param)
 		{
 		case Shader_LocalToWorld:
@@ -163,12 +253,11 @@ namespace GZJ_ENGINE {
 		case Shader_ViewToProjection:
 			loc = glGetUniformLocation(_id, "view2projection");
 			break;
-		default:
-			std::cout << "GZJShader SetMatrix ²ÎÊý´íÎó!!!" << std::endl;
-			assert(false);
 		}
-		if (loc == none) return;
-		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
+		if (GL_INVALID_INDEX != loc)
+		{
+			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
+		}
 	}
 
 	ResourceType GZJShader::GetResType()

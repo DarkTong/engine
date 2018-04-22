@@ -18,7 +18,7 @@ namespace GZJ_ENGINE {
 		// µ¥Àý
 		static GZJWindowPtr GetInstance() {
 			if (_instance == nullptr) {
-				_instance = std::make_shared<GZJWindow>();
+				_instance = std::make_shared<GZJWindow>(1600, 900);
 			}
 			return _instance;
 		}
@@ -33,7 +33,7 @@ namespace GZJ_ENGINE {
 		
 
 	public:
-		GZJWindow(unsigned int scr_width = 800, unsigned int scr_height = 600) :
+		GZJWindow(unsigned int scr_width = 1600, unsigned int scr_height = 900) :
 			SCR_WIDTH(scr_width), SCR_HEIGHT(scr_height) {
 			window = nullptr;
 			WIN_NAME = "GZJ_ENGINE";

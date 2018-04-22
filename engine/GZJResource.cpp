@@ -41,6 +41,11 @@ namespace GZJ_ENGINE {
 		}
 	}
 
+	ResourceHandle GZJResource::GetResHandle()
+	{
+		return _handle;
+	}
+
 	void GZJResource::Load()
 	{
 		try {

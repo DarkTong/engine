@@ -17,10 +17,10 @@ namespace GZJ_ENGINE {
 		resMap.clear();
 		_nameSet.clear();
 
-		PrepareAll();
+		//PrepareAll();
 
 		//if (LOAD_ALL_SHADER_WHEN_CREATE)
-		LoadAll();
+		//LoadAll();
 	}
 
 	void GZJShaderManager::ShutDown()

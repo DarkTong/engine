@@ -28,4 +28,24 @@ namespace GZJ_ENGINE {
 			_findclose(hFile);
 		}
 	}
+	float GZJTools::clamp(float & v, const float & lo, const float & hi)
+	{
+		if (v < lo)
+			v = lo;
+		else if (v > hi)
+			v = hi;
+		
+		return v;
+	}
+	Vector3 GZJTools::clamp(Vector3 & v, const Vector3 & lo, const Vector3 & hi)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			if (v[i] < lo[i])
+				v[i] = lo[i];
+			else if (v[i] > hi[i])
+				v[i] = hi[i];
+		}
+		return v;
+	}
 }

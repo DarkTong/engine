@@ -14,7 +14,6 @@ namespace GZJ_ENGINE{
 
 	enum ResLoadState
 	{
-		ResLoadState_Open,
 		ResLoadState_Close,
 		ResLoadState_Free,
 		ResLoadState_Busy,

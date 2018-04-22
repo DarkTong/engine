@@ -1,5 +1,4 @@
-#ifndef __GZJ_MODEL__
-#define __GZJ_MODEL__
+#pragma once
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -11,6 +10,7 @@
 #include "GZJMeshManager.h"
 #include "GZJTextureManager.h"
 #include "GZJShader.h"
+#include "GZJLight.h"
 
 namespace GZJ_ENGINE{
     class GZJModel : public GZJResource{
@@ -100,6 +100,10 @@ namespace GZJ_ENGINE{
 		void SetVec3(ShaderData shaderData, const Vector3& vec3);
 		void SetMat4(ShaderData shaderData, const Vector4x4& mat4);
 
+		/** 设置光线数据
+		*/
+		void SetLight(const LightType& type, GZJLightPtr light);
+
 		/** 获取资源类型
 		*/
 		ResourceType GetResType();
@@ -117,4 +121,5 @@ namespace GZJ_ENGINE{
     };
 }
 
-#endif //__GZJ_MODEL__
+#include "GZJModelManager.h"
+

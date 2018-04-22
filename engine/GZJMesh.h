@@ -1,10 +1,7 @@
-#ifndef __GZJ_MESH__
-#define __GZJ_MESH__
+#pragma once
 
 #include "GZJRequire.h"
 #include "GZJResource.h"
-#include "GZJResourceManager.h"
-#include "GZJTextureManager.h"
 #include "GZJShader.h"
 
 namespace GZJ_ENGINE {
@@ -28,6 +25,9 @@ namespace GZJ_ENGINE {
 
 
 	class GZJMesh : public GZJResource {
+	private:
+		// 静态全局数据
+		static const int MAX_MATERIAL = 1;
 	private:
 
 		unsigned int VAO, VBO, EBO;
@@ -72,4 +72,6 @@ namespace GZJ_ENGINE {
 		void DoUnLoad();
 	};
 }
-#endif // __GZJ_MESH__
+
+#include "GZJResourceManager.h"
+#include "GZJTextureManager.h"

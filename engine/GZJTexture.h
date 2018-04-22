@@ -67,6 +67,11 @@ namespace GZJ_ENGINE {
 
 		unsigned int GetType();
 
+		void SetType(TextureType type)
+		{
+			this->type = type;
+		}
+
 		ResourceType GetResType();
 	};
 }

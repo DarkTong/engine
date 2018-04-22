@@ -24,6 +24,14 @@ namespace GZJ_ENGINE {
 		}
 		return resPtr;
 	}
+	GZJResourcePtr GZJResourceManager::FindResByHandle(const ResourceHandle & handle)
+	{
+		if (handle > 0 and handle < resHandle)
+		{
+			return resHandleMap[handle];
+		}
+		return nullptr;
+	}
 	void GZJResourceManager::LoadAll(bool isAsyncLoad)
 	{
 		if(isAsyncLoad)

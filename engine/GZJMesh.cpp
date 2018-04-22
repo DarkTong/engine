@@ -62,8 +62,8 @@ namespace GZJ_ENGINE {
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
 
 		// 贴图位置
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
 
 		glBindVertexArray(0);
 	}
@@ -92,19 +92,22 @@ namespace GZJ_ENGINE {
 				if (texture->GetState() == LOADED and texture->GetID())
 					// 保证已经Load 同时 texturen不为0
 				{
-					String name = "";
-					if (texture->GetType() == Texture_Diffuse)
-						name = "texture_diffuse" + std::to_string(diffuseNum++);
-					else if (texture->GetType() == Texture_Specular)
-						name = "texture_specular" + std::to_string(specularNum++);
+					ShaderData type = ShaderData::Shader_None;
+					if (diffuseNum <= MAX_MATERIAL and texture->GetType() == Texture_Diffuse)
+						type = Mate_DiffuseTexture, diffuseNum++;
+					else if (specularNum <= MAX_MATERIAL and texture->GetType() == Texture_Specular)
+						type = Mate_SpecularTexture, specularNum++;
 
-					if (name != "")
+					if (type != ShaderData::Shader_None)
 					{
-						shader->SetInt(name, idx);
+						shader->SetInt(type, idx);
 						glBindTexture(GL_TEXTURE_2D, texture->GetID());
 					}
 				}
 			}
+
+			// 设置放光系数
+			shader->SetInt(Mate_Shininess, 32);
 
 			// 渲染
 			//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;

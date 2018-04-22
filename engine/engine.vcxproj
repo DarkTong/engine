@@ -83,7 +83,8 @@
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tinyxml.lib;opengl32.lib;glfw3.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>libcmtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +131,8 @@
     <ClInclude Include="..\third\include\GLFW\glfw3native.h" />
     <ClInclude Include="..\third\include\KHR\khrplatform.h" />
     <ClInclude Include="..\third\include\stb_image.h" />
+    <ClInclude Include="..\third\include\tinyxml\tinystr.h" />
+    <ClInclude Include="..\third\include\tinyxml\tinyxml.h" />
     <ClInclude Include="GZJEvent.h" />
     <ClInclude Include="GZJEventConstant.h" />
     <ClInclude Include="GZJEventParamObj.h" />
@@ -137,11 +140,15 @@
     <ClInclude Include="GZJCamera.h" />
     <ClInclude Include="GZJCommon.h" />
     <ClInclude Include="GZJHeadFile.h" />
+    <ClInclude Include="GZJLight.h" />
+    <ClInclude Include="GZJLightManager.h" />
     <ClInclude Include="GZJMesh.h" />
     <ClInclude Include="GZJMeshManager.h" />
     <ClInclude Include="GZJModel.h" />
     <ClInclude Include="GZJModelManager.h" />
     <ClInclude Include="GZJMove.h" />
+    <ClInclude Include="GZJParallelLight.h" />
+    <ClInclude Include="GZJPointLight.h" />
     <ClInclude Include="GZJRender.h" />
     <ClInclude Include="GZJRenderStatic.h" />
     <ClInclude Include="GZJRenderUtil.h" />
@@ -152,6 +159,7 @@
     <ClInclude Include="GZJResourceManager.h" />
     <ClInclude Include="GZJShader.h" />
     <ClInclude Include="GZJShaderManager.h" />
+    <ClInclude Include="GZJSpotLight.h" />
     <ClInclude Include="GZJTexture.h" />
     <ClInclude Include="GZJTextureManager.h" />
     <ClInclude Include="GZJTime.h" />
@@ -165,11 +173,15 @@
     <ClCompile Include="GZJEvent.cpp" />
     <ClCompile Include="GZJEventSystem.cpp" />
     <ClCompile Include="GZJCamera.cpp" />
+    <ClCompile Include="GZJLight.cpp" />
+    <ClCompile Include="GZJLightManager.cpp" />
     <ClCompile Include="GZJMesh.cpp" />
     <ClCompile Include="GZJMeshManager.cpp" />
     <ClCompile Include="GZJModel.cpp" />
     <ClCompile Include="GZJModelManager.cpp" />
     <ClCompile Include="GZJMove.cpp" />
+    <ClCompile Include="GZJParallelLight.cpp" />
+    <ClCompile Include="GZJPointLight.cpp" />
     <ClCompile Include="GZJRenderStatic.cpp" />
     <ClCompile Include="GZJRequire.cpp" />
     <ClCompile Include="GZJResource.cpp" />
@@ -178,6 +190,7 @@
     <ClCompile Include="GZJResourceManager.cpp" />
     <ClCompile Include="GZJShader.cpp" />
     <ClCompile Include="GZJShaderManager.cpp" />
+    <ClCompile Include="GZJSpotLight.cpp" />
     <ClCompile Include="GZJTest.cpp" />
     <ClCompile Include="GZJTexture.cpp" />
     <ClCompile Include="GZJTextureManager.cpp" />

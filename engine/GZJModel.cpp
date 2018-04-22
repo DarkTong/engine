@@ -180,8 +180,6 @@ namespace GZJ_ENGINE {
 	void GZJModel::SetMat4(ShaderData shaderData, const Vector4x4& mat4)
 	{
 		switch (shaderData) {
-		case ShaderData::Transform:
-			break;
 		case ShaderData::Shader_LocalToWorld:
 			break;
 		case ShaderData::Shader_WorldToView:
@@ -196,6 +194,48 @@ namespace GZJ_ENGINE {
 		dataMat4[shaderData] = Vector4x4(mat4);
 	}
 
+	void GZJModel::SetLight(const LightType& type, GZJLightPtr light)
+	{		
+		shader->SetVector3(ShaderData::Light_Ambient,
+			light->GetVector3(LightData_Ambient));
+		shader->SetVector3(ShaderData::Light_Diffuse,
+			light->GetVector3(LightData_Diffuse));
+		shader->SetVector3(ShaderData::Light_Specular,
+			light->GetVector3(LightData_Specular));
+		shader->SetFloat(ShaderData::Light_Intensity,
+			light->GetFloat(LightData_Intensity));
+		auto tmp = light->GetFloat(LightData_Intensity);
+
+		shader->SetVector3(ShaderData::Light_Position,
+			light->GetVector3(LightData_Position));
+
+		if (type == LightType::Light_ParallelLight)
+		{
+			shader->SetVector3(ShaderData::Light_Direction,
+				light->GetVector3(LightData_Direction));
+
+		}
+		else if (type == LightType::Light_PointLight)
+		{
+			shader->SetFloat(ShaderData::Light_Param_K1,
+				light->GetFloat(LightData_Param_K1));
+			shader->SetFloat(ShaderData::Light_Param_K2,
+				light->GetFloat(LightData_Param_K2));
+
+		}
+		else if (type == LightType::Light_SpotLight)
+		{
+			shader->SetVector3(ShaderData::Light_Direction,
+				light->GetVector3(LightData_Direction));
+			shader->SetFloat(ShaderData::Light_Inner_Angle,
+				light->GetFloat(LightData_InnerAngle));
+			shader->SetFloat(ShaderData::Light_Outter_Angle,
+				light->GetFloat(LightData_OutterAngle));
+
+		}
+	}
+
+
 	ResourceType GZJModel::GetResType()
 	{
 		return Model;
@@ -209,9 +249,12 @@ namespace GZJ_ENGINE {
 		{
 			aiString str;
 			String name;
+			GZJTexturePtr texPtr;
 			material->GetTexture(ai_type, idx, &str);
 			name = _direction + "//" + String(str.C_Str());
-			textureMgr->CreateRes(name);
+			texPtr = std::static_pointer_cast<GZJTexture>(
+				textureMgr->CreateRes(name));
+			texPtr->SetType(type);
 			textures.push_back(name);
 		}
 		return textures;

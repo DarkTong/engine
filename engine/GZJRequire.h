@@ -25,6 +25,9 @@
 #include <vector>
 #include <queue>
 #include <io.h> 
+#include <cstring>
+#include <cmath>
+#include <algorithm>
 
 namespace GZJ_ENGINE {
 	
@@ -47,16 +50,16 @@ namespace GZJ_ENGINE {
 		UNLOAD,
 		LOADING,
 		LOADED,
-		OLDED,
 	};
 	/** 资源类型
 	*/
 	enum ResourceType
 	{
-		Texture,
-		Mesh,
-		Model,
-		Shader
+		Texture		= 0,
+		Mesh		= 1,
+		Model		= 2,
+		Shader,
+		Light,
 	};
 	//-------- 重命名 --------
 	/** 资源句柄
@@ -96,6 +99,11 @@ namespace GZJ_ENGINE {
 	class GZJEvent;
 	class GZJEventParamObj;
 	class GZJResourceLoad;
+	class GZJLightManager;
+	class GZJLight;
+	class GZJParallelLight;
+	class GZJPointLight;
+	class GZJSpotLight;
 
 
 	class GZJTools;
@@ -127,9 +135,14 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJEventSystem>				GZJEventSystemPtr;
 	typedef SharedPtr<GZJEventParamObj>				EventParamObjPtr;
 	typedef SharedPtr<GZJResourceLoad>				GZJResourceLoadPtr;
+	typedef SharedPtr<GZJLightManager>				GZJLightManagerPtr;
+	typedef SharedPtr<GZJLight>						GZJLightPtr;
+	typedef SharedPtr<GZJParallelLight>				GZJParalleLightPtr;
+	typedef SharedPtr<GZJPointLight>				GZJPointLightPtr;
+	typedef SharedPtr<GZJSpotLight>					GZJSpotLightPtr;
 
 	// typedef
-	typedef FastDelegate1<const GZJEventParamObj&> NormalDelegate;
+	typedef FastDelegate1<const GZJEventParamObj&>	NormalDelegate;
 
 	// -------- common function --------
 	String showV3(Vector3 tmp);

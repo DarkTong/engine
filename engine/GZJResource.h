@@ -58,6 +58,10 @@ namespace GZJ_ENGINE {
 		*/
 		virtual ResourceType GetResType() = 0;
 
+		/** 获取资源句柄
+		*/
+		ResourceHandle GetResHandle();
+
 	private:
 		// 对内接口
 

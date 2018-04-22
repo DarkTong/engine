@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<LightResource name="LightResource">
+    <Light id = "1" type="ParallelLight">
+        <model name="cube1"/>
+        <position x="5.0" y="6.0" z="100.0"/>
+        <rotation x="-45.0" y="180.0" z="0.0"/>
+        <scale x="0.5" y="0.5" z="0.5"/>
+        <ambient x=".5" y=".5" z=".5"/>
+        <diffuse x="1.0" y="1.0" z="1.0"/>
+        <specular x=".7" y=".7" z=".7"/>
+        <intensity value="1.0"/> 
+    </Light>
+    <Light id = "2" type="PointLight">
+        <model name="cube1"/>
+        <position x="10.0" y="10.0" z="10.0"/>
+        <rotation x="0.0" y="0.0" z="0.0"/>
+        <scale x="0.5" y="0.5" z="0.5"/>
+        <ambient x="0.3" y="0.3" z="0.3"/>
+        <diffuse x="1.0" y="1.0" z="1.0"/>
+        <specular x=".7" y=".7" z=".7"/>
+        <intensity value="1.0"/>
+        <param_k1 value=".045"/>
+        <param_k2 value=".0075"/>
+    </Light>
+    <Light id = "3" type="SpotLight">
+        <model name="cube1"/>
+        <position x="0.0" y="3.0" z="3.0"/>
+        <rotation x="0.0" y="70.0" z="0.0"/>
+        <scale x="0.5" y="0.5" z="0.5"/>
+        <ambient x="0.2" y="0.2" z="0.2"/>
+        <diffuse x="1.0" y="1.0" z="1.0"/>
+        <specular x=".5" y=".5" z=".5"/>
+        <intensity value="1.0"/>
+        <inner_angle value="22.0"/>
+        <outter_angle value="30.0"/>
+        <param_k1 value=".045"/>
+        <param_k2 value=".0075"/>
+    </Light>
+</LightResource>

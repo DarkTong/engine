@@ -3,6 +3,7 @@
 
 #include "GZJRequire.h"
 #include "GZJEventSystem.h"
+#include "GZJTime.h"
 #include "GZJTransform.h"
 
 

@@ -1,5 +1,6 @@
 #ifndef _GZJ_SHADER_
 #define _GZJ_SHADER_
+
 #include "GZJRequire.h"
 #include "GZJResource.h"
 
@@ -13,40 +14,66 @@ namespace GZJ_ENGINE {
 	};
 
 	enum ShaderData {
-		Transform,
-		TexCoord,
-		DiffuseTexCoord1,
-		SpecularTexCoord1,
-		AmbientLight,
-		AmbientStrong,
-		DiffuseLight,
-		DiffuseStrong,
-		SpecularLight,
-		SpecularStrong,
+		TexCoords,
+
+		// 材质相关
+		Mate_DiffuseTexture,
+		Mate_SpecularTexture,
+		Mate_Shininess,			// 反光系数
+
+		// 光照相关
+		Light_Ambient,
+		Light_Diffuse,
+		Light_Specular,
+		Light_Intensity,
+		Light_Position,
+		Light_Direction,
+		Light_Param_K1,			// 一次项距离的系数
+		Light_Param_K2,			// 二次项距离的系数
+		Light_Inner_Angle,		// 内切光角
+		Light_Outter_Angle,		// 外切光角
+
+		// 观察者
+		View_ViewPosition,
 
 		// 坐标相关
 		Shader_LocalToWorld,
 		Shader_WorldToView,
 		Shader_ViewToProjection,
+
+		// 空
+		Shader_None,
 	};
 
 	/** ShaderData的字符串表示
 	*/
 	const std::vector<String> ShaderDataStr = {
-		"transform",
-
 		"texcoord",
-		"diffuseTexCoord1",
-		"specularTexCoord1",
 
-		"ambientLight",
-		"ambientStrong",
+		// 材质相关
+		"mesh_mate.diffuse_texture",
+		"mesh_mate.specular_texture",
+		"mesh_mate.shininess"
 
-		"diffuseLight",
-		"diffuseStrong",
+		// 光照相关
+		"light.ambient",
+		"light.diffuse",
+		"light.specular",
+		"light.intensity",
+		"light.position",
+		"light.direction",
+		"light.param_k1",
+		"light.param_k2",
+		"light.inner_angle",
+		"light.outter_angle",
 
-		"specularLight",
-		"specularStrong",
+		// 观察者
+		"view_position",
+
+		// 坐标相关
+		"local2world",
+		"world2view",
+		"view2projection",
 	};
 
 	typedef std::map<String, unsigned int> ShaderDataMap;
@@ -122,19 +149,31 @@ namespace GZJ_ENGINE {
 		@param 变量名
 		@param 修改值
 		*/
-		void SetBool(const String& name, bool value) const;
+		void SetBool(const ShaderData& type, bool value) const;
 
 		/** 设置着色器里的整形值
 		@param 变量名
 		@param 修改值
 		*/
-		void SetInt(const String& name, int value) const;
+		void SetInt(const ShaderData& type, int value) const;
 
 		/** 设置着色器里的浮点值
 		@param 变量名
 		@param 修改值
 		*/
-		void SetFloat(const String& name, float value) const;
+		void SetFloat(const ShaderData& type, float value) const;
+
+		/** 设置着色器Vector3数据
+		@param 变量名
+		@param 值
+		*/
+		void SetVector2(const ShaderData& type, Vector2 value) const;
+
+		/** 设置着色器Vector3数据
+		@param 变量名
+		@param 值
+		*/
+		void SetVector3(const ShaderData& type, Vector3 value) const;
 
 		/** 设置相关的矩阵数据
 		*/

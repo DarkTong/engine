@@ -5,6 +5,7 @@
 #include "GZJTime.h"
 #include "GZJTransform.h"
 #include "GZJRenderStatic.h"
+#include "GZJLightManager.h"
 #include "GZJShaderManager.h"
 #include "GZJModelManager.h"
 #include "GZJMeshManager.h"

@@ -51,6 +51,12 @@ namespace GZJ_ENGINE {
 		*/
 		GZJResourcePtr FindResByName(const String& name);
 
+		/** 按照资源句柄查找资源
+		@param 资源句柄
+		@return 没有放回nullptr
+		*/
+		GZJResourcePtr FindResByHandle(const ResourceHandle& handle);
+
 		/** 准备所有资源
 		*/
 		virtual void PrepareAll() = 0;
@@ -89,7 +95,8 @@ namespace GZJ_ENGINE {
 		// GZJResourceManagerPtr GetSelf() const;
 
 	protected:
-		// 对内接口
+		/** 资源创建的具体方法，由派生类具体实现。
+		*/
 		virtual GZJResource* createImp(const String& name) = 0;
 
 	};

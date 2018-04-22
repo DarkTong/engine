@@ -61,15 +61,15 @@ namespace GZJ_ENGINE {
 		}
 		else if (param == MOVE_YAW)
 		{
-			rotDegree.y += -1.0f * xOffset * yawSpeed;
+			rotDegree.y += -1.0f * xOffset * yawSpeed * GZJTime::GetInstance()->frame_time;
 		}
 		else if (param == MOVE_PITCH)
 		{
-			rotDegree.x += yOffset * pitchSpeed;
+			rotDegree.x += yOffset * pitchSpeed * GZJTime::GetInstance()->frame_time;
 			if (rot.x + rotDegree.x > 80.0f || rot.x + rotDegree.x < -80.0f)
 				rotDegree.x = 0.000f;
 		}
-		pos = pos + dir * moveSpeed;
+		pos = pos + dir * moveSpeed * GZJTime::GetInstance()->frame_time;
 		//cout << "rotDegree:" << showV3(rotDegree) << endl;
 		//cout << "rot:" << showV3(rot) << endl;
 		rot = rot + rotDegree;

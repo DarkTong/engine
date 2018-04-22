@@ -7,6 +7,10 @@
 
 namespace GZJ_ENGINE {
 	class GZJModelManager :public GZJResourceManager {
+	public:
+		// µ¥Àý£º
+		static GZJModelManagerPtr _instance;
+		static GZJModelManagerPtr GetInstance();
 
 	public:
 		GZJModelManager();

@@ -12,12 +12,18 @@ using namespace GZJ_ENGINE;
 
 GZJWindowPtr win = GZJWindow::GetInstance();
 GZJTimePtr gzjTime = GZJTime::GetInstance();
+GZJLightManagerPtr lightMgrPtr = GZJLightManager::GetInstance();
 GZJResourceLoadPtr resLoadPtr = GZJResourceLoad::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
-GZJMeshManagerPtr meshMgrPtr;
-GZJModelManagerPtr modelMgrPtr;
-GZJModelPtr modelPtr;
+GZJModelManagerPtr modelMgrPtr = GZJModelManager::GetInstance();
+
 GZJModelPtr modelPtr1;
+GZJModelPtr modelPtr2;
+const int NUM_CUBE = 10;
+GZJModelPtr cubesModel[10];
+GZJModelPtr parallelLightModel;
+GZJModelPtr pointLightModel;
+GZJModelPtr spotLightModel;
 GZJCamera mainCamera;
 GZJEventSystemPtr eventSystemPtr = GZJEventSystem::GetInstance();
 //GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
@@ -53,7 +59,8 @@ Vertex vertice;
 //};
 unsigned int VAO, VBO;
 GZJShaderPtr shader1, shader2;
-GZJMeshPtr mesh;
+GZJShaderPtr parallelLS, pointLS, spotLS, normalS;
+GZJLightPtr parallelLightPtr, pointLightPtr, spotLightPtr;
 
 
 int main() {
@@ -73,57 +80,82 @@ int main() {
 
 		resLoadPtr->StartUp();
 		//eventSystemPtr->StartUp();
+		lightMgrPtr->StartUp();
 		shaderMgrPtr->StartUp();
 		//meshMgrPtr = std::dynamic_pointer_cast<GZJMeshManager>((new GZJMeshManager)->GetSelf());
-		modelMgrPtr = MakeShared<GZJModelManager>();
 		//meshMgrPtr->StartUp();
 		modelMgrPtr->StartUp();
+
+		// 读取全局光照（临时）（使用写时复制）
+		lightMgrPtr->GetSceneLightMap(1);
+
+		// 临时获取平行光，用于测试
+		auto it = lightMgrPtr->GetSceneLightMap(1).find(1);
+		parallelLightPtr = it->second;
+		it = lightMgrPtr->GetSceneLightMap(1).find(2);
+		pointLightPtr = it->second;
+		it = lightMgrPtr->GetSceneLightMap(1).find(3);
+		spotLightPtr = it->second;
 
 		// 临时 ---------------- create shader program ----------
 		// build and compile our shader program
 		// ------------------------------------
 		mainCamera.SetVector3(CameraParam::Position, Vector3(0, 0, -10));
-		mainCamera.moveCmp->moveSpeed = .1f;
-		mainCamera.moveCmp->pitchSpeed = 0.7f;
-		mainCamera.moveCmp->yawSpeed = 0.7f;
+		mainCamera.moveCmp->moveSpeed = .007f;
+		mainCamera.moveCmp->pitchSpeed = .02f;
+		mainCamera.moveCmp->yawSpeed = .02f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
 		shader1 = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->FindResByName("model_1"));
-		shader2 = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->FindResByName("whiteLight_1"));
-		//mesh = std::dynamic_pointer_cast<GZJMesh>( meshMgrPtr->CreateRes("test1") );
-		//Vertices vertices;
-		//Vertex vertex1, vertex2, vertex3;
-		//vertex1.position = Vector3(-0.5f, -0.5f, 0.0f);
-		//vertex1.normal = Vector3(0.0f, 0.0f, 0.0f);
+			(shaderMgrPtr->CreateRes("whiteLight_1"));
+		parallelLS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("parallel_light"));
+		pointLS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("point_light"));
+		spotLS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("spot_light"));
+		normalS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("normal"));
 
-		//vertex2.position = Vector3(0.5f, -0.5f, 0.0f);
-		//vertex2.normal = Vector3(0.0f, 0.0f, 0.0f);
+		shader1->Prepare();
+		shader1->SyncLoad();
+		parallelLS->Prepare();
+		parallelLS->SyncLoad();
+		pointLS->Prepare();
+		pointLS->SyncLoad();
+		spotLS->Prepare();
+		spotLS->SyncLoad();
+		normalS->Prepare();
+		normalS->SyncLoad();
 
-		//vertex3.position = Vector3(0.0f, 0.5f, 0.0f);
-		//vertex3.normal = Vector3(0.0f, 0.0f, 0.0f);
-
-		//vertices.push_back(vertex1);
-		//vertices.push_back(vertex2);
-		//vertices.push_back(vertex3);
-
-		//Indices indice({0,1,2,});
-		//Textures tex;
-		//mesh->Prepare(vertices, indice, tex);
-
-		//mesh->Load();
-
-		modelPtr = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->FindResByName("cube1"));
-		//modelPtr->transform.SetVector3(Scale, Vector3(0.01f, 0.01f, 0.01f));
-		//modelPtr->transform.SetVector3(Scale, GZJTransform::ONE);
 
 		modelPtr1 = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->FindResByName("cube2"));
+			(modelMgrPtr->CreateRes("cube1"));
+		modelPtr1->SyncLoad();
 		modelPtr1->transform.SetVector3(Position, Vector3(10.0f, 0.0f, 0.0f));
 
-		modelPtr->SyncLoad();
-		modelPtr1->SyncLoad();
+		//modelPtr2 = std::static_pointer_cast<GZJModel>
+		//	(modelMgrPtr->CreateRes("nanosuit"));
+		//modelPtr2->SyncLoad();
+		//modelPtr2->transform.SetVector3(Scale, Vector3(0.2, 0.2, 0.2));
+
+		for (int i = 0; i < NUM_CUBE; ++i)
+		{
+			auto& cube = cubesModel[i];
+			cube = std::static_pointer_cast<GZJModel>(
+				modelMgrPtr->CreateRes("cube3"));
+			cube->SyncLoad();
+			cube->transform.SetVector3(Position,
+				Vector3(rand() % 15, rand() % 15, rand() % 15));
+			cube->transform.SetVector3(Rotation,
+				Vector3(rand() % 360, rand() % 360, rand() % 360));
+		}
+
+		parallelLightModel = parallelLightPtr->GetModel();
+		pointLightModel = pointLightPtr->GetModel();
+		spotLightModel = spotLightPtr->GetModel();
+
+		cout << showV3(spotLightModel->transform.GetVector3(Rotation)) << endl;
+		cout << showV3(spotLightModel->transform.GetVector3(Front)) << endl;
 
 		glEnable(GL_DEPTH_TEST);
 		while (!glfwWindowShouldClose(win->GetWindow()) && game_is_running)
@@ -143,12 +175,9 @@ int main() {
 			win->Process();
 		}
 		//renderStaitc->ClearRenderDatas();
-		//glDeleteVertexArrays(1, &VAO);
-		//glDeleteBuffers(1, &VBO);
 		win->Close();
 		shaderMgrPtr->ShutDown();
 		//eventSystemPtr->ShutDown();
-		std::cout << "cnt:" << meshMgrPtr.use_count() << std::endl;
 		//meshMgrPtr->ShutDown();
 		modelMgrPtr->ShutDown();
 		resLoadPtr->ShutDown();
@@ -163,7 +192,8 @@ void update_game() {
 }
 
 void display_game() {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//shader->Use();
@@ -172,19 +202,41 @@ void display_game() {
 	//mesh->Draw(shader);
 	Before_Draw();
 
-	Vector4x4 projection;
-	float tmp = 1.0f * win->GetInt(Win_Width) / win->GetInt(Win_Height);
-	projection = glm::perspective(glm::radians(45.0f), tmp, 0.1f, 100.0f);
+	InitShader();
 
-	modelPtr->SetShader(shader2);
-	modelPtr->SetMat4(Shader_WorldToView, mainCamera.LookAt());
-	modelPtr->SetMat4(Shader_ViewToProjection, projection);
-	modelPtr->Draw();
+	/*modelPtr1->SetShader(shader1);
+	modelPtr1->Draw();*/
 
-	modelPtr1->SetShader(shader1);
-	modelPtr1->SetMat4(Shader_WorldToView, mainCamera.LookAt());
-	modelPtr1->SetMat4(Shader_ViewToProjection, projection);
-	modelPtr1->Draw();
+	parallelLightModel->SetShader(shader1);
+	parallelLightModel->Draw();
+	pointLightModel->SetShader(shader1);
+	pointLightModel->Draw();
+	spotLightModel->SetShader(shader1);
+	spotLightModel->Draw();
+
+	//modelPtr2->SetShader(parallelLS);
+	//parallelLS->Use();
+	//modelPtr2->SetLight(LightType::Light_ParallelLight, parallelLightPtr);
+	//modelPtr2->Draw();
+
+	for (int i = 0; i < NUM_CUBE; ++i)
+	{
+		GZJModelPtr& cube = cubesModel[i];
+		// parallel
+		//cube->SetShader(parallelLS);
+		//parallelLS->Use();
+		//cube->SetLight(LightType::Light_ParallelLight, parallelLightPtr);
+		// point
+		//cube->SetShader(pointLS);
+		//pointLS->Use();
+		//cube->SetLight(LightType::Light_PointLight, pointLightPtr);
+		// spot light
+		cube->SetShader(spotLS);
+		spotLS->Use();
+		cube->SetLight(LightType::Light_SpotLight, spotLightPtr);
+
+		cube->Draw();
+	}
 
 	//renderStaitc->Render();
 }
@@ -201,11 +253,34 @@ void InitShader()
 	float tmp = 1.0f * win->GetInt(Win_Width) / win->GetInt(Win_Height);
 	projection = glm::perspective(glm::radians(45.0f), tmp, 0.1f, 100.0f);
 
+	// light
+	shader1->Use();
 	shader1->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
 	shader1->SetMatrix(Shader_ViewToProjection, projection);
 
-	shader2->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
-	shader2->SetMatrix(Shader_ViewToProjection, projection);
+	// parallel light
+	parallelLS->Use();
+	parallelLS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	parallelLS->SetMatrix(Shader_ViewToProjection, projection);
+	parallelLS->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
+
+	// point light
+	pointLS->Use();
+	pointLS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	pointLS->SetMatrix(Shader_ViewToProjection, projection);
+	pointLS->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
+
+	// spot light
+	spotLS->Use();
+	spotLS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	spotLS->SetMatrix(Shader_ViewToProjection, projection);
+	spotLS->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
+
+	// normal
+	normalS->Use();
+	normalS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	normalS->SetMatrix(Shader_ViewToProjection, projection);
+
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

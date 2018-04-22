@@ -1,11 +1,11 @@
 #include "GZJTime.h"
-#include <iostream>
 
 namespace GZJ_ENGINE {
 	GZJTimePtr GZJTime::_instance = nullptr;
 
 	GZJTime::GZJTime() {
 		assert(_instance == nullptr);
+		now_time = 0;
 		Update();
 	}
 
@@ -16,6 +16,7 @@ namespace GZJ_ENGINE {
 
 	void GZJTime::Update()
 	{
+		frame_time = GetTickCount() - now_time;
 		now_time = GetTickCount();
 	}
 

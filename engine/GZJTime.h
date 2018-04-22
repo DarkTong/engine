@@ -1,3 +1,5 @@
+#pragma once
+
 #include "GZJRequire.h"
 
 namespace GZJ_ENGINE {
@@ -12,6 +14,9 @@ namespace GZJ_ENGINE {
 	
 	public:
 		DWORD now_time;
+
+		// 每帧的时间间隔
+		float frame_time;
 
 	public:
 		GZJTime();

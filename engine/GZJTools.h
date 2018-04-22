@@ -23,6 +23,11 @@ namespace GZJ_ENGINE {
 		@param 读取方式
 		*/
 		static void GetAllFileName(FileNames& files, const String& path, ReadDirType type);
+
+		/** clamp的临时实现
+		*/
+		static float clamp(float& v, const float& lo, const float& hi);
+		static Vector3 clamp(Vector3& v, const Vector3& lo, const Vector3& hi);
 	};
 }
 #endif // !_GZJ_TOOLS

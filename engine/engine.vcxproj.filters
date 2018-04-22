@@ -114,13 +114,34 @@
     <ClInclude Include="GZJTextureManager.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="GZJTexture.h">
-      <Filter>源文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\third\include\stb_image.h">
       <Filter>资源文件</Filter>
     </ClInclude>
     <ClInclude Include="GZJResourceLoad.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJLightManager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\tinyxml\tinystr.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\third\include\tinyxml\tinyxml.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJTexture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJParallelLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJSpotLight.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJPointLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -198,6 +219,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJResourceLoad.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJLightManager.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJSpotLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJParallelLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJPointLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

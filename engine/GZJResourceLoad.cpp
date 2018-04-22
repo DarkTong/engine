@@ -41,7 +41,7 @@ namespace GZJ_ENGINE {
 	{
 		for (int i = 0; i < NUMBER_OF_RES_TYPE; ++i)
 		{
-			_threadState[i] = ResLoadState_Open;
+			_threadState[i] = ResLoadState_Free;
 		}
 
 		_threadGroup[Texture] = std::thread(&GZJResourceLoad::DoLoadTextureRes, this);

@@ -55,7 +55,7 @@ namespace GZJ_ENGINE {
 			else
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+			glBindTexture(GL_TEXTURE_2D, 0);
 			stbi_image_free(imageData);
 			imageData = nullptr;
 		}
