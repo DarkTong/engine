@@ -116,8 +116,10 @@ namespace GZJ_ENGINE{
 	{
 		switch (param)
 		{
-		case GZJ_ENGINE::LocalToWorld:
+		case TransformData::LocalToWorld:
 			return LocalToWorldMatrix;
+		case TransformData::LookAtMatrix:
+			return glm::lookAt(_position, _position + _front, _up);
 		default:
 			std::cout << "GZJTransform GetMatrix ²ÎÊý´íÎó!!!" << std::endl;
 			assert(false);

@@ -17,13 +17,6 @@ GZJResourceLoadPtr resLoadPtr = GZJResourceLoad::GetInstance();
 GZJShaderManagerPtr shaderMgrPtr = GZJShaderManager::GetInstance();
 GZJModelManagerPtr modelMgrPtr = GZJModelManager::GetInstance();
 
-GZJModelPtr modelPtr1;
-GZJModelPtr modelPtr2;
-const int NUM_CUBE = 10;
-GZJModelPtr cubesModel[10];
-GZJModelPtr parallelLightModel;
-GZJModelPtr pointLightModel;
-GZJModelPtr spotLightModel;
 GZJCamera mainCamera;
 GZJEventSystemPtr eventSystemPtr = GZJEventSystem::GetInstance();
 //GZJModelManagerPtr modelMgrPtr = MakeShared<GZJModelManager>(new GZJModelManager());
@@ -38,6 +31,8 @@ bool is_test_normal_func = false;
 void Before_Draw();
 // 设置shader的一些属性
 void InitShader();
+// 渲染场景
+void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader);
 
 void update_game();
 void display_game();
@@ -46,21 +41,32 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 // 鼠标按键
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-// ------------- vertices ------------------------
 
-float verticess[] = {
-	-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// left  
-	0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// right 
-	0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,// top   
-};
-Vertex vertice;
-//unsigned int indice[] = {
-//	0, 1, 2,
-//};
-unsigned int VAO, VBO;
+GZJModelPtr modelPtr1;
+GZJModelPtr floorModel;
+const int NUM_CUBE = 2;
+std::vector<GZJModelPtr> cubesModel;
+GZJModelPtr parallelLightModel;
+GZJModelPtr pointLightModel;
+GZJModelPtr spotLightModel;
+
 GZJShaderPtr shader1, shader2;
-GZJShaderPtr parallelLS, pointLS, spotLS, normalS;
+GZJShaderPtr parallelLS, pointLS, spotLS, normalS,
+	pointLSS;
 GZJLightPtr parallelLightPtr, pointLightPtr, spotLightPtr;
+std::vector<GZJLightPtr> lightV;
+
+// depth id
+unsigned int depthBuffer = 0;
+unsigned int depthTexture = 0;
+GZJShaderPtr depthS, showTextureS;
+// build depth map
+void BuildDepthMap();
+// rendering to depth map
+void RenderToDepthMap(const GZJLightPtr& light);
+
+// rendering normal
+void RenderToNormal();
 
 
 int main() {
@@ -115,6 +121,12 @@ int main() {
 			(shaderMgrPtr->CreateRes("spot_light"));
 		normalS = std::static_pointer_cast<GZJShader>
 			(shaderMgrPtr->CreateRes("normal"));
+		depthS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("depth_texture"));
+		showTextureS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("show_texture"));
+		pointLSS = std::static_pointer_cast<GZJShader>
+			(shaderMgrPtr->CreateRes("point_light_shadow"));
 
 		shader1->Prepare();
 		shader1->SyncLoad();
@@ -126,12 +138,22 @@ int main() {
 		spotLS->SyncLoad();
 		normalS->Prepare();
 		normalS->SyncLoad();
-
+		depthS->Prepare();
+		depthS->SyncLoad();
+		showTextureS->Prepare();
+		showTextureS->SyncLoad();
+		pointLSS->Prepare();
+		pointLSS->SyncLoad();
 
 		modelPtr1 = std::static_pointer_cast<GZJModel>
 			(modelMgrPtr->CreateRes("cube1"));
 		modelPtr1->SyncLoad();
 		modelPtr1->transform.SetVector3(Position, Vector3(10.0f, 0.0f, 0.0f));
+
+		floorModel = std::static_pointer_cast<GZJModel>
+			(modelMgrPtr->CreateRes("floor"));
+		floorModel->SyncLoad();
+		floorModel->transform.SetVector3(Position, Vector3(5, 0, 5));
 
 		//modelPtr2 = std::static_pointer_cast<GZJModel>
 		//	(modelMgrPtr->CreateRes("nanosuit"));
@@ -140,15 +162,18 @@ int main() {
 
 		for (int i = 0; i < NUM_CUBE; ++i)
 		{
-			auto& cube = cubesModel[i];
+			GZJModelPtr cube;
 			cube = std::static_pointer_cast<GZJModel>(
 				modelMgrPtr->CreateRes("cube3"));
 			cube->SyncLoad();
 			cube->transform.SetVector3(Position,
-				Vector3(rand() % 15, rand() % 15, rand() % 15));
+				Vector3(rand() % 5, rand() % 5, rand() % 5));
 			cube->transform.SetVector3(Rotation,
 				Vector3(rand() % 360, rand() % 360, rand() % 360));
+
+			cubesModel.push_back(cube);
 		}
+		cubesModel.push_back(floorModel);
 
 		parallelLightModel = parallelLightPtr->GetModel();
 		pointLightModel = pointLightPtr->GetModel();
@@ -157,7 +182,9 @@ int main() {
 		cout << showV3(spotLightModel->transform.GetVector3(Rotation)) << endl;
 		cout << showV3(spotLightModel->transform.GetVector3(Front)) << endl;
 
-		glEnable(GL_DEPTH_TEST);
+		// apply depth buffer
+		BuildDepthMap();
+		//glEnable(GL_CULL_FACE);
 		while (!glfwWindowShouldClose(win->GetWindow()) && game_is_running)
 		{
 
@@ -185,60 +212,131 @@ int main() {
 
 	return 0;
 }
+// render floor
+GLuint quadVAO = 0;
+GLuint quadVBO;
+void RenderQuad()
+{
+	if (quadVAO == 0)
+	{
+		GLfloat quadVertices[] = {
+			// Positions        // Texture Coords
+			-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+			1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
+			1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+		};
+		// Setup plane VAO
+		glGenVertexArrays(1, &quadVAO);
+		glGenBuffers(1, &quadVBO);
+		glBindVertexArray(quadVAO);
+		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	}
+	glBindVertexArray(quadVAO);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glBindVertexArray(0);
+}
 
 void update_game() {
 	gzjTime->Update();
 	mainCamera.moveCmp->LogicUpdate();
 }
 
-void display_game() {
-	//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+void BuildDepthMap()
+{	
+	Vector2 winSize = win->GetSize();
+	glGenTextures(1, &depthTexture);
+	glBindTexture(GL_TEXTURE_2D, depthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 
+		winSize.x, winSize.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+	// 将它附加到当前绑定的帧缓冲对象
+	glGenFramebuffers(1, &depthBuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+		GL_TEXTURE_2D, depthTexture, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderToDepthMap(const GZJLightPtr& light)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
+	depthS->Use();
+	depthS->SetMatrix(Shader_Light_Space, light->GetMatrix(LightData_LightSpace));
+	depthS->SetVector3(Light_Position, 
+		light->GetModel()->transform.GetVector3(Position));
+	glUniform1f(glGetUniformLocation(depthS->GetShaderID(), "near_plane"), 0.1f);
+	glUniform1f(glGetUniformLocation(depthS->GetShaderID(), "far_plane"), 20.0f);
+	RenderScene(cubesModel, depthS);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, depthTexture);
+
+	// test
+	glDisable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	showTextureS->Use();
+	RenderQuad();
+
+}
+
+void RenderToNormal()
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable(GL_DEPTH_TEST);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//shader->Use();
-	//glBindVertexArray(VAO);
-	//glDrawArrays(GL_TRIANGLES, 0, 3); 
-	//mesh->Draw(shader);
-	Before_Draw();
+	std::vector<GZJModelPtr> lightModel = {pointLightModel};
+	RenderScene(lightModel, shader1);
+
+	pointLSS->Use();
+	pointLSS->SetInt(Shader_Shadow_Texture, 0);
+	pointLightPtr->SetToShader(pointLSS);
+	RenderScene(cubesModel, pointLSS);
+}
+
+void display_game() {
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	InitShader();
+	glCullFace(GL_FRONT);
+	RenderToDepthMap(pointLightPtr);
+	glCullFace(GL_BACK); // 不要忘记设回原先的culling face
 
-	/*modelPtr1->SetShader(shader1);
-	modelPtr1->Draw();*/
-
-	parallelLightModel->SetShader(shader1);
-	parallelLightModel->Draw();
-	pointLightModel->SetShader(shader1);
-	pointLightModel->Draw();
-	spotLightModel->SetShader(shader1);
-	spotLightModel->Draw();
-
-	//modelPtr2->SetShader(parallelLS);
-	//parallelLS->Use();
-	//modelPtr2->SetLight(LightType::Light_ParallelLight, parallelLightPtr);
-	//modelPtr2->Draw();
-
-	for (int i = 0; i < NUM_CUBE; ++i)
-	{
-		GZJModelPtr& cube = cubesModel[i];
-		// parallel
-		//cube->SetShader(parallelLS);
-		//parallelLS->Use();
-		//cube->SetLight(LightType::Light_ParallelLight, parallelLightPtr);
-		// point
-		//cube->SetShader(pointLS);
-		//pointLS->Use();
-		//cube->SetLight(LightType::Light_PointLight, pointLightPtr);
-		// spot light
-		cube->SetShader(spotLS);
-		spotLS->Use();
-		cube->SetLight(LightType::Light_SpotLight, spotLightPtr);
-
-		cube->Draw();
-	}
+	//RenderToNormal();
 
 	//renderStaitc->Render();
+}
+
+void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader)
+{
+	for (int i = 0; i < models.size(); ++i)
+	{
+		GZJModelPtr& model = models[i];
+		model->SetShader(shader);
+		model->Draw();
+	}
 }
 
 void Before_Draw()
@@ -280,6 +378,12 @@ void InitShader()
 	normalS->Use();
 	normalS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
 	normalS->SetMatrix(Shader_ViewToProjection, projection);
+
+	// point light shadow
+	pointLSS->Use();
+	pointLSS->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+	pointLSS->SetMatrix(Shader_ViewToProjection, projection);
+	pointLSS->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
 
 }
 

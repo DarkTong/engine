@@ -44,6 +44,9 @@ namespace GZJ_ENGINE
 				case LightData_Param_K2:
 					param_k2 = data;
 					break;
+				case LightData_Perspective_Angle:
+					prespectiveAngle = data;
+					break;
 				default:
 					cout << "LightData Error!!, type:" << type << endl;
 				}
@@ -79,30 +82,17 @@ namespace GZJ_ENGINE
 					return param_k1;
 				case LightData_Param_K2:
 					return param_k2;
+				case LightData_Perspective_Angle:
+					return prespectiveAngle;
 				default:
 					cout << "LightData Error!!, type:" << type << endl;
 				}
 			}
-			throw "error";
+			else
+				throw "error";
 		}
 
 	}
 
-	void GZJPointLight::DoParseLightData(TiXmlElement * ele)
-	{
-		GZJLight::DoParseLightData(ele);
-
-		TiXmlElement* child = ele->FirstChildElement("param_k1");
-		if (child->Attribute("value"))
-			param_k1 = (float)atof(child->Attribute("value"));
-		else
-			param_k1 = 0.045f;
-
-		child = ele->FirstChildElement("param_k2");
-		if (child->Attribute("value"))
-			param_k2 = (float)atof(child->Attribute("value"));
-		else
-			param_k2 = 0.0075f;
-	}
 }
 

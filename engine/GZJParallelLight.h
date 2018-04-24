@@ -16,6 +16,11 @@ namespace GZJ_ENGINE {
 		/** 光指向
 		*/
 		Vector3 direction;
+
+		/** 正交空间宽度
+		*/
+		float orthoWidth;
+
 	public:
 
 		void SetVector3(LightData type, const Vector3& data);
@@ -25,8 +30,6 @@ namespace GZJ_ENGINE {
 		Vector3 GetVector3(LightData type);
 
 		float GetFloat(LightData type);
-
-		void DoParseLightData(TiXmlElement * ele);
 	};
 }
 

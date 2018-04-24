@@ -35,6 +35,10 @@ namespace GZJ_ENGINE
 		*/
 		float param_k2;
 
+		/** 光透视投影角度
+		*/
+		float prespectiveAngle;
+
 	public:
 
 		void SetVector3(LightData type, const Vector3& data);
@@ -45,7 +49,6 @@ namespace GZJ_ENGINE
 
 		float GetFloat(LightData type);
 
-		void DoParseLightData(TiXmlElement * ele);
 	};
 }
 

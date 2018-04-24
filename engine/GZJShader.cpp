@@ -153,6 +153,9 @@ namespace GZJ_ENGINE {
 		case Mate_Shininess:
 			loc = glGetUniformLocation(_id, "mesh_mate.shininess");
 			break;
+		case Shader_Shadow_Texture:
+			loc = glGetUniformLocation(_id, "shadow_texture");
+			break;
 		}
 
 		if (GL_INVALID_INDEX != loc)
@@ -183,6 +186,12 @@ namespace GZJ_ENGINE {
 			break;
 		case Light_Outter_Angle:
 			loc = glGetUniformLocation(_id, "light.outter_angle");
+			break;
+		case Light_Near_Plane:
+			loc = glGetUniformLocation(_id, "light.near_plane");
+			break;
+		case Light_Far_Plane:
+			loc = glGetUniformLocation(_id, "light.far_plane");
 			break;
 		}
 
@@ -252,6 +261,9 @@ namespace GZJ_ENGINE {
 			break;
 		case Shader_ViewToProjection:
 			loc = glGetUniformLocation(_id, "view2projection");
+			break;
+		case Shader_Light_Space:
+			loc = glGetUniformLocation(_id, "light_space");
 			break;
 		}
 		if (GL_INVALID_INDEX != loc)

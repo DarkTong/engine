@@ -32,14 +32,22 @@ namespace GZJ_ENGINE {
 		Light_Param_K2,			// 二次项距离的系数
 		Light_Inner_Angle,		// 内切光角
 		Light_Outter_Angle,		// 外切光角
+		Light_Near_Plane,
+		Light_Far_Plane,
+		Light_Ortho_Width,
+		Light_Perspective_Angle,
 
 		// 观察者
 		View_ViewPosition,
+
+		// shadow
+		Shader_Shadow_Texture,
 
 		// 坐标相关
 		Shader_LocalToWorld,
 		Shader_WorldToView,
 		Shader_ViewToProjection,
+		Shader_Light_Space,
 
 		// 空
 		Shader_None,
@@ -70,10 +78,14 @@ namespace GZJ_ENGINE {
 		// 观察者
 		"view_position",
 
+		// shadow
+		"shadow_texture",
+
 		// 坐标相关
 		"local2world",
 		"world2view",
 		"view2projection",
+		"light_space"
 	};
 
 	typedef std::map<String, unsigned int> ShaderDataMap;
@@ -181,7 +193,6 @@ namespace GZJ_ENGINE {
 
 		ResourceType GetResType();
 	};
-
 }
 
 #endif // _GZJ_SHADER_

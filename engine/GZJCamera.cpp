@@ -13,8 +13,9 @@ namespace GZJ_ENGINE {
 
 	Vector4x4 GZJCamera::LookAt()
 	{
-		Update();
-		return viewMatrix;
+		//Update();
+		//return viewMatrix;
+		return transform.GetMatrix(LookAtMatrix);
 	}
 
 	void GZJCamera::SetVector3(const String param, Vector3 data)
@@ -38,10 +39,10 @@ namespace GZJ_ENGINE {
 
 	void GZJCamera::Update()
 	{
-		// ¹Û²ì¿Õ¼ä¾ØÕó
-		viewMatrix = glm::lookAt(transform.GetVector3(Position),
-			transform.GetVector3(Position) + transform.GetVector3(Front),
-			transform.GetVector3(Up));
+		//// ¹Û²ì¿Õ¼ä¾ØÕó
+		//viewMatrix = glm::lookAt(transform.GetVector3(Position),
+		//	transform.GetVector3(Position) + transform.GetVector3(Front),
+		//	transform.GetVector3(Up));
 
 	}
 	

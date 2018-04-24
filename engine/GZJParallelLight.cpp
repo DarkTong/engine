@@ -31,7 +31,19 @@ namespace GZJ_ENGINE
 		}
 		catch (const String & flag)
 		{
-			throw "error";
+			if (flag == GZJLight::None)
+			{
+				switch (type)
+				{
+				case LightData_Ortho_Width:
+					orthoWidth = data;
+					break;
+				default:
+					cout << "LightData Error!!, type:" << type << endl;
+				}
+			}
+			else
+				throw flag;
 		}
 	}
 
@@ -66,20 +78,19 @@ namespace GZJ_ENGINE
 		}
 		catch (const String & flag)
 		{
-			throw "error";
+			if (flag == GZJLight::None)
+			{
+				switch (type)
+				{
+				case LightData_Ortho_Width:
+					return orthoWidth;
+				default:
+					cout << "LightData Error!!, type:" << type << endl;
+				}
+			}
+			else
+				throw flag;
 		}
-	}
-
-	void GZJParallelLight::DoParseLightData(TiXmlElement * ele)
-	{
-		// 先获取父类光数据
-		GZJLight::DoParseLightData(ele);
-
-		auto func = [](TiXmlElement * node) {
-			return Vector3(atof(node->Attribute("x")),
-				atof(node->Attribute("y")),
-				atof(node->Attribute("z")));
-		};
 	}
 
 }

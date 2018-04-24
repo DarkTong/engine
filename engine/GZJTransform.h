@@ -23,6 +23,9 @@ namespace GZJ_ENGINE {
 
 		LocalToWorld,
 		WorldToLocal,
+
+		// 功能性参数
+		LookAtMatrix,
 	};
 
     class GZJTransform{

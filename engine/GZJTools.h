@@ -28,6 +28,7 @@ namespace GZJ_ENGINE {
 		*/
 		static float clamp(float& v, const float& lo, const float& hi);
 		static Vector3 clamp(Vector3& v, const Vector3& lo, const Vector3& hi);
+
 	};
 }
 #endif // !_GZJ_TOOLS

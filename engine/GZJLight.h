@@ -9,6 +9,7 @@
 #include "GZJRequire.h"
 #include "GZJTransform.h"
 #include "GZJTools.h"
+#include "GZJWindow.h"
 
 namespace GZJ_ENGINE
 {
@@ -29,6 +30,10 @@ namespace GZJ_ENGINE
 		LightData_Specular,
 		LightData_Intensity,
 		LightData_Position,
+		LightData_Near_Plane,
+		LightData_Far_Plane,
+		LightData_Ortho_Width,
+		LightData_Perspective_Angle,
 		// 点光源数据
 		LightData_Param_K1,
 		LightData_Param_K2,
@@ -36,6 +41,8 @@ namespace GZJ_ENGINE
 		LightData_Direction,
 		LightData_InnerAngle,
 		LightData_OutterAngle,
+		//  光空间
+		LightData_LightSpace,
 	};
 
 	/** 最小光照强度
@@ -71,6 +78,9 @@ namespace GZJ_ENGINE
 		~GZJLight();
 	protected:
 		// 属性
+		/** 光空间
+		*/
+		Vector4x4 lightSpace;
 
 		/** 管理器
 		*/
@@ -106,12 +116,45 @@ namespace GZJ_ENGINE
 		/** 光照强度
 		*/
 		float intensity;
-	protected:
-		// 对内接口
+
+		/** 近平面
+		*/
+		float nearPlane;
+
+		/** 远平面
+		*/
+		float farPlane;
+
+	private:
+		// 工具方法
 
 		/** 解析光照数据具体操作
 		*/
-		virtual void DoParseLightData(TiXmlElement * ele);
+		void DoParse(TiXmlElement * ele);
+
+		/** 解析平行光特有数据
+		*/
+		void DoParseParallerLightData(TiXmlElement * ele);
+
+		/** 解析点光特有数据
+		*/
+		void DoParsePointLightData(TiXmlElement * ele);
+
+		/** 解析聚光特有数据
+		*/
+		void DoParseSpotLightData(TiXmlElement * ele);
+
+		/** 解析光源相关数据
+		*/
+		void DoParseLightData(TiXmlElement * ele);
+
+		/** 解析Model数据
+		*/
+		void DoParseModelData(TiXmlElement * ele);
+
+		/** 解析Vector3数据
+		*/
+		Vector3 ParseVector3(TiXmlElement * node);
 
 	public:
 		// 对外接口
@@ -132,6 +175,10 @@ namespace GZJ_ENGINE
 		*/
 		virtual float GetFloat(LightData type);
 
+		/** 获取矩阵数据
+		*/
+		virtual Vector4x4 GetMatrix(LightData type);
+
 		/** 获取光资源类型
 		*/
 		LightType GetLightType();
@@ -148,6 +195,13 @@ namespace GZJ_ENGINE
 		*/
 		GZJModelPtr GetModel();
 
+		/** 设置光照数据给shader
+		*/
+		void SetToShader(GZJShaderPtr shader);
+
+		private:
+			//  工具方法
+			void UpdateData();
 	};
 }
 

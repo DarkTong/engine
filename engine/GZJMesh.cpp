@@ -86,7 +86,7 @@ namespace GZJ_ENGINE {
 			int specularNum = 1;
 			for (int idx = 0; idx < textures.size(); ++idx)
 			{
-				glActiveTexture(GL_TEXTURE0 + idx);
+				glActiveTexture(GL_TEXTURE1 + idx);
 				texture = std::static_pointer_cast<GZJTexture>(
 					textureMgr->FindResByName(textures[idx]));
 				if (texture->GetState() == LOADED and texture->GetID())
@@ -100,7 +100,7 @@ namespace GZJ_ENGINE {
 
 					if (type != ShaderData::Shader_None)
 					{
-						shader->SetInt(type, idx);
+						shader->SetInt(type, idx+1);
 						glBindTexture(GL_TEXTURE_2D, texture->GetID());
 					}
 				}

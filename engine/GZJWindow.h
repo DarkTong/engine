@@ -61,6 +61,13 @@ namespace GZJ_ENGINE {
 		/** 获取当前窗口的鼠标位置
 		*/
 		Vector2 GetCursorPos();
+
+		/** 获取窗口大小
+		*/
+		Vector2 GetSize()
+		{
+			return Vector2(SCR_WIDTH, SCR_HEIGHT);
+		}
 	};
 }
 

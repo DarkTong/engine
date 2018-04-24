@@ -47,6 +47,9 @@ namespace GZJ_ENGINE
 				case LightData_Param_K2:
 					param_k2 = data;
 					break;
+				case LightData_Perspective_Angle:
+					prespectiveAngle = data;
+					break;
 				}
 			}
 		}
@@ -96,6 +99,8 @@ namespace GZJ_ENGINE
 					return param_k1;
 				case LightData_Param_K2:
 					return param_k2;
+				case LightData_Perspective_Angle:
+					return prespectiveAngle;
 				default:
 					throw "error";
 				}
@@ -103,36 +108,6 @@ namespace GZJ_ENGINE
 			else
 				throw "error";
 		}
-	}
-
-	void GZJSpotLight::DoParseLightData(TiXmlElement * ele)
-	{
-		// 先获取父类光数据
-		GZJLight::DoParseLightData(ele);
-
-		auto func = [](TiXmlElement * node) {
-			return Vector3(atof(node->Attribute("x")),
-				atof(node->Attribute("y")),
-				atof(node->Attribute("z")));
-		};
-
-		TiXmlElement* child = ele->FirstChildElement("inner_angle");
-		SetFloat(LightData_InnerAngle, (float)atof(child->Attribute("value")));
-
-		child = ele->FirstChildElement("outter_angle");
-		SetFloat(LightData_OutterAngle, (float)atof(child->Attribute("value")));
-
-		child = ele->FirstChildElement("param_k1");
-		if (child->Attribute("value"))
-			param_k1 = (float)atof(child->Attribute("value"));
-		else
-			param_k1 = 0.045f;
-
-		child = ele->FirstChildElement("param_k2");
-		if (child->Attribute("value"))
-			param_k2 = (float)atof(child->Attribute("value"));
-		else
-			param_k2 = 0.0075f;
 	}
 
 }
