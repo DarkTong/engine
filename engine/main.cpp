@@ -32,7 +32,8 @@ void Before_Draw();
 // 设置shader的一些属性
 void InitShader();
 // 渲染场景
-void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader);
+void RenderScene(std::vector<GZJModelPtr>& models, 
+	GZJShaderPtr shader, GZJLightPtr light=nullptr);
 
 void update_game();
 void display_game();
@@ -42,9 +43,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 
-GZJModelPtr modelPtr1;
+GZJModelPtr modelPtr1, nanosuit;
 GZJModelPtr floorModel;
-const int NUM_CUBE = 2;
+const int NUM_CUBE = 1;
 std::vector<GZJModelPtr> cubesModel;
 GZJModelPtr parallelLightModel;
 GZJModelPtr pointLightModel;
@@ -155,24 +156,29 @@ int main() {
 		floorModel->SyncLoad();
 		floorModel->transform.SetVector3(Position, Vector3(5, 0, 5));
 
-		//modelPtr2 = std::static_pointer_cast<GZJModel>
-		//	(modelMgrPtr->CreateRes("nanosuit"));
-		//modelPtr2->SyncLoad();
-		//modelPtr2->transform.SetVector3(Scale, Vector3(0.2, 0.2, 0.2));
+		nanosuit = std::static_pointer_cast<GZJModel>
+			(modelMgrPtr->CreateRes("nanosuit"));
+		nanosuit->SyncLoad();
+		nanosuit->transform.SetVector3(Scale, Vector3(0.3, 0.3, 0.3 ));
+		nanosuit->transform.SetVector3(Position, Vector3(1, 1, 4));
+		nanosuit->transform.SetVector3(Rotation, Vector3(0, 180, 0));
 
-		for (int i = 0; i < NUM_CUBE; ++i)
-		{
-			GZJModelPtr cube;
-			cube = std::static_pointer_cast<GZJModel>(
-				modelMgrPtr->CreateRes("cube3"));
-			cube->SyncLoad();
-			cube->transform.SetVector3(Position,
-				Vector3(rand() % 5, rand() % 5, rand() % 5));
-			cube->transform.SetVector3(Rotation,
-				Vector3(rand() % 360, rand() % 360, rand() % 360));
+		//for (int i = 0; i < NUM_CUBE; ++i)
+		//{
+		//	GZJModelPtr cube;
+		//	cube = std::static_pointer_cast<GZJModel>(
+		//		modelMgrPtr->CreateRes("cube3"));
+		//	cube->SyncLoad();
+		//	cube->transform.SetVector3(Position,
+		//		Vector3(rand() % 5, rand() % 5, rand() % 5));
+		//	cube->transform.SetVector3(Rotation,
+		//		Vector3(rand() % 360, rand() % 360, rand() % 360));
 
-			cubesModel.push_back(cube);
-		}
+		//	cubesModel.push_back(cube);
+		//}
+		//cubesModel.push_back(floorModel);
+
+		cubesModel.push_back(nanosuit);
 		cubesModel.push_back(floorModel);
 
 		parallelLightModel = parallelLightPtr->GetModel();
@@ -276,19 +282,32 @@ void BuildDepthMap()
 
 void RenderToDepthMap(const GZJLightPtr& light)
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
-	glClear(GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-	depthS->Use();
-	depthS->SetMatrix(Shader_Light_Space, light->GetMatrix(LightData_LightSpace));
-	depthS->SetVector3(Light_Position, 
-		light->GetModel()->transform.GetVector3(Position));
-	glUniform1f(glGetUniformLocation(depthS->GetShaderID(), "near_plane"), 0.1f);
-	glUniform1f(glGetUniformLocation(depthS->GetShaderID(), "far_plane"), 20.0f);
-	RenderScene(cubesModel, depthS);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	auto PrepareDepthShader = [light] {
+		depthS->Use();
+		depthS->SetMatrix(Shader_Light_Space, light->GetMatrix(LightData_LightSpace));
+		depthS->SetVector3(Light_Position,
+			light->GetModel()->transform.GetVector3(Position));
+		depthS->SetFloat(Light_Near_Plane,
+			light->GetFloat(LightData_Near_Plane));
+		depthS->SetFloat(Light_Far_Plane,
+			light->GetFloat(LightData_Far_Plane));
+	};
 
+	// 切换到深度帧缓存，之后的所有渲染操作将写到深度帧缓存中
+	glBindFramebuffer(GL_FRAMEBUFFER, depthBuffer);
+	// 清空帧缓存中的深度数据
+	glClear(GL_DEPTH_BUFFER_BIT);
+	// 开启深度测试，只有开启深度设置才会有深度值，才会写入深度贴图
+	glEnable(GL_DEPTH_TEST);
+	// 准备渲染深度贴图的shader的数据
+	PrepareDepthShader();
+	// 渲染场景
+	RenderScene(cubesModel, depthS);
+	// 切换到默认帧缓存，只有默认帧缓存才会渲染到屏幕上
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// 激活0号纹理
 	glActiveTexture(GL_TEXTURE0);
+	// 将深度贴图绑定到0号纹理上
 	glBindTexture(GL_TEXTURE_2D, depthTexture);
 
 	// test
@@ -301,18 +320,15 @@ void RenderToDepthMap(const GZJLightPtr& light)
 
 void RenderToNormal()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	// 开启深度贴图
 	glEnable(GL_DEPTH_TEST);
-
+	// 清空颜色缓存和深度缓存
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	std::vector<GZJModelPtr> lightModel = {pointLightModel};
+	// 渲染光源
 	RenderScene(lightModel, shader1);
-
-	pointLSS->Use();
-	pointLSS->SetInt(Shader_Shadow_Texture, 0);
-	pointLightPtr->SetToShader(pointLSS);
-	RenderScene(cubesModel, pointLSS);
+	// 渲染场景
+	RenderScene(cubesModel, pointLSS, pointLightPtr);
 }
 
 void display_game() {
@@ -324,13 +340,15 @@ void display_game() {
 	RenderToDepthMap(pointLightPtr);
 	glCullFace(GL_BACK); // 不要忘记设回原先的culling face
 
-	//RenderToNormal();
+	RenderToNormal();
 
 	//renderStaitc->Render();
 }
 
-void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader)
+void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader, GZJLightPtr light)
 {
+	if(light != nullptr)
+		light->SetToShader(shader);
 	for (int i = 0; i < models.size(); ++i)
 	{
 		GZJModelPtr& model = models[i];

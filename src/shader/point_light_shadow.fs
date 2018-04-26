@@ -13,6 +13,8 @@ struct PointLight
     vec3 diffuse;
     vec3 specular;
     float intensity;
+    float near_plane;
+    float far_plane;
 
     vec3 position;
     vec3 direction;
@@ -42,13 +44,26 @@ uniform sampler2D shadow_texture;
 
 float CalShadow()
 {
+    // 进行透视除法，如果是正交空间计算w=1,
     vec3 projCoords = fragLightSpacePos.xyz / fragLightSpacePos.w;
+    // 值域的转换
+    // 由于projCoords的范围是[-1,1]，而纹理坐标的范围是[0,1],
     projCoords = projCoords * 0.5 + 0.5;
+    // 获取深度贴图对应位置的深度值
     float closeDepth = texture(shadow_texture, projCoords.xy).r;
-    float currentDepth = projCoords.z;
+    // 利用深度寄存器深度，可能是非线性空间的
+    // float currentDepth = projCoords.z;
+    // 获取线性空间的深度值，
+    float dis = length(fragPosition - light.position);
+    float currentDepth = dis / light.far_plane;
     // 0.0 is shadow, 1.0 is not shadow
-    float shadow = closeDepth < currentDepth? 0.0f : 1.0;
+    // 深度偏移值，解决深度冲突
+    float shadow_bias = 0.005;
+    // 判断当前片段是不是阴影
+    float shadow = closeDepth < currentDepth - 0.005? 0.0f : 1.0;
+    // 设置无限远处不是阴影效果
     shadow = projCoords.z > 1.0f ? 1.0 : shadow;
+
     return shadow;
 }
 
@@ -75,6 +90,7 @@ vec3 CalPointLight()
 
     // calcular the result color
     float shadow = CalShadow();
+    // 计算片段最终的颜色值
     vec3 result_color = (intensity * light.ambient + 
         shadow * (diffuse + specular) * attenuation) * color ;
 

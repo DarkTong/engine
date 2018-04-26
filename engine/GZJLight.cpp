@@ -246,6 +246,8 @@ namespace GZJ_ENGINE
 	void GZJLight::SetToShader(GZJShaderPtr shader)
 	{
 		shader->Use();
+		// 设置深度纹理，只有有光照才有阴影的。
+		shader->SetInt(Shader_Shadow_Texture, 0);
 		shader->SetVector3(ShaderData::Light_Ambient, ambientLight);
 		shader->SetVector3(ShaderData::Light_Diffuse, diffuseLight);
 		shader->SetVector3(ShaderData::Light_Specular, specularLight);

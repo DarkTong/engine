@@ -79,6 +79,12 @@ namespace GZJ_ENGINE {
 	{
 		if (GetState() == ResState::LOADED) {
 
+			// ³õÊ¼»¯ÌùÍ¼»º´æ
+			for (int i = 1; i < 32; ++i)
+			{
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			};
 			// todo ¼ÓÔØÌùÍ¼
 			GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
 			GZJTexturePtr texture = nullptr;
