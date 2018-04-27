@@ -21,16 +21,17 @@ namespace GZJ_ENGINE {
 
 	typedef std::vector<Vertex> Vertices;
 	typedef std::vector<unsigned int> Indices;
-	typedef std::vector<String> Textures;
+	typedef std::vector<GZJTexturePtr> Textures;
 
 
-	class GZJMesh : public GZJResource {
+	class GZJMesh{
 	private:
 		// 静态全局数据
 		static const int MAX_MATERIAL = 1;
 	private:
-
+		// GPU句柄
 		unsigned int VAO, VBO, EBO;
+	public:
 		/** 所有的定点信息
 		*/
 		Vertices vertices;
@@ -42,34 +43,26 @@ namespace GZJ_ENGINE {
 		Textures textures;
 	public:
 		
-		GZJMesh(GZJResourceManager* manager, const String& name, ResourceHandle handle);
+		GZJMesh();
 		
 		~GZJMesh();
-		
-		/** 初始化Mesh，并获得数据
-		@param 定点数据
-		@param 索引数据
-		@param 贴图数据
-		*/
-		void Prepare(Vertices ver, Indices ind, Textures tex);
 		
 		/** 渲染
 		@param 渲染程序
 		*/
 		void Draw(GZJShaderPtr shader);
 
-		ResourceType GetResType();
-
-	private:
-		// 对内接口
+		/** 是否已经在GPU中申请内存了
+		*/
+		bool IsLoginGPU();
 
 		/** 加载定点数据到内存
 		*/
-		void DoLoad();
+		void LoginGPU();
 
 		/** 卸载定点数据
 		*/
-		void DoUnLoad();
+		void LogoutGPU();
 	};
 }
 

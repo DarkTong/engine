@@ -32,7 +32,7 @@ void Before_Draw();
 // 设置shader的一些属性
 void InitShader();
 // 渲染场景
-void RenderScene(std::vector<GZJModelPtr>& models, 
+void RenderScene(std::vector<GZJEntityPtr>& models, 
 	GZJShaderPtr shader, GZJLightPtr light=nullptr);
 
 void update_game();
@@ -43,13 +43,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
 
-GZJModelPtr modelPtr1, nanosuit;
-GZJModelPtr floorModel;
-const int NUM_CUBE = 1;
-std::vector<GZJModelPtr> cubesModel;
-GZJModelPtr parallelLightModel;
-GZJModelPtr pointLightModel;
-GZJModelPtr spotLightModel;
+GZJEntityPtr modelPtr1, nanosuit;
+GZJEntityPtr floorModel;
+const int NUM_CUBE = 5;
+std::vector<GZJEntityPtr> cubesModel;
 
 GZJShaderPtr shader1, shader2;
 GZJShaderPtr parallelLS, pointLS, spotLS, normalS,
@@ -146,29 +143,27 @@ int main() {
 		pointLSS->Prepare();
 		pointLSS->SyncLoad();
 
-		modelPtr1 = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->CreateRes("cube1"));
-		modelPtr1->SyncLoad();
-		modelPtr1->transform.SetVector3(Position, Vector3(10.0f, 0.0f, 0.0f));
-
-		floorModel = std::static_pointer_cast<GZJModel>
+		floorModel = MakeShared<GZJEntity>();
+		floorModel->model = std::static_pointer_cast<GZJModel>
 			(modelMgrPtr->CreateRes("floor"));
-		floorModel->SyncLoad();
+		floorModel->model->SyncLoad();
 		floorModel->transform.SetVector3(Position, Vector3(5, 0, 5));
 
-		nanosuit = std::static_pointer_cast<GZJModel>
+		nanosuit = MakeShared<GZJEntity>();
+		nanosuit->model = std::static_pointer_cast<GZJModel>
 			(modelMgrPtr->CreateRes("nanosuit"));
-		nanosuit->SyncLoad();
+		nanosuit->model->SyncLoad();
 		nanosuit->transform.SetVector3(Scale, Vector3(0.3, 0.3, 0.3 ));
 		nanosuit->transform.SetVector3(Position, Vector3(1, 1, 4));
 		nanosuit->transform.SetVector3(Rotation, Vector3(0, 180, 0));
 
 		//for (int i = 0; i < NUM_CUBE; ++i)
 		//{
-		//	GZJModelPtr cube;
-		//	cube = std::static_pointer_cast<GZJModel>(
-		//		modelMgrPtr->CreateRes("cube3"));
-		//	cube->SyncLoad();
+		//	GZJEntityPtr cube;
+		//	cube = MakeShared<GZJEntity>();
+		//	cube->model = std::static_pointer_cast<GZJModel>(
+		//		modelMgrPtr->FindResByName("cube3"));
+		//	cube->model->SyncLoad();
 		//	cube->transform.SetVector3(Position,
 		//		Vector3(rand() % 5, rand() % 5, rand() % 5));
 		//	cube->transform.SetVector3(Rotation,
@@ -180,13 +175,6 @@ int main() {
 
 		cubesModel.push_back(nanosuit);
 		cubesModel.push_back(floorModel);
-
-		parallelLightModel = parallelLightPtr->GetModel();
-		pointLightModel = pointLightPtr->GetModel();
-		spotLightModel = spotLightPtr->GetModel();
-
-		cout << showV3(spotLightModel->transform.GetVector3(Rotation)) << endl;
-		cout << showV3(spotLightModel->transform.GetVector3(Front)) << endl;
 
 		// apply depth buffer
 		BuildDepthMap();
@@ -286,7 +274,7 @@ void RenderToDepthMap(const GZJLightPtr& light)
 		depthS->Use();
 		depthS->SetMatrix(Shader_Light_Space, light->GetMatrix(LightData_LightSpace));
 		depthS->SetVector3(Light_Position,
-			light->GetModel()->transform.GetVector3(Position));
+			light->GetEntity()->transform.GetVector3(Position));
 		depthS->SetFloat(Light_Near_Plane,
 			light->GetFloat(LightData_Near_Plane));
 		depthS->SetFloat(Light_Far_Plane,
@@ -324,7 +312,7 @@ void RenderToNormal()
 	glEnable(GL_DEPTH_TEST);
 	// 清空颜色缓存和深度缓存
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	std::vector<GZJModelPtr> lightModel = {pointLightModel};
+	std::vector<GZJEntityPtr> lightModel = {pointLightPtr->GetEntity()};
 	// 渲染光源
 	RenderScene(lightModel, shader1);
 	// 渲染场景
@@ -345,15 +333,14 @@ void display_game() {
 	//renderStaitc->Render();
 }
 
-void RenderScene(std::vector<GZJModelPtr>& models, GZJShaderPtr shader, GZJLightPtr light)
+void RenderScene(std::vector<GZJEntityPtr>& models, GZJShaderPtr shader, GZJLightPtr light)
 {
 	if(light != nullptr)
 		light->SetToShader(shader);
 	for (int i = 0; i < models.size(); ++i)
 	{
-		GZJModelPtr& model = models[i];
-		model->SetShader(shader);
-		model->Draw();
+		GZJEntityPtr entity = models[i];
+		entity->Draw(shader);
 	}
 }
 

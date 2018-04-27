@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<scene id="1">
+	<model>
+		<transform>
+			<position x="0" y="0" z="0"/>
+			<rotation x="0" y="0" z="0"/>
+			<scale x="1" y="1" z="1"/>
+		</transform>
+		<name>cube1</name>
+		<shader>point_light_shader</shader>
+		<flag>
+			<auto_position>
+				<min x="0" y="0" z="0"/>
+				<max x="5" y="5" z="5"/>
+			</auto_position>
+			<auto_rotation>
+				<min x="0" y="0" z="0"/>
+				<max x="360" y="360" z="360"/>
+			</auto_rotation>
+			<auto_scale>
+				<min x="0.5" y="0.5" z="0.5"/>
+				<max x="2" y="2" z="2"/>
+			</auto_scale>
+			<shadow>true</shadow>
+			<create_number>5</create_number>
+		</flag>
+	</model>
+</scene>

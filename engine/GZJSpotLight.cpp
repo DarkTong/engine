@@ -68,7 +68,7 @@ namespace GZJ_ENGINE
 				switch (type)
 				{
 				case LightData_Direction:
-					return glm::normalize(_model->transform.GetVector3(Front));
+					return glm::normalize(GetEntity()->transform.GetVector3(Front));
 					break;
 				default:
 					throw "error";

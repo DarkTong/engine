@@ -10,3 +10,4 @@
 #include "GZJModelManager.h"
 #include "GZJMeshManager.h"
 #include "GZJCamera.h"
+#include "GZJEntity.h"

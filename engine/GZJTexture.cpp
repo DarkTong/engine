@@ -22,18 +22,39 @@ namespace GZJ_ENGINE {
 
 	void GZJTexture::DoLoad()
 	{
-		if (id != GL_NONE)
-		{
-			cout << ("Texture is not be UnLoad!!!") << endl;
-			return;
-		}
-
-		glGenTextures(1, &id);
 
 		imageData = stbi_load(_path.c_str(), &width, &height, &nrComponents, 0);
 
+		if (!imageData)
+		{
+			cout << "Texture failed to load at path:" << _path << endl;
+			stbi_image_free(imageData);
+			imageData = nullptr;
+
+			throw "Load Texture Resoruce Fail!!!";
+		}
+	}
+
+	void GZJTexture::DoUnLoad()
+	{
 		if (imageData)
 		{
+			stbi_image_free(imageData);
+			imageData = nullptr;
+		}
+		else
+			LogoutGPU();
+		cout << "free texture id:" << id << endl;
+	}
+
+	void GZJTexture::LoginGPU()
+	{
+		if (IsLoginGPU())
+			LogoutGPU();
+		if (imageData)
+		{
+			glGenTextures(1, &id);
+
 			if (nrComponents == STBI_rgb)
 				format = GL_RGB;
 			else if (nrComponents == STBI_rgb_alpha)
@@ -56,24 +77,22 @@ namespace GZJ_ENGINE {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			stbi_image_free(imageData);
-			imageData = nullptr;
-		}
-		else
-		{
-			cout << "Texture failed to load at path:" << _path << endl;
-			stbi_image_free(imageData);
-			imageData = nullptr;
 
-			throw "Load Texture Resoruce Fail!!!";
+			stbi_image_free(imageData);
+			imageData = nullptr;
 		}
 	}
 
-	void GZJTexture::DoUnLoad()
+	void GZJTexture::LogoutGPU()
 	{
 		glDeleteTextures(1, &id);
 		cout << "free texture id:" << id << endl;
 		id = GL_NONE;
+	}
+
+	bool GZJTexture::IsLoginGPU()
+	{
+		return id != GL_NONE;
 	}
 
 	unsigned int GZJTexture::GetID()

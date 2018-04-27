@@ -23,7 +23,7 @@ namespace GZJ_ENGINE {
 		}
 		else
 		{
-			cout << "This Resource is not UnLoad!!, path:" << _path << endl;
+			cout << "This Resource is not UnLoad!!, state:" << _state << " path:" << _path << endl;
 		}
 	}
 

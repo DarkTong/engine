@@ -18,8 +18,9 @@ namespace GZJ_ENGINE
 		diffuseLight(diffuseLight), specularLight(specularLight), 
 		intensity(intensity)
 	{
-		_model = std::static_pointer_cast<GZJModel>(
-			GZJModelManager::GetInstance()->CreateRes("cube1"));
+		_entity = MakeShared<GZJEntity>();
+		_entity->model = std::static_pointer_cast<GZJModel>(
+			GZJModelManager::GetInstance()->FindResByName("cube1"));
 		SetVector3(LightData_Position, position);
 	}
 
@@ -112,14 +113,14 @@ namespace GZJ_ENGINE
 		// load model
 		String modelName = ele->FirstChildElement("model")
 			->Attribute("name");
-		_model = std::static_pointer_cast<GZJModel>(
+		_entity->model = std::static_pointer_cast<GZJModel>(
 			GZJModelManager::GetInstance()->CreateRes(modelName));
-		_model->SyncLoad();
+		_entity->model->SyncLoad();
 
 		// set transform
-		_model->transform.SetVector3(Position, ParseVector3(ele->FirstChildElement("position")));
-		_model->transform.SetVector3(Rotation, ParseVector3(ele->FirstChildElement("rotation")));
-		_model->transform.SetVector3(Scale, ParseVector3(ele->FirstChildElement("scale")));
+		_entity->transform.SetVector3(Position, ParseVector3(ele->FirstChildElement("position")));
+		_entity->transform.SetVector3(Rotation, ParseVector3(ele->FirstChildElement("rotation")));
+		_entity->transform.SetVector3(Scale, ParseVector3(ele->FirstChildElement("scale")));
 	}
 
 	Vector3 GZJLight::ParseVector3(TiXmlElement * node)
@@ -146,7 +147,7 @@ namespace GZJ_ENGINE
 			GZJTools::clamp(specularLight, MIN_LIGHT_COLOR, MAX_LIGHT_COLOR);
 			break;
 		case LightData_Position:
-			_model->transform.SetVector3(Position, data);
+			_entity->transform.SetVector3(Position, data);
 			break;
 		default:
 			throw None;
@@ -182,7 +183,7 @@ namespace GZJ_ENGINE
 		case LightData_Specular:
 			return specularLight;
 		case LightData_Position:
-			return _model->transform.GetVector3(Position);
+			return _entity->transform.GetVector3(Position);
 		default:
 			throw None;
 		}
@@ -238,9 +239,9 @@ namespace GZJ_ENGINE
 		return _id;
 	}
 
-	GZJModelPtr GZJLight::GetModel()
+	GZJEntityPtr GZJLight::GetEntity()
 	{
-		return _model;
+		return _entity;
 	}
 
 	void GZJLight::SetToShader(GZJShaderPtr shader)
@@ -256,7 +257,7 @@ namespace GZJ_ENGINE
 		shader->SetFloat(ShaderData::Light_Near_Plane, nearPlane);
 
 		shader->SetVector3(ShaderData::Light_Position, 
-			_model->transform.GetVector3(Position));
+			_entity->transform.GetVector3(Position));
 
 		shader->SetMatrix(ShaderData::Shader_Light_Space, lightSpace);
 
@@ -293,7 +294,7 @@ namespace GZJ_ENGINE
 		LightType type = GetLightType();
 
 		Vector2 size = GZJWindow::GetInstance()->GetSize();
-		Vector4x4 lookAt = _model->transform.GetMatrix(LookAtMatrix);
+		Vector4x4 lookAt = _entity->transform.GetMatrix(LookAtMatrix);
 
 		if (type == LightType::Light_ParallelLight)
 		{

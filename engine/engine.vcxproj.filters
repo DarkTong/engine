@@ -72,9 +72,6 @@
     <ClInclude Include="GZJMesh.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GZJMeshManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="GZJModel.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -144,6 +141,9 @@
     <ClInclude Include="GZJPointLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GZJEntity.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -180,9 +180,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJTools.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="GZJMeshManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJMesh.cpp">
@@ -234,6 +231,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJPointLight.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJEntity.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,44 +1,24 @@
 #include "GZJMesh.h"
 
 namespace GZJ_ENGINE {
-	GZJMesh::GZJMesh(GZJResourceManager* manager, const String & name
-		, ResourceHandle handle)
-		:GZJResource(manager, name, handle)
+	GZJMesh::GZJMesh()
 	{
-		
-		// 临时处理
-		_path = manager->GetResRoot() + "\\" + name;
-		SetState(ResState::UNPREPARE);
+		VAO = VBO = EBO = GL_NONE;
 	}
 
 	GZJMesh::~GZJMesh()
 	{
-		UnLoad();
+		if(IsLoginGPU())
+			LogoutGPU();
 		// 释放贴图资源
-		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
 		for (int idx = 0; idx < textures.size(); ++idx)
-			textureMgr->UnLoadByName(textures[idx]);
+			textures[idx]->UnLoad();
 	}
 
-	void GZJMesh::Prepare(Vertices ver, Indices ind, Textures tex)
+	void GZJMesh::LoginGPU()
 	{
-		vertices = ver;
-		indices = ind;
-		textures = tex;
-		GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
-		// 加载贴图
-		for (int idx = 0; idx < textures.size(); ++idx)
-			textureMgr->FindResByName(textures[idx])->SyncLoad();
-
-		cout << "各资源的大小:" << endl;
-		cout << "vector:" << vertices.size() << endl;
-		cout << "indices:" << indices.size() << endl;
-		cout << "textures:" << textures.size() << endl;
-		SetState(UNLOAD);
-	}
-
-	void GZJMesh::DoLoad()
-	{
+		if (IsLoginGPU())
+			LogoutGPU();
 		std::cout << "OK!!!" << std::endl;
 		std::cout << vertices.size() << std::endl;
 		glGenVertexArrays(1, &VAO);
@@ -68,69 +48,74 @@ namespace GZJ_ENGINE {
 		glBindVertexArray(0);
 	}
 	
-	void GZJMesh::DoUnLoad()
+	void GZJMesh::LogoutGPU()
 	{
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &EBO);
-		glDeleteBuffers(1, &VBO);
+		if (IsLoginGPU())
+		{
+			glDeleteVertexArrays(1, &VAO);
+			glDeleteBuffers(1, &EBO);
+			glDeleteBuffers(1, &VBO);
+		}
+	}
+
+	bool GZJMesh::IsLoginGPU()
+	{
+		if (VAO != GL_NONE && 
+			VBO != GL_NONE && 
+			EBO != GL_NONE)
+			return true;
+		return false;
 	}
 	
 	void GZJMesh::Draw(GZJShaderPtr shader)
 	{
-		if (GetState() == ResState::LOADED) {
+		if (!IsLoginGPU())
+			LoginGPU();
 
-			// 初始化贴图缓存
-			for (int i = 1; i < 32; ++i)
+		// 初始化贴图缓存
+		for (int i = 1; i < 32; ++i)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		};
+
+		// todo 加载贴图
+		GZJTexturePtr texture = nullptr;
+		int diffuseNum = 1;
+		int specularNum = 1;
+		for (int idx = 0; idx < textures.size(); ++idx)
+		{
+			glActiveTexture(GL_TEXTURE1 + idx);
+			texture = textures[idx];
+			if (texture->GetState() == LOADED )
+				// 保证已经Load 同时 texturen不为0
 			{
-				glActiveTexture(GL_TEXTURE0 + i);
-				glBindTexture(GL_TEXTURE_2D, 0);
-			};
-			// todo 加载贴图
-			GZJTextureManagerPtr textureMgr = GZJTextureManager::GetInstance();
-			GZJTexturePtr texture = nullptr;
-			int diffuseNum = 1;
-			int specularNum = 1;
-			for (int idx = 0; idx < textures.size(); ++idx)
-			{
-				glActiveTexture(GL_TEXTURE1 + idx);
-				texture = std::static_pointer_cast<GZJTexture>(
-					textureMgr->FindResByName(textures[idx]));
-				if (texture->GetState() == LOADED and texture->GetID())
-					// 保证已经Load 同时 texturen不为0
+				if (!texture->IsLoginGPU())
+					texture->LoginGPU();
+				ShaderData type = ShaderData::Shader_None;
+				if (diffuseNum <= MAX_MATERIAL and texture->GetType() == Texture_Diffuse)
+					type = Mate_DiffuseTexture, diffuseNum++;
+				else if (specularNum <= MAX_MATERIAL and texture->GetType() == Texture_Specular)
+					type = Mate_SpecularTexture, specularNum++;
+
+				if (type != ShaderData::Shader_None)
 				{
-					ShaderData type = ShaderData::Shader_None;
-					if (diffuseNum <= MAX_MATERIAL and texture->GetType() == Texture_Diffuse)
-						type = Mate_DiffuseTexture, diffuseNum++;
-					else if (specularNum <= MAX_MATERIAL and texture->GetType() == Texture_Specular)
-						type = Mate_SpecularTexture, specularNum++;
-
-					if (type != ShaderData::Shader_None)
-					{
-						shader->SetInt(type, idx+1);
-						glBindTexture(GL_TEXTURE_2D, texture->GetID());
-					}
+					shader->SetInt(type, idx+1);
+					glBindTexture(GL_TEXTURE_2D, texture->GetID());
 				}
 			}
-
-			// 设置放光系数
-			shader->SetInt(Mate_Shininess, 32);
-
-			// 渲染
-			//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-			glBindVertexArray(0);
-
-			// 渲染完把ActiveTexture重置
-			glActiveTexture(GL_TEXTURE0);
 		}
-		else{
-			std::cout << "Mesh Resource is not Loaded!!!" << std::endl;
-			assert(false);
-		}
-	}
-	ResourceType GZJMesh::GetResType()
-	{
-		return Mesh;
+
+		// 设置放光系数
+		shader->SetInt(Mate_Shininess, 32);
+
+		// 渲染
+		//std::cout << "state:" << shader->GetState() << " " << VAO <<  std::endl;
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
+
+		// 渲染完把ActiveTexture重置
+		glActiveTexture(GL_TEXTURE0);
 	}
 }

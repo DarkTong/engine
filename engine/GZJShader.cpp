@@ -208,6 +208,7 @@ namespace GZJ_ENGINE {
 		
 		if (GL_INVALID_INDEX != loc)
 		{
+			Use();
 			glUniform2f(loc, value.x, value.y);
 		}
 	}
@@ -242,6 +243,7 @@ namespace GZJ_ENGINE {
 
 		if (GL_INVALID_INDEX != loc)
 		{
+			Use();
 			glUniform3f(loc, value.x, value.y, value.z);
 		}
 
@@ -268,6 +270,7 @@ namespace GZJ_ENGINE {
 		}
 		if (GL_INVALID_INDEX != loc)
 		{
+			Use();
 			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
 		}
 	}

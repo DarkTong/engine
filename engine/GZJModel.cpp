@@ -25,10 +25,16 @@ namespace GZJ_ENGINE {
 
 	void GZJModel::DoUnLoad()
 	{
-		meshMgr.UnLoadAll();
+		GZJMeshPtr mesh;
+		while (!meshs.empty())
+		{
+			mesh = meshs.back();
+			mesh->LogoutGPU();
+			meshs.pop_back();
+		}
 	}
 
-	void GZJModel::Draw()
+	void GZJModel::Draw(const GZJShaderPtr& shader)
 	{
 		if (GetState() == LOADED)
 		{
@@ -37,52 +43,10 @@ namespace GZJ_ENGINE {
 				std::cout << "没有设置shader程序，请使用SetShader!!" << std::endl;
 				ERROR;
 			}
-			shader->Use();
-			SetShaderData();
-			meshMgr.DrawAll(shader);
-		}
-	}
-
-	void GZJModel::SetShader(GZJShaderPtr shader)
-	{
-		dataVec1.clear();
-		dataVec2.clear();
-		dataVec3.clear();
-		dataMat4.clear();
-		this->shader = shader;
-
-		// 设置内部默认设置的数据
-		SetMat4(Shader_LocalToWorld, transform.GetMatrix(LocalToWorld));
-	}
-
-	void GZJModel::SetShaderData()
-	{
-		unsigned int tloc = 0;
-		// vec1参数
-		for (auto it = dataVec1.begin(); it != dataVec1.end(); ++it)
-		{
-			tloc = glGetUniformLocation(shader->GetShaderID(),
-				ShaderDataStr[it->first].c_str());
-			glUniform1f(tloc, it->second);
-		}
-		// vec2参数
-		for (auto it = dataVec2.begin(); it != dataVec2.end(); ++it)
-		{
-			tloc = glGetUniformLocation(shader->GetShaderID(),
-				ShaderDataStr[it->first].c_str());
-			glUniform2fv(tloc, 1, glm::value_ptr(it->second));
-		}
-		// vec3参数
-		for (auto it = dataVec3.begin(); it != dataVec3.end(); ++it)
-		{
-			tloc = glGetUniformLocation(shader->GetShaderID(),
-				ShaderDataStr[it->first].c_str());
-			glUniform3fv(tloc, 1, glm::value_ptr(it->second));
-		}
-		// mat4参数
-		for (auto it = dataMat4.begin(); it != dataMat4.end(); ++it)
-		{
-			shader->SetMatrix(static_cast<ShaderData>(it->first), it->second);
+			for (auto it = meshs.begin(); it != meshs.end(); ++it)
+			{
+				(*it)->Draw(shader);
+			}
 		}
 	}
 
@@ -91,8 +55,8 @@ namespace GZJ_ENGINE {
 		// 处理节点所有的网格（如果有的话）
 		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		{
-			aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-			ProcessMesh(mesh, scene);
+			aiMesh *aimesh = scene->mMeshes[node->mMeshes[i]];
+			ProcessMesh(aimesh, scene);
 		}
 		// 接下来对它的子节点重复这一过程
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -101,44 +65,44 @@ namespace GZJ_ENGINE {
 		}
 	}
 
-	void GZJModel::ProcessMesh(aiMesh * mesh, const aiScene * scene)
+	void GZJModel::ProcessMesh(aiMesh * aimesh, const aiScene * scene)
 	{
-		ResourceHandle handle = meshMgr.GetNextHandle();
-		GZJMeshPtr meshPtr = std::static_pointer_cast<GZJMesh>(meshMgr.CreateRes(_name + std::to_string(handle)));
+		meshs.push_back(MakeShared<GZJMesh>());
+		auto mesh = meshs.rbegin();
 
-		Vertices vertices;
-		Indices indices;
-		Textures textures;
+		Vertices &vertices = (*mesh)->vertices;
+		Indices &indices = (*mesh)->indices;
+		Textures &textures = (*mesh)->textures;
 
 		// 处理定点数据
-		for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+		for (unsigned int i = 0; i < aimesh->mNumVertices; i++)
 		{
 			Vertex vertex;
-			vertex.position = Vector3(mesh->mVertices[i].x,
-				mesh->mVertices[i].y, mesh->mVertices[i].z);
+			vertex.position = Vector3(aimesh->mVertices[i].x,
+				aimesh->mVertices[i].y, aimesh->mVertices[i].z);
 			
-			vertex.normal = Vector3(mesh->mNormals[i].x,
-				mesh->mNormals[i].y, mesh->mNormals[i].z);
+			vertex.normal = Vector3(aimesh->mNormals[i].x,
+				aimesh->mNormals[i].y, aimesh->mNormals[i].z);
 
-			vertex.texCoords = Vector2(mesh->mTextureCoords[0][i].x,
-				mesh->mTextureCoords[0][i].y);
+			vertex.texCoords = Vector2(aimesh->mTextureCoords[0][i].x,
+				aimesh->mTextureCoords[0][i].y);
 
 
 			vertices.push_back(vertex);
 		}
 
 		// 处理定点索引数据
-		for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+		for (unsigned int i = 0; i < aimesh->mNumFaces; i++)
 		{
-			aiFace face = mesh->mFaces[i];
+			aiFace face = aimesh->mFaces[i];
 			for (unsigned int j = 0; j < face.mNumIndices; j++)
 				indices.push_back(face.mIndices[j]);
 		}
 
 		// 处理材质
-		if (mesh->mMaterialIndex >= 0)
+		if (aimesh->mMaterialIndex >= 0)
 		{
-			aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+			aiMaterial* material = scene->mMaterials[aimesh->mMaterialIndex];
 
 			Textures texture_diffuse = LoadMaterialTextures(material,
 					aiTextureType_DIFFUSE, Texture_Diffuse);
@@ -149,51 +113,8 @@ namespace GZJ_ENGINE {
 			textures.insert(textures.end(), texture_specular.begin(), texture_specular.end());
 		}
 
-		meshPtr->Prepare(vertices, indices, textures);
-		meshPtr->SyncLoad();
 	}
 	
-	void GZJModel::SetVec1(ShaderData shaderData, const float& vec1)
-	{
-		switch (shaderData) {
-		default:
-			std::cout << "SetVec1 不能设置参数：" << shaderData << std::endl;
-			ERROR;
-		}
-	}
-	void GZJModel::SetVec2(ShaderData shaderData, const Vector2& vec2)
-	{
-		switch (shaderData) {
-		default:
-			std::cout << "SetVec2 不能设置参数：" << shaderData << std::endl;
-			ERROR;
-		}
-	}
-	void GZJModel::SetVec3(ShaderData shaderData, const Vector3& vec3)
-	{
-		switch (shaderData) {
-		default:
-			std::cout << "SetVec3 不能设置参数：" << shaderData << std::endl;
-			ERROR;
-		}
-	}
-	void GZJModel::SetMat4(ShaderData shaderData, const Vector4x4& mat4)
-	{
-		switch (shaderData) {
-		case ShaderData::Shader_LocalToWorld:
-			break;
-		case ShaderData::Shader_WorldToView:
-			break;
-		case ShaderData::Shader_ViewToProjection:
-			break;
-		default:
-			std::cout << "SetMat4 不能设置参数：" << shaderData << std::endl;
-			ERROR;
-		}
-		
-		dataMat4[shaderData] = Vector4x4(mat4);
-	}
-
 	ResourceType GZJModel::GetResType()
 	{
 		return Model;
@@ -211,21 +132,14 @@ namespace GZJ_ENGINE {
 			material->GetTexture(ai_type, idx, &str);
 			name = _direction + "//" + String(str.C_Str());
 			texPtr = std::static_pointer_cast<GZJTexture>(
-				textureMgr->CreateRes(name));
+				textureMgr->FindResByName(name));
+			texPtr->Prepare();
+			texPtr->SyncLoad();
 			texPtr->SetType(type);
-			textures.push_back(name);
+			textures.push_back(texPtr);
 		}
 		return textures;
 	}
 
-	//void GZJModel::DoTransform(Vector4x4 mat4)
-	//{
-	//	// 写数据到对应的参数内
-	//	auto it = dataMat4.find(ShaderData::Transform);
-	//	if (it == dataMat4.end())
-	//		dataMat4.insert(Pair<unsigned int, Vector4x4>(Transform, mat4));
-	//	else
-	//		dataMat4[ShaderData::Transform] = mat4;
-	//}
 }
 

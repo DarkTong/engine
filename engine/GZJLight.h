@@ -7,7 +7,6 @@
 #include <tinyxml\tinyxml.h>
 
 #include "GZJRequire.h"
-#include "GZJTransform.h"
 #include "GZJTools.h"
 #include "GZJWindow.h"
 
@@ -99,7 +98,7 @@ namespace GZJ_ENGINE
 		//GZJTransform transform;
 		/** 光源模型
 		*/
-		GZJModelPtr _model;
+		GZJEntityPtr _entity;
 
 		/** 全局光照分量
 		*/
@@ -193,7 +192,7 @@ namespace GZJ_ENGINE
 
 		/** 获取模型
 		*/
-		GZJModelPtr GetModel();
+		GZJEntityPtr GetEntity();
 
 		/** 设置光照数据给shader
 		*/
@@ -206,5 +205,5 @@ namespace GZJ_ENGINE
 }
 
 #include "GZJLightManager.h"
-#include "GZJModel.h"
+#include "GZJEntity.h"
 

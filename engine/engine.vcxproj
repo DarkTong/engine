@@ -133,6 +133,7 @@
     <ClInclude Include="..\third\include\stb_image.h" />
     <ClInclude Include="..\third\include\tinyxml\tinystr.h" />
     <ClInclude Include="..\third\include\tinyxml\tinyxml.h" />
+    <ClInclude Include="GZJEntity.h" />
     <ClInclude Include="GZJEvent.h" />
     <ClInclude Include="GZJEventConstant.h" />
     <ClInclude Include="GZJEventParamObj.h" />
@@ -143,7 +144,6 @@
     <ClInclude Include="GZJLight.h" />
     <ClInclude Include="GZJLightManager.h" />
     <ClInclude Include="GZJMesh.h" />
-    <ClInclude Include="GZJMeshManager.h" />
     <ClInclude Include="GZJModel.h" />
     <ClInclude Include="GZJModelManager.h" />
     <ClInclude Include="GZJMove.h" />
@@ -170,13 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\third\src\glad.c" />
+    <ClCompile Include="GZJEntity.cpp" />
     <ClCompile Include="GZJEvent.cpp" />
     <ClCompile Include="GZJEventSystem.cpp" />
     <ClCompile Include="GZJCamera.cpp" />
     <ClCompile Include="GZJLight.cpp" />
     <ClCompile Include="GZJLightManager.cpp" />
     <ClCompile Include="GZJMesh.cpp" />
-    <ClCompile Include="GZJMeshManager.cpp" />
     <ClCompile Include="GZJModel.cpp" />
     <ClCompile Include="GZJModelManager.cpp" />
     <ClCompile Include="GZJMove.cpp" />

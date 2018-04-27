@@ -73,6 +73,18 @@ namespace GZJ_ENGINE {
 		}
 
 		ResourceType GetResType();
+
+		/** 资源加载进GPU
+		*/
+		void LoginGPU();
+
+		/** 资源从GPU中卸载
+		*/
+		void LogoutGPU();
+
+		/** 资源是加载进GPU
+		*/
+		bool IsLoginGPU();
 	};
 }
 
