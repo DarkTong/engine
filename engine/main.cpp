@@ -110,21 +110,21 @@ int main() {
 		mainCamera.moveCmp->yawSpeed = .02f;
 		//mainCamera.transform.SetVector3(Rotation, Vector3(0, 0, 180));
 		shader1 = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("whiteLight_1"));
+			(shaderMgrPtr->FindResByName("whiteLight_1"));
 		parallelLS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("parallel_light"));
+			(shaderMgrPtr->FindResByName("parallel_light"));
 		pointLS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("point_light"));
+			(shaderMgrPtr->FindResByName("point_light"));
 		spotLS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("spot_light"));
+			(shaderMgrPtr->FindResByName("spot_light"));
 		normalS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("normal"));
+			(shaderMgrPtr->FindResByName("normal"));
 		depthS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("depth_texture"));
+			(shaderMgrPtr->FindResByName("depth_texture"));
 		showTextureS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("show_texture"));
+			(shaderMgrPtr->FindResByName("show_texture"));
 		pointLSS = std::static_pointer_cast<GZJShader>
-			(shaderMgrPtr->CreateRes("point_light_shadow"));
+			(shaderMgrPtr->FindResByName("point_light_shadow"));
 
 		shader1->Prepare();
 		shader1->SyncLoad();
@@ -145,36 +145,38 @@ int main() {
 
 		floorModel = MakeShared<GZJEntity>();
 		floorModel->model = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->CreateRes("floor"));
+			(modelMgrPtr->FindResByName("floor"));
 		floorModel->model->SyncLoad();
 		floorModel->transform.SetVector3(Position, Vector3(5, 0, 5));
 
-		nanosuit = MakeShared<GZJEntity>();
-		nanosuit->model = std::static_pointer_cast<GZJModel>
-			(modelMgrPtr->CreateRes("nanosuit"));
-		nanosuit->model->SyncLoad();
-		nanosuit->transform.SetVector3(Scale, Vector3(0.3, 0.3, 0.3 ));
-		nanosuit->transform.SetVector3(Position, Vector3(1, 1, 4));
-		nanosuit->transform.SetVector3(Rotation, Vector3(0, 180, 0));
+		//nanosuit = MakeShared<GZJEntity>();
+		//nanosuit->model = std::static_pointer_cast<GZJModel>
+		//	(modelMgrPtr->FindResByName("nanosuit"));
+		//nanosuit->model->SyncLoad();
+		//nanosuit->transform.SetVector3(Scale, Vector3(0.3, 0.3, 0.3 ));
+		//nanosuit->transform.SetVector3(Position, Vector3(1, 1, 4));
+		//nanosuit->transform.SetVector3(Rotation, Vector3(0, 180, 0));
 
-		//for (int i = 0; i < NUM_CUBE; ++i)
-		//{
-		//	GZJEntityPtr cube;
-		//	cube = MakeShared<GZJEntity>();
-		//	cube->model = std::static_pointer_cast<GZJModel>(
-		//		modelMgrPtr->FindResByName("cube3"));
-		//	cube->model->SyncLoad();
-		//	cube->transform.SetVector3(Position,
-		//		Vector3(rand() % 5, rand() % 5, rand() % 5));
-		//	cube->transform.SetVector3(Rotation,
-		//		Vector3(rand() % 360, rand() % 360, rand() % 360));
-
-		//	cubesModel.push_back(cube);
-		//}
+		//cubesModel.push_back(nanosuit);
 		//cubesModel.push_back(floorModel);
 
-		cubesModel.push_back(nanosuit);
+		for (int i = 0; i < NUM_CUBE; ++i)
+		{
+			GZJEntityPtr cube;
+			cube = MakeShared<GZJEntity>();
+			cube->model = std::static_pointer_cast<GZJModel>(
+				modelMgrPtr->FindResByName("cube3"));
+			cube->model->SyncLoad();
+			cube->transform.SetVector3(Position,
+				Vector3(rand() % 5, rand() % 5, rand() % 5));
+			cube->transform.SetVector3(Rotation,
+				Vector3(rand() % 360, rand() % 360, rand() % 360));
+
+			cubesModel.push_back(cube);
+		}
 		cubesModel.push_back(floorModel);
+
+		
 
 		// apply depth buffer
 		BuildDepthMap();

@@ -6,6 +6,7 @@ namespace GZJ_ENGINE {
 	{
 		_state	= ResState::UNPREPARE;
 		_path = manager->GetResRoot() + "\\" + name;
+		_count = 0;
 	}
 
 	void GZJResource::Prepare()
@@ -15,30 +16,14 @@ namespace GZJ_ENGINE {
 
 	void GZJResource::SyncLoad()
 	{
-		ResState state = GetState();
-		if (state == UNLOAD)
-		{
-			SetState(LOADING);
-			Load();
-		}
-		else
-		{
-			cout << "This Resource is not UnLoad!!, state:" << _state << " path:" << _path << endl;
-		}
+		Load();
 	}
 
 	void GZJResource::AsyncLoad()
 	{
 		ResState state = GetState();
-		if (state == UNLOAD)
-		{
-			GZJResourceLoad::GetInstance()
-				->AddRes(_mgr->FindResByName(_name), GetResType());
-		}
-		else
-		{
-			cout << "This Resource is not UnLoad!!, path:" << _path << endl;
-		}
+		GZJResourceLoad::GetInstance()
+			->AddRes(_mgr->FindResByName(_name), GetResType());
 	}
 
 	ResourceHandle GZJResource::GetResHandle()
@@ -48,22 +33,41 @@ namespace GZJ_ENGINE {
 
 	void GZJResource::Load()
 	{
-		try {
-			DoLoad();
-			SetState(LOADED);
+		_count++;
+		ResState state = GetState();
+		if (state == UNLOAD)
+		{
+			SetState(LOADING);
+			try {
+				DoLoad();
+				SetState(LOADED);
+			}
+			catch (const char *error) {
+				cout << error << endl;
+				SetState(UNLOAD);
+			}
 		}
-		catch(const char *error){
-			cout << error << endl;
+		else
+		{
+			cout << "This Resource is not UnLoad!!, state:" << _state << " path:" << _path << endl;
+		}
+	}
+
+	void GZJResource::ForceUnLoad()
+	{
+		if (GetState() == ResState::LOADED)
+		{
+			DoUnLoad();
+			_count = 0;
+			SetState(UNLOAD);
 		}
 	}
 
 	void GZJResource::UnLoad()
 	{
-		if (GetState() == ResState::LOADED)
-		{
-			DoUnLoad();
-			SetState(UNLOAD);
-		}
+		_count--;
+		if (_count == 0)
+			ForceUnLoad();
 	}
 
 	void GZJResource::SetState(ResState state)

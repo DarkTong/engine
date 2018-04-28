@@ -114,7 +114,7 @@ namespace GZJ_ENGINE
 		String modelName = ele->FirstChildElement("model")
 			->Attribute("name");
 		_entity->model = std::static_pointer_cast<GZJModel>(
-			GZJModelManager::GetInstance()->CreateRes(modelName));
+			GZJModelManager::GetInstance()->FindResByName(modelName));
 		_entity->model->SyncLoad();
 
 		// set transform

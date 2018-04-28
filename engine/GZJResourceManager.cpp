@@ -55,7 +55,7 @@ namespace GZJ_ENGINE {
 		{
 			std::cout << it->first << std::endl;
 			if(resMap[it->first] != nullptr)
-				it->second->UnLoad();
+				it->second->ForceUnLoad();
 			else
 				std::cout << "error resource unloadAll nullptr" << std::endl;
 		}

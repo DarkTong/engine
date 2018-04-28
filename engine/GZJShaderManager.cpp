@@ -34,7 +34,7 @@ namespace GZJ_ENGINE {
 		GetAllShaderName();
 		GZJResourcePtr _ptr;
 		for (auto it = _nameSet.begin(); it != _nameSet.end(); ++it) {
-			CreateRes(*it);
+			FindResByName(*it);
 			resMap[*it]->Prepare();
 		}
 	}

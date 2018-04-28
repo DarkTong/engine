@@ -1,5 +1,4 @@
-#ifndef _GZJ_RESOURCE_
-#define _GZJ_RESOURCE_
+#pragma once
 
 #include <mutex>
 
@@ -17,12 +16,28 @@ namespace GZJ_ENGINE {
 		*/
 		GZJResource(GZJResourceManager* manager, const String& name, ResourceHandle handle);
 	protected:
-
+		/** 资源管理器
+		*/
 		GZJResourceManager* _mgr;
+		/** 资源存储路径
+		*/
 		String _path;
+		/** 资源句柄
+		*/
 		ResourceHandle _handle;
+		/** 资源名字
+		*/
 		String _name;
+		/** 资源状态
+		*/
 		ResState _state;
+		/** 资源引用计数器
+		*/
+		unsigned int _count;
+
+	public:
+		// 友元
+		friend class GZJResourceManager;
 
 	private:
 		/** 控制资源状态的锁
@@ -77,6 +92,11 @@ namespace GZJ_ENGINE {
 		*/
 		virtual void DoUnLoad() = 0;
 
+		/** 强制卸载资源
+		* 不管是否有对象正在引用
+		* 用于管理器关闭时调用
+		*/
+		void ForceUnLoad();
 	};
 }
-#endif // !_GZJ_RESOURCE_
+
