@@ -8,7 +8,7 @@ namespace GZJ_ENGINE
 	class GZJPointLight :public GZJLight
 	{
 	public:
-		GZJPointLight(GZJLightManager* manager);
+		GZJPointLight();
 
 		~GZJPointLight();
 

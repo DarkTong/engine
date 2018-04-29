@@ -66,10 +66,10 @@ namespace GZJ_ENGINE
 
 	public:
 		// '构造1-1',使用默认数据的构造函数,委托 '构造1-2'
-		GZJLight(GZJLightManager* manager);
+		GZJLight();
 
 		// '构造1-2',使用手动设置数据的构造函数
-		GZJLight(GZJLightManager* manager,
+		GZJLight(
 			Vector3 position, Vector3 ambientLight,
 			Vector3 diffuseLight, Vector3 specularLight, 
 			float intensity);
@@ -80,10 +80,6 @@ namespace GZJ_ENGINE
 		/** 光空间
 		*/
 		Vector4x4 lightSpace;
-
-		/** 管理器
-		*/
-		GZJLightManager* _mgr;
 
 		/** 光源ID
 		*/
@@ -147,10 +143,6 @@ namespace GZJ_ENGINE
 		*/
 		void DoParseLightData(TiXmlElement * ele);
 
-		/** 解析Model数据
-		*/
-		void DoParseModelData(TiXmlElement * ele);
-
 		/** 解析Vector3数据
 		*/
 		Vector3 ParseVector3(TiXmlElement * node);
@@ -204,6 +196,5 @@ namespace GZJ_ENGINE
 	};
 }
 
-#include "GZJLightManager.h"
 #include "GZJEntity.h"
 

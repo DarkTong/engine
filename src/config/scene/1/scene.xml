@@ -1,28 +1,80 @@
 <?xml version="1.0" ?>
 <scene id="1">
-	<model>
+	<light>
+		<id>2</id> 
+		<type>PointLight</type>
+        <light_param>
+        	<ambient x="0.3" y="0.3" z="0.3"/>
+	        <diffuse x="1.0" y="1.0" z="1.0"/>
+	        <specular x="1.0" y="1.0" z="1.0"/>
+	        <intensity value="1.0"/>
+	        <near_plane value="0.1f"/>
+	        <far_plane value="30.0f"/>
+	        <perspective_angle value="130.0f"/>
+	        <param_k1 value=".045"/>
+	        <param_k2 value=".0075"/>
+        </light_param>
+        <entity>
+			<model>
+        		<name>cube1</name>
+	        </model>
+	        <transform>
+	        	<position x="1.0" y="10.0" z="1.0"/>
+		        <rotation x="90.0" y="0.0" z="0.0"/>
+		        <scale x="0.5" y="0.5" z="0.5"/>
+	        </transform>
+	        <shader>
+	        	<name>whiteLight_1</name>
+	        </shader>
+		</entity>
+	</light>
+	<entity create_number="5" name="cubes">
+		<model>
+			<name>cube3</name>
+		</model>
 		<transform>
-			<position x="0" y="0" z="0"/>
-			<rotation x="0" y="0" z="0"/>
-			<scale x="1" y="1" z="1"/>
-		</transform>
-		<name>cube1</name>
-		<shader>point_light_shader</shader>
-		<flag>
-			<auto_position>
-				<min x="0" y="0" z="0"/>
-				<max x="5" y="5" z="5"/>
-			</auto_position>
-			<auto_rotation>
+			<position auto="true">
+				<min x="1" y="1" z="0"/>
+				<max x="6" y="6" z="6"/>
+			</position>
+			<rotation auto="true">
 				<min x="0" y="0" z="0"/>
 				<max x="360" y="360" z="360"/>
-			</auto_rotation>
-			<auto_scale>
-				<min x="0.5" y="0.5" z="0.5"/>
-				<max x="2" y="2" z="2"/>
-			</auto_scale>
-			<shadow>true</shadow>
-			<create_number>5</create_number>
-		</flag>
-	</model>
+			</rotation>
+			<scale x="1" y="1" z="1"/>
+		</transform>
+		<shader>
+			<name>point_light_shadow</name>	
+		</shader>
+	</entity>
+	<entity name="floor">
+		<model>
+			<name>floor</name>
+		</model>
+		<transform>
+        	<position x="0.0" y="0.0" z="0.0"/>
+	        <rotation x="0.0" y="0.0" z="0.0"/>
+	        <scale x="1" y="1" z="1"/>
+        </transform>
+        <shader>
+			<name>point_light_shadow</name>	
+		</shader>
+	</entity>
+	<main_camera>
+		<transform>
+			<position x="0.0" y="0.0" z="-10.0"/>
+			<rotation x="0.0" y="0.0" z="0.0"/>
+		</transform>
+		<move_speed>0.007f</move_speed>
+		<pitch_speed>0.02f</pitch_speed>
+		<yaw_speed>0.02f</yaw_speed>
+		<projection>
+			<angle>50.0f</angle>
+			<near_plane>0.1f</near_plane>
+			<far_plane>100f</far_plane>
+		</projection>
+	</main_camera>
+	<shadow flag="true">
+		<shader>depth_texture</shader>
+	</shadow>
 </scene>

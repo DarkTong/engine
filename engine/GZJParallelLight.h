@@ -7,7 +7,7 @@ namespace GZJ_ENGINE {
 	class GZJParallelLight :public GZJLight
 	{
 	public:
-		GZJParallelLight(GZJLightManager* manager);
+		GZJParallelLight();
 
 		~GZJParallelLight();
 

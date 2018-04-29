@@ -31,6 +31,11 @@ namespace GZJ_ENGINE {
 		Param_Press_Mouse(GZJWindowPtr win, int key, int action)
 			:window(win), key(key), action(action) {}
 	};
+
+	class Param_Logic_Update :public GZJEventParamObj
+	{
+		
+	};
 }
 
 #endif // !__GZJ_EVENT_PARAM_OBJ_

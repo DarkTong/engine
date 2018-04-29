@@ -120,9 +120,6 @@
     <ClInclude Include="GZJLight.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GZJLightManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\third\include\tinyxml\tinystr.h">
       <Filter>资源文件</Filter>
     </ClInclude>
@@ -143,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="GZJEntity.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GZJScene.h">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -221,9 +221,6 @@
     <ClCompile Include="GZJLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GZJLightManager.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="GZJSpotLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -234,6 +231,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GZJEntity.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GZJScene.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

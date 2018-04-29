@@ -91,7 +91,7 @@ namespace GZJ_ENGINE {
 
 		/** 每逻辑帧更新
 		*/
-		void LogicUpdate();
+		void LogicUpdate(const GZJEventParamObj& param);
 
 	private:
 		// 功能

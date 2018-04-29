@@ -2,8 +2,10 @@
 #define __GZJ_CAMERA_
 
 #include "GZJRequire.h"
+#include "GZJTools.h"
 #include "GZJTransform.h"
 #include "GZJMove.h"
+#include "GZJWindow.h"
 
 namespace GZJ_ENGINE {
 	struct CameraParam {
@@ -28,6 +30,10 @@ namespace GZJ_ENGINE {
 		*/
 		GZJMovePtr moveCmp;
 
+		/** 透视角
+		*/
+		float projectionAngle;
+
 	public:
 		/** 默认构造函数
 		*/
@@ -36,6 +42,14 @@ namespace GZJ_ENGINE {
 		/** 获取观察空间
 		*/
 		Vector4x4 LookAt();
+		
+		/** 获取投影空间
+		*/
+		Vector4x4 Projection();
+		/** 近,远平面
+		*/
+		float nearPlane;
+		float farPlane;
 		
 		/** 设置摄像机参数
 		*/
@@ -48,6 +62,17 @@ namespace GZJ_ENGINE {
 		///** 绑定摄像机相关事件
 		//*/
 		//virtual void InitEvents();
+
+	public:
+		// 解析
+
+		/** 解析配置数据
+		*/
+		void ParseData(TiXmlElement * ele);
+
+		/** 解析projection数据
+		*/
+		void DoParseProjectionData(TiXmlElement * ele);
 	};
 }
 

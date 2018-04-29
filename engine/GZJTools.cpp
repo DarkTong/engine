@@ -48,4 +48,10 @@ namespace GZJ_ENGINE {
 		}
 		return v;
 	}
+	Vector3 GZJTools::ParseVector3(TiXmlElement * node)
+	{
+		return Vector3(atof(node->Attribute("x")),
+			atof(node->Attribute("y")),
+			atof(node->Attribute("z")));
+	}
 }

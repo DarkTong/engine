@@ -2,9 +2,9 @@
 
 namespace GZJ_ENGINE
 {
-	GZJParallelLight::GZJParallelLight(GZJLightManager * manager)
-		:GZJLight(manager)
+	GZJParallelLight::GZJParallelLight()
 	{
+		lightType = Light_ParallelLight;
 	}
 
 	GZJParallelLight::~GZJParallelLight()

@@ -2,9 +2,9 @@
 
 namespace GZJ_ENGINE
 {
-	GZJPointLight::GZJPointLight(GZJLightManager * manager)
-		:GZJLight(manager)
+	GZJPointLight::GZJPointLight()
 	{
+		lightType = Light_PointLight;
 	}
 
 	GZJPointLight::~GZJPointLight()

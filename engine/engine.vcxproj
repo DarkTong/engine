@@ -142,7 +142,6 @@
     <ClInclude Include="GZJCommon.h" />
     <ClInclude Include="GZJHeadFile.h" />
     <ClInclude Include="GZJLight.h" />
-    <ClInclude Include="GZJLightManager.h" />
     <ClInclude Include="GZJMesh.h" />
     <ClInclude Include="GZJModel.h" />
     <ClInclude Include="GZJModelManager.h" />
@@ -157,6 +156,7 @@
     <ClInclude Include="GZJResourceGroupManager.h" />
     <ClInclude Include="GZJResourceLoad.h" />
     <ClInclude Include="GZJResourceManager.h" />
+    <ClInclude Include="GZJScene.h" />
     <ClInclude Include="GZJShader.h" />
     <ClInclude Include="GZJShaderManager.h" />
     <ClInclude Include="GZJSpotLight.h" />
@@ -175,7 +175,6 @@
     <ClCompile Include="GZJEventSystem.cpp" />
     <ClCompile Include="GZJCamera.cpp" />
     <ClCompile Include="GZJLight.cpp" />
-    <ClCompile Include="GZJLightManager.cpp" />
     <ClCompile Include="GZJMesh.cpp" />
     <ClCompile Include="GZJModel.cpp" />
     <ClCompile Include="GZJModelManager.cpp" />
@@ -188,6 +187,7 @@
     <ClCompile Include="GZJResourceGroupManager.cpp" />
     <ClCompile Include="GZJResourceLoad.cpp" />
     <ClCompile Include="GZJResourceManager.cpp" />
+    <ClCompile Include="GZJScene.cpp" />
     <ClCompile Include="GZJShader.cpp" />
     <ClCompile Include="GZJShaderManager.cpp" />
     <ClCompile Include="GZJSpotLight.cpp" />

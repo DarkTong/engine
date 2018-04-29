@@ -4,23 +4,21 @@ namespace GZJ_ENGINE
 {
 	String GZJLight::None = "None";
 
-	GZJLight::GZJLight(GZJLightManager * manager)
-		:GZJLight(manager, GZJTransform::ZERO, 
+	GZJLight::GZJLight()
+		:GZJLight(GZJTransform::ZERO, 
 			Vector3(0.1f, 0.1f, 0.1f), Vector3(0.8f, 0.8f, 0.8f), 
 			GZJTransform::ONE, 1.0f)
 	{
 	}
 
-	GZJLight::GZJLight(GZJLightManager * manager, 
+	GZJLight::GZJLight( 
 		Vector3 position, Vector3 ambientLight, Vector3 diffuseLight, 
 		Vector3 specularLight, float intensity)
-		:_mgr(manager), ambientLight(ambientLight), 
+		:ambientLight(ambientLight), 
 		diffuseLight(diffuseLight), specularLight(specularLight), 
 		intensity(intensity)
 	{
 		_entity = MakeShared<GZJEntity>();
-		_entity->model = std::static_pointer_cast<GZJModel>(
-			GZJModelManager::GetInstance()->FindResByName("cube1"));
 		SetVector3(LightData_Position, position);
 	}
 
@@ -30,32 +28,9 @@ namespace GZJ_ENGINE
 
 	void GZJLight::DoParse(TiXmlElement * ele)
 	{
-		_id = std::stoi(ele->Attribute("id"));
-		
-		const String typeStr = ele->Attribute("type");
-		if (typeStr == "ParallelLight")
-		{
-			lightType = Light_ParallelLight;
-			DoParseParallerLightData(ele);
-		}
-		else if (typeStr == "PointLight")
-		{
-			lightType = Light_PointLight;
-			DoParsePointLightData(ele);
-		}
-		else if (typeStr == "SpotLight")
-		{
-			lightType = Light_SpotLight;
-			DoParseSpotLightData(ele);
-		}
-		else
-		{
-			cout << "light type error!!, id:" << _id << " type:" << typeStr << endl;
-			return;
-		}
-		
-		DoParseModelData(ele);
-		DoParseLightData(ele);
+		_id = std::stoi(ele->FirstChildElement("id")->GetText());
+		_entity->ParseData(ele->FirstChildElement("entity"));
+		DoParseLightData(ele->FirstChildElement("light_param"));
 	}
 
 	void GZJLight::DoParseParallerLightData(TiXmlElement * ele)
@@ -96,6 +71,23 @@ namespace GZJ_ENGINE
 
 	void GZJLight::DoParseLightData(TiXmlElement * ele)
 	{
+		switch (lightType)
+		{
+		case GZJ_ENGINE::Light_ParallelLight:
+			DoParseParallerLightData(ele);
+			break;
+		case GZJ_ENGINE::Light_PointLight:
+			DoParsePointLightData(ele);
+			break;
+		case GZJ_ENGINE::Light_SpotLight:
+			DoParseSpotLightData(ele);
+			break;
+		default:
+			throw "light type error!!, id:" + std::to_string(_id) +
+				" type:" + std::to_string(lightType);
+			return;
+		}
+
 		// set light data
 		SetVector3(LightData_Ambient, ParseVector3(ele->FirstChildElement("ambient")));
 		SetVector3(LightData_Diffuse, ParseVector3(ele->FirstChildElement("diffuse")));
@@ -106,21 +98,6 @@ namespace GZJ_ENGINE
 			ele->FirstChildElement("near_plane")->Attribute("value")));
 		SetFloat(LightData_Far_Plane, (float)atof(
 			ele->FirstChildElement("far_plane")->Attribute("value")));
-	}
-
-	void GZJLight::DoParseModelData(TiXmlElement * ele)
-	{
-		// load model
-		String modelName = ele->FirstChildElement("model")
-			->Attribute("name");
-		_entity->model = std::static_pointer_cast<GZJModel>(
-			GZJModelManager::GetInstance()->FindResByName(modelName));
-		_entity->model->SyncLoad();
-
-		// set transform
-		_entity->transform.SetVector3(Position, ParseVector3(ele->FirstChildElement("position")));
-		_entity->transform.SetVector3(Rotation, ParseVector3(ele->FirstChildElement("rotation")));
-		_entity->transform.SetVector3(Scale, ParseVector3(ele->FirstChildElement("scale")));
 	}
 
 	Vector3 GZJLight::ParseVector3(TiXmlElement * node)

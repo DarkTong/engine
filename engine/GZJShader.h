@@ -15,6 +15,7 @@ namespace GZJ_ENGINE {
 
 	enum ShaderData {
 		TexCoords,
+		Shader_IsOpenShadow,
 
 		// 材质相关
 		Mate_DiffuseTexture,
@@ -57,6 +58,7 @@ namespace GZJ_ENGINE {
 	*/
 	const std::vector<String> ShaderDataStr = {
 		"texcoord",
+		"is_open_shadow",
 
 		// 材质相关
 		"mesh_mate.diffuse_texture",
@@ -101,10 +103,6 @@ namespace GZJ_ENGINE {
 		/** 程序ID
 		*/
 		ShaderID _id;
-
-		/** 着色器名字
-		*/
-		String _name;
 
 		/** 着色器数据
 		*/

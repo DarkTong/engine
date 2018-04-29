@@ -114,9 +114,6 @@ namespace GZJ_ENGINE
 			}
 
 			lightPtr->ParseLightData(lightEle);
-			if (sceneLightsMap.find(sceneId) == sceneLightsMap.end())
-				sceneLightsMap[sceneId] = LightMap();
-			sceneLightsMap[sceneId][lightPtr->GetID()] = lightPtr;
 		}
 
 	}

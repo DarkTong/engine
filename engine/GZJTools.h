@@ -1,6 +1,7 @@
 #ifndef _GZJ_TOOLS_
 #define _GZJ_TOOLS_
 
+#include <tinyxml\tinyxml.h>
 #include "GZJRequire.h"
 
 namespace GZJ_ENGINE {
@@ -28,6 +29,10 @@ namespace GZJ_ENGINE {
 		*/
 		static float clamp(float& v, const float& lo, const float& hi);
 		static Vector3 clamp(Vector3& v, const Vector3& lo, const Vector3& hi);
+
+		/** ½âÎö(x,y,z)Êý¾Ý
+		*/
+		static Vector3 ParseVector3(TiXmlElement * node);
 
 	};
 }

@@ -8,6 +8,11 @@ namespace GZJ_ENGINE {
 	{
 		moveCmp = MakeShared<GZJMove>(&transform);
 		moveCmp->BindEvent();
+
+		projectionAngle = 45.0f;
+		nearPlane = 0.1f;
+		farPlane = 100.0f;
+
 		Update();
 	}
 
@@ -16,6 +21,13 @@ namespace GZJ_ENGINE {
 		//Update();
 		//return viewMatrix;
 		return transform.GetMatrix(LookAtMatrix);
+	}
+
+	Vector4x4 GZJCamera::Projection()
+	{
+		Vector2 size = GZJWindow::GetInstance()->GetSize();
+		return glm::perspective(glm::radians(projectionAngle),
+			size.x / size.y, nearPlane, farPlane);
 	}
 
 	void GZJCamera::SetVector3(const String param, Vector3 data)
@@ -39,11 +51,26 @@ namespace GZJ_ENGINE {
 
 	void GZJCamera::Update()
 	{
-		//// ¹Û²ì¿Õ¼ä¾ØÕó
-		//viewMatrix = glm::lookAt(transform.GetVector3(Position),
-		//	transform.GetVector3(Position) + transform.GetVector3(Front),
-		//	transform.GetVector3(Up));
+	}
 
+	void GZJCamera::ParseData(TiXmlElement * ele)
+	{
+		TiXmlElement * tran_ele = ele->FirstChildElement("transform");
+		transform.SetVector3(Position, GZJTools::ParseVector3(tran_ele->FirstChildElement("position")));
+		transform.SetVector3(Rotation, GZJTools::ParseVector3(tran_ele->FirstChildElement("rotation")));
+
+		moveCmp->moveSpeed = atof(ele->FirstChildElement("move_speed")->GetText());
+		moveCmp->pitchSpeed = atof(ele->FirstChildElement("pitch_speed")->GetText());
+		moveCmp->yawSpeed = atof(ele->FirstChildElement("yaw_speed")->GetText());
+
+		DoParseProjectionData(ele->FirstChildElement("projection"));
+	}
+
+	void GZJCamera::DoParseProjectionData(TiXmlElement * ele)
+	{
+		projectionAngle = atof(ele->FirstChildElement("angle")->GetText());
+		nearPlane = atof(ele->FirstChildElement("near_plane")->GetText());
+		farPlane = atof(ele->FirstChildElement("far_plane")->GetText());
 	}
 	
 }

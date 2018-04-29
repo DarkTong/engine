@@ -156,6 +156,9 @@ namespace GZJ_ENGINE {
 		case Shader_Shadow_Texture:
 			loc = glGetUniformLocation(_id, "shadow_texture");
 			break;
+		case Shader_IsOpenShadow:
+			loc = glGetUniformLocation(_id, "is_open_shadow");
+			break;
 		}
 
 		if (GL_INVALID_INDEX != loc)

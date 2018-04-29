@@ -15,6 +15,9 @@ namespace GZJ_ENGINE {
 		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this),
 			EV_Press_Mouse,
 			NormalDelegate(this, &GZJMove::Handle_Press_Mouse));
+		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this)
+			, EV_Login_Update
+			, NormalDelegate(this, &GZJMove::LogicUpdate));
 	}
 
 	void GZJMove::UnBindEvent()
@@ -79,7 +82,7 @@ namespace GZJ_ENGINE {
 		//cout << "front:" << showV3(transform->GetVector3(Front)) << endl;
 	}
 
-	void GZJMove::LogicUpdate()
+	void GZJMove::LogicUpdate(const GZJEventParamObj& param)
 	{
 		UpdateTransform();
 		UpdateCursor();
@@ -119,13 +122,13 @@ namespace GZJ_ENGINE {
 			}
 
 			Vector3 tmp;
-			tmp = transform->GetVector3(Position);
+			//tmp = transform->GetVector3(Position);
 			//cout << "pos:" << showV3(tmp) << endl;
-			//tmp = transform->GetVector3(WorldFront);
+			//tmp = transform->GetVector3(Front);
 			//cout << "worldFront:" << showV3(tmp) << endl;
-			//tmp = transform->GetVector3(WorldUp);
+			//tmp = transform->GetVector3(Up);
 			//cout << "worldUp:" << showV3(tmp) << endl;
-			//tmp = transform->GetVector3(WorldRight);
+			//tmp = transform->GetVector3(Right);
 			//cout << "worldRight:" << showV3(tmp) << endl;
 
 		}

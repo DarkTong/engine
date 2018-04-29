@@ -105,6 +105,7 @@ namespace GZJ_ENGINE {
 	class GZJPointLight;
 	class GZJSpotLight;
 	class GZJEntity;
+	class GZJScene;
 
 
 	class GZJTools;
@@ -142,6 +143,7 @@ namespace GZJ_ENGINE {
 	typedef SharedPtr<GZJPointLight>				GZJPointLightPtr;
 	typedef SharedPtr<GZJSpotLight>					GZJSpotLightPtr;
 	typedef SharedPtr<GZJEntity>					GZJEntityPtr;
+	typedef SharedPtr<GZJScene>						GZJScenePtr;
 
 	// typedef
 	typedef FastDelegate1<const GZJEventParamObj&>	NormalDelegate;

@@ -42,6 +42,8 @@ uniform vec3 view_position;
 // 阴影贴图
 uniform sampler2D shadow_texture;
 
+uniform int is_open_shadow;
+
 float CalShadow()
 {
     // 进行透视除法，如果是正交空间计算w=1,
@@ -89,7 +91,7 @@ vec3 CalPointLight()
         + light.param_k1 * distance + light.param_k2 * (distance * distance));  
 
     // calcular the result color
-    float shadow = CalShadow();
+    float shadow = CalShadow() + 1.0 * (1 - is_open_shadow);
     // 计算片段最终的颜色值
     vec3 result_color = (intensity * light.ambient + 
         shadow * (diffuse + specular) * attenuation) * color ;
