@@ -28,47 +28,62 @@ struct LightTransform
 
 struct MeshMaterial
 {
-    // Âş·´ÉäÌùÍ¼
+    // æ¼«åå°„è´´å›¾
     sampler2D diffuse_texture;
-    // ¾µÃæÌùÍ¼
+    // é«˜å…‰åå°„è´´å›¾
     sampler2D specular_texture;
-    // ·´¹âÖ¸Êı
+    // æ³•çº¿è´´å›¾
+    sampler2D normal_texture;
+
+    // æè´¨æ¼«æ”¾å°„é¢œè‰²
+    vec3 diffuse_color;
+    // æè´¨åå°„æè´¨
+    vec3 specular_color;
+
+    // æ ‡å¿—ä½ï¼ˆæ ‡å¿—æ˜¯å¦ä½¿ç”¨texture
+    bool diffuse_tex_use;
+    bool specular_tex_use;
+    bool normal_tex_use;
+
     int shininess;
 };
 
-// Ä£ĞÍ²ÄÖÊĞÅÏ¢
+// Ã„ÅÄÃË›Ã„Ã–Ä˜ÄÄ¹ÄË˜
 uniform MeshMaterial mesh_mate;
-// Æ½ĞĞ¹âĞÅÏ¢
+// Ä†ËÄÄÄ…Ã¢ÄÄ¹ÄË˜
 uniform PointLight light;
 
 uniform LightTransform light_transform;
-// ÉãÏñ»úÎ»ÖÃ
+// Ã‰ÄƒÄÅ„Â»ÃºÃÂ»Ã–Ä‚
 uniform vec3 view_position;
-// ÒõÓ°ÌùÍ¼
+// Å‡Å‘Ã“Â°ÄšÅ¯ÃÄ½
 uniform sampler2D shadow_texture;
 
 uniform int is_open_shadow;
 
+vec3 GetDiffuse();
+vec3 GetSpecular();
+
 float CalShadow()
 {
-    // ½øĞĞÍ¸ÊÓ³ı·¨£¬Èç¹ûÊÇÕı½»¿Õ¼ä¼ÆËãw=1,
+    // ËÅ™ÄÄÃÂ¸Ä˜Ã“Å‚Ã½Â·Â¨ÅÂ¬ÄŒÃ§Ä…Å±Ä˜Ã‡ÅÃ½ËÂ»Å¼ÅÄ½Ã¤Ä½Ä†Ã‹Äƒw=1,
     vec3 projCoords = fragLightSpacePos.xyz / fragLightSpacePos.w;
-    // ÖµÓòµÄ×ª»»
-    // ÓÉÓÚprojCoordsµÄ·¶Î§ÊÇ[-1,1]£¬¶øÎÆÀí×ø±êµÄ·¶Î§ÊÇ[0,1],
+    // Ã–ÂµÃ“ÅˆÂµÃ„Ã—ÅÂ»Â»
+    // Ã“Ã‰Ã“ÃšprojCoordsÂµÃ„Â·Â¶ÃÂ§Ä˜Ã‡[-1,1]ÅÂ¬Â¶Å™ÃÄ†Å”Ã­Ã—Å™Â±Ä™ÂµÃ„Â·Â¶ÃÂ§Ä˜Ã‡[0,1],
     projCoords = projCoords * 0.5 + 0.5;
-    // »ñÈ¡Éî¶ÈÌùÍ¼¶ÔÓ¦Î»ÖÃµÄÉî¶ÈÖµ
+    // Â»Å„ÄŒË‡Ã‰Ã®Â¶ÄŒÄšÅ¯ÃÄ½Â¶Ã”Ã“Â¦ÃÂ»Ã–Ä‚ÂµÃ„Ã‰Ã®Â¶ÄŒÃ–Âµ
     float closeDepth = texture(shadow_texture, projCoords.xy).r;
-    // ÀûÓÃÉî¶È¼Ä´æÆ÷Éî¶È£¬¿ÉÄÜÊÇ·ÇÏßĞÔ¿Õ¼äµÄ
+    // Å”Å±Ã“Ä‚Ã‰Ã®Â¶ÄŒÄ½Ã„Â´Ä‡Ä†Ã·Ã‰Ã®Â¶ÄŒÅÂ¬Å¼Ã‰Ã„ÃœÄ˜Ã‡Â·Ã‡ÄÃŸÄÃ”Å¼ÅÄ½Ã¤ÂµÃ„
     // float currentDepth = projCoords.z;
-    // »ñÈ¡ÏßĞÔ¿Õ¼äµÄÉî¶ÈÖµ£¬
+    // Â»Å„ÄŒË‡ÄÃŸÄÃ”Å¼ÅÄ½Ã¤ÂµÃ„Ã‰Ã®Â¶ÄŒÃ–ÂµÅÂ¬
     float dis = length(fragPosition - light_transform.position);
     float currentDepth = dis / light.far_plane;
     // 0.0 is shadow, 1.0 is not shadow
-    // Éî¶ÈÆ«ÒÆÖµ£¬½â¾öÉî¶È³åÍ»
+    // Ã‰Ã®Â¶ÄŒÄ†Â«Å‡Ä†Ã–ÂµÅÂ¬ËÃ¢Ä¾Ã¶Ã‰Ã®Â¶ÄŒÅ‚ÄºÃÂ»
     float shadow_bias = 0.005;
-    // ÅĞ¶Ïµ±Ç°Æ¬¶ÎÊÇ²»ÊÇÒõÓ°
+    // Ä¹ÄÂ¶ÄÂµÂ±Ã‡Â°Ä†Â¬Â¶ÃÄ˜Ã‡Ë›Â»Ä˜Ã‡Å‡Å‘Ã“Â°
     float shadow = closeDepth < currentDepth - 0.005? 0.0f : 1.0;
-    // ÉèÖÃÎŞÏŞÔ¶´¦²»ÊÇÒõÓ°Ğ§¹û
+    // Ã‰ÄÃ–Ä‚ÃÅ¢ÄÅ¢Ã”Â¶Â´Â¦Ë›Â»Ä˜Ã‡Å‡Å‘Ã“Â°ÄÂ§Ä…Å±
     shadow = projCoords.z > 1.0f ? 1.0 : shadow;
 
     return shadow;
@@ -82,13 +97,12 @@ vec3 CalPointLight()
     vec3 reflectDir = normalize(reflect(-lightDir, fragNormal));
 
     float intensity = light.intensity;
-    float diff = intensity * max(dot(viewDir, lightDir), 0.0);
+    float diff = intensity * max(dot(normal, lightDir), 0.0);
     float spec = intensity * pow(max(dot(viewDir, reflectDir), 0.0), mesh_mate.shininess); 
 
-    vec3 color = vec3(texture(mesh_mate.diffuse_texture, fragTexCoords));
+    vec3 color = GetDiffuse();
     vec3 diffuse = diff * light.diffuse;
-    vec3 specular = spec * light.specular 
-        * vec3(texture(mesh_mate.specular_texture, fragTexCoords));
+    vec3 specular = spec * light.specular * GetSpecular();
 
     // attenuation
     float distance = length(light_transform.position - fragPosition);
@@ -97,7 +111,7 @@ vec3 CalPointLight()
 
     // calcular the result color
     float shadow = CalShadow() + 1.0 * (1 - is_open_shadow);
-    // ¼ÆËãÆ¬¶Î×îÖÕµÄÑÕÉ«Öµ
+    // Ä½Ä†Ã‹ÄƒÄ†Â¬Â¶ÃÃ—Ã®Ã–ÅÂµÃ„ÅƒÅÃ‰Â«Ã–Âµ
     vec3 result_color = (intensity * light.ambient + 
         shadow * (diffuse + specular) * attenuation) * color ;
 
@@ -109,4 +123,18 @@ void main()
     vec3 color = CalPointLight();
 
     FragColor = vec4(color, 1.0);
+}
+
+vec3 GetDiffuse()
+{
+    if(mesh_mate.diffuse_tex_use)
+        return texture(mesh_mate.diffuse_texture, fragTexCoords).rgb;
+    return mesh_mate.diffuse_color;
+}
+
+vec3 GetSpecular()
+{
+    if(mesh_mate.specular_tex_use)
+        return texture(mesh_mate.specular_texture, fragTexCoords).rgb;
+    return mesh_mate.specular_color;
 }

@@ -95,12 +95,13 @@ vec3 CalPointLight()
     vec3 viewDir = normalize(fs_data.fragViewPosition - fs_data.fragPosition);
     vec3 lightDir = normalize(fs_data.lightPosition - fs_data.fragPosition);
     vec3 normal = GetNormal().rgb;
-    normal = normal * 2.0 - 1.0;
     vec3 reflectDir = normalize(reflect(-lightDir, normal));
+    // vec3 halfwardir = normalize(lightDir + viewDir);
 
     float intensity = light.intensity;
-    float diff = intensity * max(dot(viewDir, lightDir), 0.0);
+    float diff = intensity * max(dot(normal, lightDir), 0.0);
     float spec = intensity * pow(max(dot(viewDir, reflectDir), 0.0), mesh_mate.shininess); 
+    // float spec = intensity * pow(dot(halfwardir, normal), mesh_mate.shininess);
 
     vec3 color = GetDiffuse().rgb;
     vec3 diffuse = diff * light.diffuse;
@@ -120,7 +121,7 @@ vec3 CalPointLight()
     vec3 result_color = (intensity * light.ambient + 
         shadow * (diffuse + specular) * attenuation) * color ;
 
-    return result_color;
+    return (lightDir*0.5 + 1);
 }
 
 void main()
@@ -133,7 +134,7 @@ void main()
 vec3 GetNormal()
 {
     if(mesh_mate.normal_tex_use)
-        return texture(mesh_mate.normal_texture, fragTexCoords).rgb;    
+        return vec3(texture(mesh_mate.normal_texture, fragTexCoords)) * 2.0 - 1.0;    
     return fs_data.fragNormal;
 }
 

@@ -281,11 +281,12 @@ namespace GZJ_ENGINE
 
 	void GZJScene::Render()
 	{
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		if (isOpenShadow)
 			RenderToDepth();
-
+		//glEnable(GL_CULL_FACE);
 		RenderToNormal();
 	
 	}

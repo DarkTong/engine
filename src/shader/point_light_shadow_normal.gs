@@ -68,7 +68,6 @@ void GeneralTangentSpaceMatrix()
 				, dot(vec2(-_du2, _du1), vec2(e1.y, e2.y))
 				, dot(vec2(-_du2, _du1), vec2(e1.z, e2.z))));
 	vec3 N = cross(T, B);
-	T = normalize(T - N * dot(T, N));
 
 	tangentSpace = transpose(
 		mat4(vec4(T, 0), 
