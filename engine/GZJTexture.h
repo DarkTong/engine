@@ -11,6 +11,7 @@ namespace GZJ_ENGINE {
 	enum TextureType {
 		Texture_Diffuse,
 		Texture_Specular,
+		Texture_Bump,
 	};
 
 	class GZJTexture :public GZJResource

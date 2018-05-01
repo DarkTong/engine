@@ -34,8 +34,8 @@ namespace GZJ_ENGINE
 		const char * _auto = ele->Attribute("auto");
 		if (_auto && String(_auto) == "true")
 		{
-			Vector3 min_v = ParseVector3(ele->FirstChildElement("min"));
-			Vector3 max_v = ParseVector3(ele->FirstChildElement("max"));
+			Vector3 min_v = GZJTools::ParseVector3(ele->FirstChildElement("min"));
+			Vector3 max_v = GZJTools::ParseVector3(ele->FirstChildElement("max"));
 			// 范围随机数
 			auto func = [](float _min, float _max) {
 				float tmp = (_max - _min) / RAND_MAX * rand();
@@ -71,6 +71,22 @@ namespace GZJ_ENGINE
 		String shaderName = ele->FirstChildElement("name")->GetText();
 		shader = std::static_pointer_cast<GZJShader>(
 			GZJShaderManager::GetInstance()->FindResByName(shaderName));
+
+		TiXmlElement * child = nullptr;
+		// 默认有
+		child = ele->FirstChildElement("vertex_shader");
+		if (child && child->GetText() == "false")
+			shader->SetUseShaderSet(VERTEX_SHADER, 0);
+
+		// 默认有
+		child = ele->FirstChildElement("fragment_shader");
+		if (child && child->GetText() == "false")
+			shader->SetUseShaderSet(FRAGMENT_SHADER, 0);
+
+		// 默认没有
+		child = ele->FirstChildElement("geometry_shader");
+		if (child && String(child->GetText()) == "true")
+			shader->SetUseShaderSet(GEOMETRY_SHADER, 1);
 	}
 
 }

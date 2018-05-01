@@ -158,6 +158,8 @@ namespace GZJ_ENGINE {
 	const String SHADER_ROOT_PATH		= "\\shader";
 	const String ENGINE_SRC_ROOT_PATH	= ENGINE_ROOT_PATH + "\\src";
 
+	const unsigned int MASK_INT = 0xffffffff;
+
 }
 
 #endif // _GZJ_REQUIRE

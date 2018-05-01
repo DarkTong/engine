@@ -41,6 +41,11 @@ namespace GZJ_ENGINE {
 		/** 所有的贴图
 		*/
 		Textures textures;
+
+		/** 各项材质颜色
+		*/
+		Vector3 diffuseColor;
+		Vector3 specularColor;
 	public:
 		
 		GZJMesh();

@@ -5,6 +5,8 @@ namespace GZJ_ENGINE {
 
 	void GZJShader::Init()
 	{
+		shaderTypeSet |= VERTEX_SHADER;
+		shaderTypeSet |= FRAGMENT_SHADER;
 		dataMap.clear();
 	}
 
@@ -53,6 +55,8 @@ namespace GZJ_ENGINE {
 				path = _path + ".vs";
 			else if (type == ShaderType::FRAGMENT_SHADER)
 				path = _path + ".fs";
+			else if (type == ShaderType::GEOMETRY_SHADER)
+				path = _path + ".gs";
 			/*std::cout << "path:" << path << std::endl;*/
 			// 打开文件
 			file.open(path);
@@ -80,13 +84,20 @@ namespace GZJ_ENGINE {
 		String src = ReadSrc(name, type);
 
 		assert(!src.empty());
-		ShaderID id;
-		if (type == VERTEX_SHADER) {
+		ShaderID id = GL_NONE;
+		switch (type)
+		{
+		case VERTEX_SHADER:
 			id = glCreateShader(GL_VERTEX_SHADER);
-		}
-		else if (type == FRAGMENT_SHADER) {
+			break;
+		case FRAGMENT_SHADER:
 			id = glCreateShader(GL_FRAGMENT_SHADER);
+			break;
+		case GEOMETRY_SHADER:
+			id = glCreateShader(GL_GEOMETRY_SHADER);
+			break;
 		}
+		
 		const char *a = src.c_str();
 		glShaderSource(id, 1, &a, NULL);
 		glCompileShader(id);
@@ -98,24 +109,29 @@ namespace GZJ_ENGINE {
 
 	void GZJShader::DoLoad()
 	{
-		ShaderID it_1 = LoadShader(_name, VERTEX_SHADER);
-		ShaderID it_2 = LoadShader(_name, FRAGMENT_SHADER);
-		ShaderID id = glCreateProgram();
-		glAttachShader(id, it_1);
-		glAttachShader(id, it_2);
-		glLinkProgram(id);
+		_id = glCreateProgram();
+		BuildSubShader(VERTEX_SHADER);
+		BuildSubShader(GEOMETRY_SHADER);
+		BuildSubShader(FRAGMENT_SHADER);
+		glLinkProgram(_id);
 
-		CheckCompliceErrors(id, PROGRAM_SHADER);
+		CheckCompliceErrors(_id, PROGRAM_SHADER);
 
-		glDeleteShader(it_1);
-		glDeleteShader(it_2);
-
-		_id = id;
 	}
 
 	void GZJShader::DoUnLoad()
 	{
 		dataMap.clear();
+	}
+
+	void GZJShader::BuildSubShader(ShaderType type)
+	{
+		if (shaderTypeSet & type)
+		{
+			ShaderID it = LoadShader(_name, type);
+			glAttachShader(_id, it);
+			glDeleteShader(it);
+		}
 	}
 
 	String GZJShader::GetName()
@@ -135,7 +151,25 @@ namespace GZJ_ENGINE {
 
 	void GZJShader::SetBool(const ShaderData& type, bool value) const
 	{
-		//glUniform1i(glGetUniformLocation(_id, name.c_str()), (int)value);
+		int loc = GL_INVALID_INDEX;
+		switch (type)
+		{
+		case Mate_Flag_DiffuseTextureUse:
+			loc = glGetUniformLocation(_id, "mesh_mate.diffuse_tex_use");
+			break;
+		case Mate_Flag_SpecularTextureUse:
+			loc = glGetUniformLocation(_id, "mesh_mate.specular_tex_use");
+			break;
+		case Mate_Flag_NormalTextureUse:
+			loc = glGetUniformLocation(_id, "mesh_mate.normal_tex_use");
+			break;
+		case Shader_IsOpenShadow:
+			loc = glGetUniformLocation(_id, "is_open_shadow");
+			break;
+		}
+		if (loc != GL_INVALID_INDEX)
+			Use();
+			glUniform1i(loc, value);
 	}
 
 	void GZJShader::SetInt(const ShaderData& type, int value) const
@@ -150,19 +184,20 @@ namespace GZJ_ENGINE {
 		case Mate_SpecularTexture:
 			loc = glGetUniformLocation(_id, "mesh_mate.specular_texture");
 			break;
+		case Mate_BumpTexture:
+			loc = glGetUniformLocation(_id, "mesh_mate.normal_texture");
+			break;
 		case Mate_Shininess:
 			loc = glGetUniformLocation(_id, "mesh_mate.shininess");
 			break;
 		case Shader_Shadow_Texture:
 			loc = glGetUniformLocation(_id, "shadow_texture");
 			break;
-		case Shader_IsOpenShadow:
-			loc = glGetUniformLocation(_id, "is_open_shadow");
-			break;
 		}
 
 		if (GL_INVALID_INDEX != loc)
 		{
+			Use();
 			glUniform1i(loc, value);
 		}
 
@@ -234,13 +269,19 @@ namespace GZJ_ENGINE {
 			loc = glGetUniformLocation(_id, "light.specular");
 			break;
 		case Light_Position:
-			loc = glGetUniformLocation(_id, "light.position");
+			loc = glGetUniformLocation(_id, "light_transform.position");
 			break;
 		case Light_Direction:
-			loc = glGetUniformLocation(_id, "light.direction");
+			loc = glGetUniformLocation(_id, "light_transform.direction");
 			break;
 		case View_ViewPosition:
 			loc = glGetUniformLocation(_id, "view_position");
+			break;
+		case Mate_DiffuseColor:
+			loc = glGetUniformLocation(_id, "mesh_mate.diffuse_color");
+			break;
+		case Mate_SpecularColor:
+			loc = glGetUniformLocation(_id, "mesh_mate.specular_color");
 			break;
 		}
 
@@ -276,6 +317,13 @@ namespace GZJ_ENGINE {
 			Use();
 			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(data));
 		}
+	}
+
+	void GZJShader::SetUseShaderSet(ShaderType type, int flag)
+	{
+		shaderTypeSet |= type;
+		if (!flag)
+			shaderTypeSet -= type;
 	}
 
 	ResourceType GZJShader::GetResType()

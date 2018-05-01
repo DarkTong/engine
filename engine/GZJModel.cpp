@@ -73,6 +73,8 @@ namespace GZJ_ENGINE {
 		Vertices &vertices = (*mesh)->vertices;
 		Indices &indices = (*mesh)->indices;
 		Textures &textures = (*mesh)->textures;
+		Vector3 &diffuseColor = (*mesh)->diffuseColor;
+		Vector3 &specularColor = (*mesh)->specularColor;
 
 		// 处理定点数据
 		for (unsigned int i = 0; i < aimesh->mNumVertices; i++)
@@ -111,6 +113,17 @@ namespace GZJ_ENGINE {
 			Textures texture_specular = LoadMaterialTextures(material,
 					aiTextureType_SPECULAR, Texture_Specular);
 			textures.insert(textures.end(), texture_specular.begin(), texture_specular.end());
+
+			Textures texture_bump = LoadMaterialTextures(material,
+				aiTextureType_HEIGHT, Texture_Bump);
+			textures.insert(textures.end(), texture_bump.begin(), texture_bump.end());
+
+			// 处理材质颜色
+			aiColor3D tmp(0.0f,0.0f,0.0f);
+			material->Get(AI_MATKEY_COLOR_DIFFUSE, tmp);
+			diffuseColor = Vector3(tmp.r, tmp.g, tmp.b);
+			material->Get(AI_MATKEY_COLOR_SPECULAR, tmp);
+			specularColor = Vector3(tmp.r, tmp.g, tmp.b);
 		}
 
 	}

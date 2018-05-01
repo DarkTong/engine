@@ -64,7 +64,7 @@ namespace GZJ_ENGINE
 
 		/** ÊÇ·ñ¿ªÆôshadow
 		*/
-		int isOpenShadow;
+		bool isOpenShadow;
 
 		// depth id
 		unsigned int depthBuffer = 0;

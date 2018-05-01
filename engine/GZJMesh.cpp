@@ -83,6 +83,7 @@ namespace GZJ_ENGINE {
 		GZJTexturePtr texture = nullptr;
 		int diffuseNum = 1;
 		int specularNum = 1;
+		int bumpNum = 1;
 		for (int idx = 0; idx < textures.size(); ++idx)
 		{
 			glActiveTexture(GL_TEXTURE1 + idx);
@@ -94,9 +95,20 @@ namespace GZJ_ENGINE {
 					texture->LoginGPU();
 				ShaderData type = ShaderData::Shader_None;
 				if (diffuseNum <= MAX_MATERIAL and texture->GetType() == Texture_Diffuse)
+				{
 					type = Mate_DiffuseTexture, diffuseNum++;
+					shader->SetBool(Mate_Flag_DiffuseTextureUse, true);
+				}
 				else if (specularNum <= MAX_MATERIAL and texture->GetType() == Texture_Specular)
+				{
 					type = Mate_SpecularTexture, specularNum++;
+					shader->SetBool(Mate_Flag_SpecularTextureUse, true);
+				}
+				else if (bumpNum <= MAX_MATERIAL and texture->GetType() == Texture_Bump)
+				{
+					type = Mate_BumpTexture, bumpNum++;
+					shader->SetBool(Mate_Flag_NormalTextureUse, true);
+				}
 
 				if (type != ShaderData::Shader_None)
 				{
@@ -105,6 +117,20 @@ namespace GZJ_ENGINE {
 				}
 			}
 		}
+
+		// 临时处理材质颜色
+		if (diffuseNum <= 1)
+		{
+			shader->SetBool(Mate_Flag_DiffuseTextureUse, false);
+			shader->SetVector3(Mate_DiffuseColor, diffuseColor);
+		}
+		else if (specularNum <= 1)
+		{
+			shader->SetBool(Mate_Flag_SpecularTextureUse, false);
+			shader->SetVector3(Mate_SpecularColor, specularColor);
+		}
+		else if (bumpNum <= 1)
+			shader->SetBool(Mate_Flag_NormalTextureUse, false);
 
 		// 设置放光系数
 		shader->SetInt(Mate_Shininess, 32);

@@ -8,9 +8,10 @@ namespace GZJ_ENGINE {
 	typedef unsigned int ShaderID;
 
 	enum ShaderType {
-		PROGRAM_SHADER,
-		VERTEX_SHADER,
-		FRAGMENT_SHADER,
+		PROGRAM_SHADER = 0x01,
+		VERTEX_SHADER = 0x02,
+		FRAGMENT_SHADER = 0x04,
+		GEOMETRY_SHADER = 0x08,
 	};
 
 	enum ShaderData {
@@ -19,8 +20,14 @@ namespace GZJ_ENGINE {
 
 		// 材质相关
 		Mate_DiffuseTexture,
+		Mate_DiffuseColor,
 		Mate_SpecularTexture,
+		Mate_SpecularColor,
+		Mate_BumpTexture,
 		Mate_Shininess,			// 反光系数
+		Mate_Flag_DiffuseTextureUse,	//是否使用漫反射纹理贴图
+		Mate_Flag_SpecularTextureUse,
+		Mate_Flag_NormalTextureUse,
 
 		// 光照相关
 		Light_Ambient,
@@ -62,16 +69,21 @@ namespace GZJ_ENGINE {
 
 		// 材质相关
 		"mesh_mate.diffuse_texture",
+		"mesh_mate.diffuse_color",
 		"mesh_mate.specular_texture",
+		"mesh_mate.specular_color",
 		"mesh_mate.shininess"
+		"mesh_mate.diffuse_tex_use",
+		"mesh_mate.specular_tex_use",
+		"mesh_mate.normal_tex_use",
 
 		// 光照相关
 		"light.ambient",
 		"light.diffuse",
 		"light.specular",
 		"light.intensity",
-		"light.position",
-		"light.direction",
+		"light_transform.position",
+		"light_transform.direction",
 		"light.param_k1",
 		"light.param_k2",
 		"light.inner_angle",
@@ -107,6 +119,10 @@ namespace GZJ_ENGINE {
 		/** 着色器数据
 		*/
 		ShaderDataMap dataMap;
+
+		/** 使用的shader类型集合
+		*/
+		unsigned int shaderTypeSet;
 	private:
 		/** 构造shader程序
 		*/
@@ -140,6 +156,10 @@ namespace GZJ_ENGINE {
 		/** 卸载资源
 		*/
 		void DoUnLoad();
+
+		/** 创建shander子程序
+		*/
+		void BuildSubShader(ShaderType type);
 
 	public:
 
@@ -188,6 +208,11 @@ namespace GZJ_ENGINE {
 		/** 设置相关的矩阵数据
 		*/
 		void SetMatrix(ShaderData param, Vector4x4 data);
+
+		/** 设置着色器使用类型集合的元素
+		*/
+		void SetUseShaderSet(ShaderType type, int flag);
+
 
 		ResourceType GetResType();
 	};

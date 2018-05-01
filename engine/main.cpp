@@ -165,7 +165,7 @@ int main() {
 		//	cubesModel.push_back(cube);
 		//}
 		//cubesModel.push_back(floorModel);
-		scenePtr = MakeShared<GZJScene>(1);
+		scenePtr = MakeShared<GZJScene>(2);
 		scenePtr->ParseConfig();
 		scenePtr->Load();
 

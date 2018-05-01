@@ -8,7 +8,7 @@ namespace GZJ_ENGINE
 	GZJScene::GZJScene(unsigned int id)
 	{
 		_id = id;
-		isOpenShadow = 0;
+		isOpenShadow = false;
 		configPath = CONFIG_PATH_PRE + "\\" 
 			+ std::to_string(id) + "\\scene.xml";
 
@@ -92,7 +92,7 @@ namespace GZJ_ENGINE
 	{
 		const char * _shadow = ele->Attribute("flag");
 		if (_shadow && String(_shadow) == "true")
-			isOpenShadow = 1;
+			isOpenShadow = true;
 
 		String shaderName = ele->FirstChildElement("shader")->GetText();
 		depthShader = std::static_pointer_cast<GZJShader>(
