@@ -4,9 +4,7 @@
 		<id>2</id> 
 		<type>PointLight</type>
         <light_param>
-        	<ambient x="0.2" y="0.2" z="0.2"/>
-	        <diffuse x="0.8" y="0.8" z=".8"/>
-	        <specular x="0.6" y="0.6" z="0.6"/>
+	        <color x="1" y="1" z="1"/>
 	        <intensity value="1.0"/>
 	        <near_plane value="0.1f"/>
 	        <far_plane value="30.0f"/>
@@ -19,7 +17,7 @@
         		<name>cube1</name>
 	        </model>
 	        <transform>
-	        	<position x="2.0" y="2.0" z="-2.0"/>
+	        	<position x="-1.0" y="2.0" z="-2.0"/>
 		        <rotation x="0.0" y="0.0" z="0.0"/>
 		        <scale x="0.2" y="0.2" z="0.2"/>
 	        </transform>
@@ -33,21 +31,21 @@
 			<name>nanosuit</name>
 		</model>
 		<transform>
-        	<position x="0.0" y="0.0" z="0.0"/>
+        	<position x="0.0" y="-3.0" z="0.0"/>
 	        <rotation x="0.0" y="180.0" z="0.0"/>
 	        <!-- <scale x="2.0" y="2.0" z="2.0"/> -->
-	        <scale x="0.15" y="0.15" z="0.15"/>
+	        <scale x="0.25" y="0.25" z="0.25"/>
         </transform>
         <shader>
-			<name>point_light_shadow_normal</name>	
+			<name>point_light_shadow_normal1</name>	
 			<vertex_shader>true</vertex_shader>
 			<fragment_shader>true</fragment_shader>
-			<geometry_shader>true</geometry_shader>
+			<geometry_shader>false</geometry_shader>
 		</shader>
 	</entity>
 	<main_camera>
 		<transform>
-			<position x="0.0" y="0.0" z="-2.0"/>
+			<position x="0.0" y="0.0" z="-3.0"/>
 			<rotation x="0.0" y="0.0" z="0.0"/>
 		</transform>
 		<move_speed>0.007f</move_speed>
@@ -59,7 +57,11 @@
 			<far_plane>100f</far_plane>
 		</projection>
 	</main_camera>
-	<shadow flag="false">
-		<shader>depth_texture</shader>
-	</shadow>
+	<scene_data>
+		<ambient_color x="0.2" y="0.2" z="0.2"/>
+		<bg_color x="0.2" y="0.3" z="0.3"/>
+		<shadow flag="false">
+			<shader>depth_texture</shader>
+		</shadow>
+	</scene_data>
 </scene>

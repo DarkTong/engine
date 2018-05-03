@@ -268,6 +268,9 @@ namespace GZJ_ENGINE {
 		case Light_Specular:
 			loc = glGetUniformLocation(_id, "light.specular");
 			break;
+		case Light_Color:
+			loc = glGetUniformLocation(_id, "light.color");
+			break;
 		case Light_Position:
 			loc = glGetUniformLocation(_id, "light_transform.position");
 			break;
@@ -282,6 +285,9 @@ namespace GZJ_ENGINE {
 			break;
 		case Mate_SpecularColor:
 			loc = glGetUniformLocation(_id, "mesh_mate.specular_color");
+			break;
+		case Shader_Ambient_Color:
+			loc = glGetUniformLocation(_id, "ambient_color");
 			break;
 		}
 

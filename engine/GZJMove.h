@@ -1,6 +1,8 @@
 #ifndef __GZJ_MOVE_
 #define __GZJ_MOVE_
 
+#include <tinyxml\tinyxml.h>
+
 #include "GZJRequire.h"
 #include "GZJEventSystem.h"
 #include "GZJTime.h"
@@ -44,14 +46,9 @@ namespace GZJ_ENGINE {
 
 	public:
 		GZJMove(GZJTransform* transform, float moveSpeed = 0.1f
-			, float yawSpeed = 0.1f
-			, float pitchSpeed = 0.1f)
-			:transform(transform), moveSpeed(moveSpeed) 
-			, yawSpeed(yawSpeed), pitchSpeed(pitchSpeed) {}
+			, float yawSpeed = 0.1f, float pitchSpeed = 0.1f);
 
-		~GZJMove() {
-			UnBindEvent();
-		};
+		~GZJMove();
 
 	private:
 
@@ -76,6 +73,10 @@ namespace GZJ_ENGINE {
 		*/
 		float pitchSpeed;
 
+		/** 自动移动
+		*/
+		bool autoRowYaw, autoRowPitch;
+
 	public:
 		/** 绑定事件
 		*/
@@ -93,16 +94,32 @@ namespace GZJ_ENGINE {
 		*/
 		void LogicUpdate(const GZJEventParamObj& param);
 
+	public:
+
+		/**  解析配置数据
+		*/
+		void ParseData(TiXmlElement * ele);
+
 	private:
 		// 功能
+
+		void DoParseData(TiXmlElement * ele);
 
 		/** 更新transform
 		*/
 		void UpdateTransform();
 
+		/** 自动移动或旋转
+		*/
+		void AutoTransform();
+
 		/** 更新Cursor
 		*/
 		void UpdateCursor();
+
+		/** 更新数据
+		*/
+		void UpdateData(const MoveData& param, float offset = 1.0f);
 	private:
 		// 事件函数
 		void Handle_Press_KeyBoard(const GZJEventParamObj& param);

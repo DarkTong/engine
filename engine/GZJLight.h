@@ -27,6 +27,7 @@ namespace GZJ_ENGINE
 		LightData_Ambient,
 		LightData_Diffuse,
 		LightData_Specular,
+		LightData_Color,
 		LightData_Intensity,
 		LightData_Position,
 		LightData_Near_Plane,
@@ -107,6 +108,10 @@ namespace GZJ_ENGINE
 		/** 高光光照分量
 		*/
 		Vector3 specularLight;
+
+		/** 光的颜色
+		*/
+		Vector3 color;
 
 		/** 光照强度
 		*/

@@ -1,13 +1,26 @@
 #include "GZJMove.h"
 
 namespace GZJ_ENGINE {
+	GZJMove::GZJMove(GZJTransform * transform, float moveSpeed, 
+		float yawSpeed, float pitchSpeed)
+		:transform(transform), moveSpeed(moveSpeed)
+		, yawSpeed(yawSpeed), pitchSpeed(pitchSpeed)
+	{
+		autoRowYaw = autoRowPitch = false;
 
+		eventHandles = { EV_Login_Update };
+		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this)
+			, EV_Login_Update
+			, NormalDelegate(this, &GZJMove::LogicUpdate));
+	}
+	GZJMove::~GZJMove()
+	{
+		UnBindEvent();
+	}
 	void GZJMove::BindEvent()
 	{
-		eventHandles = {
-			EV_Press_KeyBoard,
-			EV_Press_Mouse,
-		};
+		eventHandles.push_back(EV_Press_KeyBoard);
+		eventHandles.push_back(EV_Press_Mouse);
 
 		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this)
 			, EV_Press_KeyBoard
@@ -15,9 +28,6 @@ namespace GZJ_ENGINE {
 		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this),
 			EV_Press_Mouse,
 			NormalDelegate(this, &GZJMove::Handle_Press_Mouse));
-		GZJEventSystem::GetInstance()->Bind(reinterpret_cast<TargetID>(this)
-			, EV_Login_Update
-			, NormalDelegate(this, &GZJMove::LogicUpdate));
 	}
 
 	void GZJMove::UnBindEvent()
@@ -27,6 +37,7 @@ namespace GZJ_ENGINE {
 			GZJEventSystem::GetInstance()->UnBind(reinterpret_cast<TargetID>(this)
 				, *it);
 		}
+		eventHandles.clear();
 	}
 
 	void GZJMove::SetVector3(const MoveData& param)
@@ -84,8 +95,38 @@ namespace GZJ_ENGINE {
 
 	void GZJMove::LogicUpdate(const GZJEventParamObj& param)
 	{
+		AutoTransform();
 		UpdateTransform();
 		UpdateCursor();
+	}
+
+	void GZJMove::DoParseData(TiXmlElement * ele)
+	{
+		TiXmlElement* child;
+
+		child = ele->FirstChildElement("yaw_speed");
+		yawSpeed = !child ? 0.0 : (float)atof(ele->FirstChildElement("yaw_speed")
+				->GetText());
+			
+		child = ele->FirstChildElement("pitch_speed");
+		pitchSpeed = !child ? 0.0 : (float)atof(ele->FirstChildElement("pitch_speed")
+			->GetText());
+
+		child = ele->FirstChildElement("move_speed");
+		moveSpeed = !child ? 0.0 : (float)atof(ele->FirstChildElement("move_speed")
+			->GetText());
+
+		child = ele->FirstChildElement("auto_row_yaw");
+		if (child && String(child->GetText()) == "true")
+			autoRowYaw = true;
+	}
+
+	void GZJMove::ParseData(TiXmlElement * ele)
+	{
+		if (ele != nullptr)
+			DoParseData(ele);
+		else
+			cout << "GZJMove ParseData, ele is nullptr!" << endl;
 	}
 
 	void GZJMove::UpdateTransform()
@@ -134,6 +175,12 @@ namespace GZJ_ENGINE {
 		}
 	}
 
+	void GZJMove::AutoTransform()
+	{
+		if (autoRowYaw) UpdateData(MOVE_YAW, 1.0f);
+		if (autoRowPitch) UpdateData(MOVE_PITCH, 1.0f);
+	}
+
 	void GZJMove::UpdateCursor()
 	{
 		Vector2 pos = GZJWindow::GetInstance()->GetCursorPos();
@@ -157,6 +204,67 @@ namespace GZJ_ENGINE {
 
 		xPos = pos.x;
 		yPos = pos.y;
+	}
+
+	void GZJMove::UpdateData(const MoveData & param, float offset)
+	{
+		bool flag = false;
+		Vector3 dir;
+		switch (param)
+		{
+		case MOVE_FRONT:
+			dir = transform->GetVector3(Front);
+			break;
+		case MOVE_LEFT:
+			dir = transform->GetVector3(Right);
+			break;
+		case MOVE_UP:
+			dir = transform->GetVector3(Up);
+		case MOVE_BACK:
+			dir = transform->GetVector3(Front) * -1.0f;
+			break;
+		case MOVE_RIGHT:
+			dir = transform->GetVector3(Right) * -1.0f;
+			break;
+		case MOVE_DOWN:
+			dir = transform->GetVector3(Up) * -1.0f;
+			break;
+		default:
+			flag = true;
+			break;
+		}
+		if(!flag)
+		{
+			Vector3 pos = transform->GetVector3(Position);
+			pos += offset * dir * moveSpeed * GZJTime::GetInstance()->frame_time;
+			transform->SetVector3(Position, pos);
+			return;
+		}
+
+		flag = false;
+		Vector3 rotDegree;
+		switch (param)
+		{
+		case MOVE_YAW:
+			rotDegree.y += offset * yawSpeed * GZJTime::GetInstance()->frame_time;
+			if (rotDegree.y > 180.0f) rotDegree.y -= 180.0f;
+			break;
+		case MOVE_PITCH:
+			rotDegree.x += offset * pitchSpeed * GZJTime::GetInstance()->frame_time;
+			break;
+		default:
+			flag = true;
+			break;
+		}
+		if (!flag)
+		{
+			Vector3 rot = transform->GetVector3(Rotation);
+			if (rot.x + rotDegree.x > 80.0f || rot.x + rotDegree.x < -80.0f)
+				rotDegree.x = 0.000f;
+			rot = rot + rotDegree;
+			transform->SetVector3(Rotation, rot);
+			return;
+		}
 	}
 
 	void GZJMove::Handle_Press_KeyBoard(const GZJEventParamObj& param)

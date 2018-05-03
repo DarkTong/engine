@@ -17,6 +17,7 @@ namespace GZJ_ENGINE {
 	enum ShaderData {
 		TexCoords,
 		Shader_IsOpenShadow,
+		Shader_Ambient_Color,
 
 		// 材质相关
 		Mate_DiffuseTexture,
@@ -33,6 +34,7 @@ namespace GZJ_ENGINE {
 		Light_Ambient,
 		Light_Diffuse,
 		Light_Specular,
+		Light_Color,
 		Light_Intensity,
 		Light_Position,
 		Light_Direction,
@@ -66,6 +68,7 @@ namespace GZJ_ENGINE {
 	const std::vector<String> ShaderDataStr = {
 		"texcoord",
 		"is_open_shadow",
+		"ambient_color",
 
 		// 材质相关
 		"mesh_mate.diffuse_texture",
@@ -81,6 +84,7 @@ namespace GZJ_ENGINE {
 		"light.ambient",
 		"light.diffuse",
 		"light.specular",
+		"light.color",
 		"light.intensity",
 		"light_transform.position",
 		"light_transform.direction",

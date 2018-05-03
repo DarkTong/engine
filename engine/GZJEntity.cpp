@@ -19,6 +19,7 @@ namespace GZJ_ENGINE
 		DoParseTransformData(ele->FirstChildElement("transform"));
 		DoParseModelData(ele->FirstChildElement("model"));
 		DoParseShaderData(ele->FirstChildElement("shader"));
+		DoParseComponentData(ele->FirstChildElement("component"));
 	}
 
 	void GZJEntity::DoParseTransformData(TiXmlElement * ele)
@@ -87,6 +88,21 @@ namespace GZJ_ENGINE
 		child = ele->FirstChildElement("geometry_shader");
 		if (child && String(child->GetText()) == "true")
 			shader->SetUseShaderSet(GEOMETRY_SHADER, 1);
+	}
+
+	void GZJEntity::DoParseComponentData(TiXmlElement * ele)
+	{
+		if (ele == nullptr)
+			return;
+
+		TiXmlElement * child;
+		
+		child = ele->FirstChildElement("move");
+		if (child)
+		{
+			move = MakeShared<GZJMove>(&transform);
+			move->ParseData(child);
+		}
 	}
 
 }

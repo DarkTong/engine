@@ -16,7 +16,12 @@ namespace GZJ_ENGINE {
 		/** 贴图
 		*/
 		Vector2 texCoords;
-
+		/** 切线向量
+		*/
+		Vector3 tangentVertex;
+		/** 副切线向量
+		*/
+		Vector3 bitangentVertex;
 	};
 
 	typedef std::vector<Vertex> Vertices;
@@ -35,6 +40,9 @@ namespace GZJ_ENGINE {
 		/** 所有的定点信息
 		*/
 		Vertices vertices;
+		/** 所有切线向量信息
+		Vertices
+		*/
 		/** 所有的索引信息
 		*/
 		Indices indices;

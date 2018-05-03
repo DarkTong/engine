@@ -71,6 +71,13 @@ namespace GZJ_ENGINE
 		unsigned int depthTexture = 0;
 		GZJShaderPtr depthShader;
 
+		/** 环境光
+		*/
+		Vector3 ambientColor;
+		/** 背景颜色
+		*/
+		Vector3 bgColor;
+
 	public:
 		GZJScene(unsigned int id);
 		
@@ -97,6 +104,10 @@ namespace GZJ_ENGINE
 		/** 解析shadow数据
 		*/
 		void DoParseShadowData(TiXmlElement * ele);
+		
+		/** 解析场景相关数据
+		*/
+		void DoParseSceneDataData(TiXmlElement * ele);
 
 	private:
 

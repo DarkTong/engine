@@ -33,8 +33,8 @@ namespace GZJ_ENGINE
 				DoParseLightData(child);
 			else if (child->ValueTStr() == "main_camera")
 				DoParseMainCameraData(child);
-			else if (child->ValueTStr() == "shadow")
-				DoParseShadowData(child);
+			else if (child->ValueTStr() == "scene_data")
+				DoParseSceneDataData(child);
 		}
 	}
 
@@ -97,6 +97,17 @@ namespace GZJ_ENGINE
 		String shaderName = ele->FirstChildElement("shader")->GetText();
 		depthShader = std::static_pointer_cast<GZJShader>(
 			shaderMgr->FindResByName(shaderName));
+	}
+
+	void GZJScene::DoParseSceneDataData(TiXmlElement * ele)
+	{
+		DoParseShadowData(ele->FirstChildElement("shadow"));
+
+		ambientColor = GZJTools::ParseVector3(
+			ele->FirstChildElement("ambient_color"));
+
+		bgColor = GZJTools::ParseVector3(
+			ele->FirstChildElement("bg_color"));
 	}
 
 	void GZJScene::DoLoad()
@@ -265,6 +276,7 @@ namespace GZJ_ENGINE
 				shader->second->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
 				shader->second->SetMatrix(Shader_ViewToProjection, mainCamera.Projection());
 				shader->second->SetInt(Shader_IsOpenShadow, isOpenShadow);
+				shader->second->SetVector3(Shader_Ambient_Color, ambientColor);
 				shader->second->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
 			}
 
@@ -281,8 +293,8 @@ namespace GZJ_ENGINE
 
 	void GZJScene::Render()
 	{
-		//glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(bgColor.r, bgColor.g, bgColor.b, 1.0f);
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		if (isOpenShadow)
 			RenderToDepth();

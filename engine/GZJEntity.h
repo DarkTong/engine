@@ -7,6 +7,7 @@
 #include "GZJShaderManager.h"
 #include "GZJTransform.h"
 #include "GZJModel.h"
+#include "GZJMove.h"
 
 namespace GZJ_ENGINE 
 {
@@ -21,6 +22,10 @@ namespace GZJ_ENGINE
 
 		// shader
 		GZJShaderPtr shader;
+
+		// component
+		// move
+		GZJMovePtr move;
 
 	public:
 		// 对外接口
@@ -50,6 +55,10 @@ namespace GZJ_ENGINE
 		/** 解析shader数据
 		*/
 		void DoParseShaderData(TiXmlElement * ele);
+
+		/** 解析组件数据
+		*/
+		void DoParseComponentData(TiXmlElement * ele);
 	};
 }
 

@@ -89,9 +89,10 @@ namespace GZJ_ENGINE
 		}
 
 		// set light data
-		SetVector3(LightData_Ambient, ParseVector3(ele->FirstChildElement("ambient")));
-		SetVector3(LightData_Diffuse, ParseVector3(ele->FirstChildElement("diffuse")));
-		SetVector3(LightData_Specular, ParseVector3(ele->FirstChildElement("specular")));
+		//SetVector3(LightData_Ambient, ParseVector3(ele->FirstChildElement("ambient")));
+		//SetVector3(LightData_Diffuse, ParseVector3(ele->FirstChildElement("diffuse")));
+		//SetVector3(LightData_Specular, ParseVector3(ele->FirstChildElement("specular")));
+		SetVector3(LightData_Color, ParseVector3(ele->FirstChildElement("color")));
 		SetFloat(LightData_Intensity, (float)atof(ele->FirstChildElement("intensity")
 			->Attribute("value")));
 		SetFloat(LightData_Near_Plane, (float)atof(
@@ -125,6 +126,10 @@ namespace GZJ_ENGINE
 			break;
 		case LightData_Position:
 			_entity->transform.SetVector3(Position, data);
+			break;
+		case LightData_Color:
+			color = data;
+			GZJTools::clamp(color, MIN_LIGHT_COLOR, MAX_LIGHT_COLOR);
 			break;
 		default:
 			throw None;
@@ -226,9 +231,10 @@ namespace GZJ_ENGINE
 		shader->Use();
 		// 设置深度纹理，只有有光照才有阴影的。
 		shader->SetInt(Shader_Shadow_Texture, 0);
-		shader->SetVector3(ShaderData::Light_Ambient, ambientLight);
-		shader->SetVector3(ShaderData::Light_Diffuse, diffuseLight);
-		shader->SetVector3(ShaderData::Light_Specular, specularLight);
+		//shader->SetVector3(ShaderData::Light_Ambient, ambientLight);
+		//shader->SetVector3(ShaderData::Light_Diffuse, diffuseLight);
+		//shader->SetVector3(ShaderData::Light_Specular, specularLight);
+		shader->SetVector3(ShaderData::Light_Color, color);
 		shader->SetFloat(ShaderData::Light_Intensity, intensity);
 		shader->SetFloat(ShaderData::Light_Far_Plane, farPlane);
 		shader->SetFloat(ShaderData::Light_Near_Plane, nearPlane);

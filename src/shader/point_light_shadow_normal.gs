@@ -82,7 +82,8 @@ void GeneralVertex(int index)
 	gl_Position = gl_in[index].gl_Position;
 	// 纹理坐标
 	fragTexCoords = gs_data[index].texCoords;
-	fs_data.fragPosition = vec3(tangentSpace * vec4(gs_data[index].position, 1.0f));
+	// fs_data.fragPosition = vec3(tangentSpace * vec4(gs_data[index].position, 1.0f));
+	fs_data.fragPosition = gs_data[index].position;
 	fs_data.fragNormal = mat3(tangentSpace) * gs_data[index].normal;
 	// 光源位置
 	fs_data.lightPosition = vec3(tangentSpace * vec4(gs_data[index].lightWorldPos, 1.0f));

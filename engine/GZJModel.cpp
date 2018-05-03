@@ -12,7 +12,8 @@ namespace GZJ_ENGINE {
 	void GZJModel::DoLoad()
 	{
 		Assimp::Importer import;
-		const aiScene *scene = import.ReadFile(_path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene *scene = import.ReadFile(_path, 
+			aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -89,6 +90,12 @@ namespace GZJ_ENGINE {
 			vertex.texCoords = Vector2(aimesh->mTextureCoords[0][i].x,
 				aimesh->mTextureCoords[0][i].y);
 
+			vertex.tangentVertex = Vector3(aimesh->mTangents[i].x,
+				aimesh->mTangents[i].y, aimesh->mTangents[i].z);
+
+			vertex.bitangentVertex = Vector3(aimesh->mBitangents[i].x,
+				aimesh->mBitangents[i].y, aimesh->mBitangents[i].z);
+
 
 			vertices.push_back(vertex);
 		}
@@ -125,7 +132,6 @@ namespace GZJ_ENGINE {
 			material->Get(AI_MATKEY_COLOR_SPECULAR, tmp);
 			specularColor = Vector3(tmp.r, tmp.g, tmp.b);
 		}
-
 	}
 	
 	ResourceType GZJModel::GetResType()
