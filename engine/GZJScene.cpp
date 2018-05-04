@@ -212,11 +212,12 @@ namespace GZJ_ENGINE
 		}
 	}
 
-	void GZJScene::RenderToDepth()
+	void GZJScene::RenderToDepth(GZJLightPtr light)
 	{
 		auto PrepareDepthShader = [this](GZJLightPtr light) {
 			depthShader->Use();
 			depthShader->SetMatrix(Shader_Light_Space, light->GetMatrix(LightData_LightSpace));
+			depthShader->SetInt(Light_Type, light->GetLightType());
 			depthShader->SetVector3(Light_Position,
 				light->GetEntity()->transform.GetVector3(Position));
 			depthShader->SetFloat(Light_Near_Plane,
@@ -234,18 +235,16 @@ namespace GZJ_ENGINE
 		// 开启面剔除
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
-		for (auto it = lightMap.begin(); it != lightMap.end(); ++it)
+		// 准备渲染深度贴图的shader的数据
+		PrepareDepthShader(light);
+		// 渲染场景
+		for (int i = 0; i < entityArr.size(); ++i)
 		{
-			// 准备渲染深度贴图的shader的数据
-			PrepareDepthShader(it->second);
-			// 渲染场景
-			for (int i = 0; i < entityArr.size(); ++i)
-			{
-				entityArr[i]->Draw(depthShader);
-			}
+			entityArr[i]->Draw(depthShader);
 		}
 		// 不要忘记设回原先的culling face
 		glCullFace(GL_BACK); 
+		glDisable(GL_CULL_FACE);
 		// 切换到默认帧缓存，只有默认帧缓存才会渲染到屏幕上
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		// 激活0号纹理
@@ -253,53 +252,45 @@ namespace GZJ_ENGINE
 		// 将深度贴图绑定到0号纹理上
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 
-		// test
-		//glDisable(GL_DEPTH_TEST);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//showTextureS->Use();
-		//RenderQuad();
 	}
 
-	void GZJScene::RenderToNormal()
+	void GZJScene::RenderToNormal(GZJLightPtr light)
 	{
 		// 开启深度贴图
 		glEnable(GL_DEPTH_TEST);
 		// 清空颜色缓存和深度缓存
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// 配置shader
-		for (auto light = lightMap.begin(); light != lightMap.end(); ++light)
+		for (auto shader = shaderMap.begin(); shader != shaderMap.end(); ++shader)
 		{
-			for (auto shader = shaderMap.begin(); shader != shaderMap.end(); ++shader)
-			{
-				light->second->SetToShader(shader->second);
-				shader->second->Use();
-				shader->second->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
-				shader->second->SetMatrix(Shader_ViewToProjection, mainCamera.Projection());
-				shader->second->SetInt(Shader_IsOpenShadow, isOpenShadow);
-				shader->second->SetVector3(Shader_Ambient_Color, ambientColor);
-				shader->second->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
-			}
-
-			// 渲染物体
-			for (int i = 0; i < entityArr.size(); ++i)
-			{
-				entityArr[i]->Draw();
-			}
-
-			// 渲染光源
-			light->second->GetEntity()->Draw();
+			light->SetToShader(shader->second);
+			shader->second->Use();
+			shader->second->SetMatrix(Shader_WorldToView, mainCamera.LookAt());
+			shader->second->SetMatrix(Shader_ViewToProjection, mainCamera.Projection());
+			shader->second->SetInt(Shader_IsOpenShadow, isOpenShadow);
+			shader->second->SetVector3(Shader_Ambient_Color, ambientColor);
+			shader->second->SetVector3(View_ViewPosition, mainCamera.transform.GetVector3(Position));
 		}
+
+		// 渲染物体
+		for (int i = 0; i < entityArr.size(); ++i)
+		{
+			entityArr[i]->Draw();
+		}
+
+		// 渲染光源
+		light->GetEntity()->Draw();
 	}
 
 	void GZJScene::Render()
 	{
 		glClearColor(bgColor.r, bgColor.g, bgColor.b, 1.0f);
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-		if (isOpenShadow)
-			RenderToDepth();
-		//glEnable(GL_CULL_FACE);
-		RenderToNormal();
+		for (auto light = lightMap.begin(); light != lightMap.end(); ++light)
+		{
+			if (isOpenShadow)
+				RenderToDepth(light->second);
+			RenderToNormal(light->second);
+		}
 	
 	}
 

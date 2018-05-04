@@ -126,9 +126,9 @@ namespace GZJ_ENGINE
 
 		void UnLoad();
 
-		void RenderToDepth();
+		void RenderToDepth(GZJLightPtr light);
 
-		void RenderToNormal();
+		void RenderToNormal(GZJLightPtr light);
 
 		void Render();
 	};

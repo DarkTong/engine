@@ -234,6 +234,7 @@ namespace GZJ_ENGINE
 		//shader->SetVector3(ShaderData::Light_Ambient, ambientLight);
 		//shader->SetVector3(ShaderData::Light_Diffuse, diffuseLight);
 		//shader->SetVector3(ShaderData::Light_Specular, specularLight);
+		shader->SetInt(ShaderData::Light_Type, (int)lightType);
 		shader->SetVector3(ShaderData::Light_Color, color);
 		shader->SetFloat(ShaderData::Light_Intensity, intensity);
 		shader->SetFloat(ShaderData::Light_Far_Plane, farPlane);
@@ -284,7 +285,7 @@ namespace GZJ_ENGINE
 			float ortho_width = GetFloat(LightData_Ortho_Width);
 			float width = ortho_width / 2;
 			float height = size.y / size.x * width;
-			Vector4x4 ortho_projection = glm::ortho(-height, height, -width, width, nearPlane, farPlane);
+			Vector4x4 ortho_projection = glm::ortho(-width, width, height, -height, nearPlane, farPlane);
 			lightSpace = ortho_projection * lookAt;
 		}
 		else if (type == LightType::Light_PointLight)

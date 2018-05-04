@@ -31,6 +31,7 @@ namespace GZJ_ENGINE {
 		Mate_Flag_NormalTextureUse,
 
 		// 光照相关
+		Light_Type,
 		Light_Ambient,
 		Light_Diffuse,
 		Light_Specular,
@@ -81,6 +82,7 @@ namespace GZJ_ENGINE {
 		"mesh_mate.normal_tex_use",
 
 		// 光照相关
+		"light.type",
 		"light.ambient",
 		"light.diffuse",
 		"light.specular",

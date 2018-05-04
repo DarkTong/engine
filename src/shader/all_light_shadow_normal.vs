@@ -45,8 +45,10 @@ void CalTangentSpace();
 
 void main()
 {
-    CalTangentSpace();
+    normalMatrix = transpose(inverse(mat3(local2world)));
     vec3 worldPos = vec3(local2world * vec4(aPos, 1.0));
+
+    CalTangentSpace();
     fs_data.fragPosition = worldPos;
     fs_data.fragNormal = normalMatrix * aNormal;
     fs_data.fragTexCoords = aTexCoords;
@@ -60,7 +62,6 @@ void main()
 
 void CalTangentSpace()
 {
-    mat3 normalMatrix = transpose(inverse(mat3(local2world)));
     vec3 T = normalize(normalMatrix * aTangent);
     vec3 B = normalize(normalMatrix * aBitangent);
     vec3 N = normalize(normalMatrix * aNormal);
@@ -69,5 +70,5 @@ void CalTangentSpace()
         T = T * -1.0f;
     
 
-    tangentSpace = transpose(mat3(T,B,N));
+    tangentSpace = mat3(T,B,N);
 }

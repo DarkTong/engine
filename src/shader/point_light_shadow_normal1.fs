@@ -69,6 +69,8 @@ vec3 GetDiffuse();
 
 vec3 GetSpecular();
 
+float LinearizeDepth(float depth);
+
 float CalShadow();
 
 float CalSpecularValue(vec3 lightDir, vec3 viewDir, vec3 normal);
@@ -82,26 +84,35 @@ void main()
     FragColor = vec4(color, 1.0);
 }
 
+float LinearizeDepth(float depth)
+{
+    float z = depth * 2.0 - 1.0; // Back to NDC 
+    return (2.0 * light.near_plane * light.far_plane) 
+        / (light.far_plane + light.near_plane - z * (light.far_plane - light.near_plane));
+}
+
 float CalShadow()
 {
-    // ˝řĐĐÍ¸ĘÓłý·¨Ł¬ČçąűĘÇŐý˝»żŐĽäĽĆËăw=1,
+    
     vec3 projCoords = fs_data.fragLightSpacePos.xyz / fs_data.fragLightSpacePos.w;
-    // ÖµÓňµÄ×Ş»»
-    // ÓÉÓÚprojCoordsµÄ·¶Î§ĘÇ[-1,1]Ł¬¶řÎĆŔí×ř±ęµÄ·¶Î§ĘÇ[0,1],
+    
     projCoords = projCoords * 0.5 + 0.5;
-    // »ńČˇÉî¶ČĚůÍĽ¶ÔÓ¦Î»ÖĂµÄÉî¶ČÖµ
-    float closeDepth = texture(shadow_texture, projCoords.xy).r;
-    // ŔűÓĂÉî¶ČĽÄ´ćĆ÷Éî¶ČŁ¬żÉÄÜĘÇ·ÇĎßĐÔżŐĽäµÄ
-    // float currentDepth = projCoords.z;
-    // »ńČˇĎßĐÔżŐĽäµÄÉî¶ČÖµŁ¬
-    float dis = length(fs_data.fragPosition - fs_data.lightPosition);
-    float currentDepth = dis / light.far_plane;
-    // 0.0 is shadow, 1.0 is not shadow
-    // Éî¶ČĆ«ŇĆÖµŁ¬˝âľöÉî¶ČłĺÍ»
+    float closeDepth, currentDepth;
+    if (light.type == 0)
+    {
+        closeDepth = texture(shadow_texture, projCoords.xy).r;
+        currentDepth = projCoords.z;
+    }
+    else
+    {
+        closeDepth = LinearizeDepth(texture(shadow_texture, projCoords.xy).r);
+        currentDepth = LinearizeDepth(projCoords.z);
+    }
+    
     float shadow_bias = 0.005;
-    // ĹĐ¶Ďµ±Ç°Ć¬¶ÎĘÇ˛»ĘÇŇőÓ°
+    
     float shadow = closeDepth < currentDepth - 0.005 ? 0.0f : 1.0;
-    // ÉčÖĂÎŢĎŢÔ¶´¦˛»ĘÇŇőÓ°Đ§ąű
+    
     shadow = projCoords.z > 1.0f ? 1.0 : shadow;
 
     return shadow;

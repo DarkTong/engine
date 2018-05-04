@@ -4,11 +4,13 @@ in vec3 FragPos;
 
 struct Light
 {
+	int type;
     float near_plane;
     float far_plane;
 };
 struct LightTransform
 {
+	vec3 direction;
 	vec3 position;
 };
 
@@ -19,8 +21,17 @@ uniform float near_plane;
 
 void main()
 {
-    // 计算线性空间的深度值
-    float dis = length(FragPos - light_transform.position);
-    // 将深度值写入深度缓存
-    gl_FragDepth = dis / light.far_plane;
+    
+    float dis;
+    vec3 lightToPos = FragPos - light_transform.position;
+    if(light.type == 0)
+    {
+    	dis = dot(lightToPos, light_transform.direction);
+    }
+    else
+    {
+    	dis = length(lightToPos);
+    }
+    gl_FragDepth = dis / light.far_plane;	
+    
 }
